@@ -1,5 +1,13 @@
 package com.company.oop.logistics.core.contracts;
 
-public interface ObjectRepository {
+import com.company.oop.logistics.models.contracts.Location;
+import com.company.oop.logistics.models.enums.City;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+public interface ObjectRepository {
+    Location createLocation(City name, LocalDateTime arrivalTime, LocalDateTime departureTime);
+
+    List<Location> getLocations();
 }
