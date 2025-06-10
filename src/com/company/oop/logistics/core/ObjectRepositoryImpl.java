@@ -1,7 +1,9 @@
 package com.company.oop.logistics.core;
 
 import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.models.DeliveryRouteImpl;
 import com.company.oop.logistics.models.LocationImpl;
+import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
 
@@ -15,6 +17,7 @@ public class ObjectRepositoryImpl implements ObjectRepository {
 
     List<Location> locations = new ArrayList<>();
     //TODO: Add lists for the objects we will store
+    List<DeliveryRoute> routes = new ArrayList<>();
 
 
     public ObjectRepositoryImpl() {
@@ -22,13 +25,24 @@ public class ObjectRepositoryImpl implements ObjectRepository {
     }
 
     public Location createLocation(City name, LocalDateTime arrivalTime, LocalDateTime departureTime){
-        Location location = new LocationImpl(++nextId, name, arrivalTime, departureTime);
-        this.locations.add(location);
-        return location;
+        return new LocationImpl(name, arrivalTime, departureTime);
+    }
+
+    public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<Location> locations){
+        DeliveryRoute route = new DeliveryRouteImpl(++nextId, startTime, locations);
+        this.routes.add(route);
+        return route;
     }
 
     @Override
     public List<Location> getLocations() {
         return locations;
     }
+
+    @Override
+    public List<DeliveryRoute> getRoutes(){
+        return routes;
+    }
+
+
 }

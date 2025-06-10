@@ -38,6 +38,7 @@ public class EngineImpl implements Engine {
                 processCommand(inputLine);
             }
             catch (RuntimeException e){
+                processCommand(inputLine);
                 //This is a catch-all for unhandled errors
                 System.out.println(e.getMessage());
             }

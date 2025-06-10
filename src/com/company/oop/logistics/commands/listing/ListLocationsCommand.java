@@ -18,7 +18,6 @@ public class ListLocationsCommand implements Command {
         StringBuilder output = new StringBuilder();
         for (Location location: objectRepository.getLocations()){
             output.append("===\n");
-            output.append(String.format(" id: %d\n", location.getId()));
             output.append(String.format(" Arrival time: %s\n", location.getArrivalTime()));
             output.append(String.format(" Departure time: %s\n", location.getDepartureTime()));
         }
