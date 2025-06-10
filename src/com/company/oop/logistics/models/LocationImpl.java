@@ -18,6 +18,7 @@ public class LocationImpl implements Location{
     public LocationImpl(City name, LocalDateTime arrivalTime, LocalDateTime departureTime){
         setName(name);
         setArrivalTime(arrivalTime);
+        setDepartureTime(departureTime);
     }
 
     public LocationImpl(City name, LocalDateTime arrivalTime){

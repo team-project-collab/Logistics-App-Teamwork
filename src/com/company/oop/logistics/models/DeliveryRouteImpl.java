@@ -28,7 +28,12 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     }
 
     private void setStartTime(LocalDateTime startTime) {
-        //TODO: Validate
+        if(startTime == null){
+            throw new IllegalArgumentException("Start time cannot be null");
+        }
+        if(startTime.isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("Start time cannot be in the past.");
+        }
         this.startTime = startTime;
     }
 
