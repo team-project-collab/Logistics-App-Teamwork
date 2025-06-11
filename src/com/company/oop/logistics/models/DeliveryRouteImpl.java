@@ -1,5 +1,6 @@
 package com.company.oop.logistics.models;
 
+import com.company.oop.logistics.exceptions.custom.LimitBreak;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
@@ -8,6 +9,7 @@ import com.company.oop.logistics.models.enums.City;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DeliveryRouteImpl implements DeliveryRoute{
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "A vehicle is already assigned to route %d.";
@@ -18,6 +20,7 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     private LocalDateTime startTime;
     private ArrayList<Location> locations = new ArrayList<>();
     private Truck assignedVehicle;
+
     private final ArrayList<DeliveryPackage> assignedPackages = new ArrayList<>();
 
     public DeliveryRouteImpl(int id, LocalDateTime startTime, ArrayList<Location> locations){
@@ -92,9 +95,14 @@ public class DeliveryRouteImpl implements DeliveryRoute{
 
     @Override
     public void assignTruck(Truck truck) {
+        if (truck == null) {
+            throw new IllegalArgumentException("Truck cannot be null");
+        }
+
         if (this.assignedVehicle != null){
             throw new IllegalArgumentException(String.format(ERROR_VEHICLE_ALREADY_ASSIGNED, id));
         }
+
         assignedVehicle = truck;
     }
 
@@ -103,6 +111,18 @@ public class DeliveryRouteImpl implements DeliveryRoute{
         if (this.assignedVehicle == null){
             throw new IllegalStateException(String.format(ERROR_NO_VEHICLE, id));
         }
+        if((deliveryPackage.getWeightKg() + getTotalLoad()) > assignedVehicle.getCapacity()){
+            throw new LimitBreak("Exceeds capacity of truck");
+        }
+        assignedPackages.add(deliveryPackage);
+    }
+    public double getTotalLoad(){
+        double total = 0;
+        for (DeliveryPackage deliveryPackage:
+        getAssignedPackages()) {
+            total += deliveryPackage.getWeightKg();
+        }
+        return total;
     }
 
 }

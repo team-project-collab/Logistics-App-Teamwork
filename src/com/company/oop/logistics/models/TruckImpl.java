@@ -1,56 +1,48 @@
 package com.company.oop.logistics.models;
 
-import com.company.oop.logistics.commands.CommandType;
 import com.company.oop.logistics.exceptions.custom.LimitBreak;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.TruckName;
 import com.company.oop.logistics.utils.parcing.ParsingHelpers;
 
-public class TruckImpl implements Truck {
+public class TruckImpl extends Vehicle implements Truck {
     private int capacity;
     private int maxRange;
+    private int id;
     private TruckName truckName;
-
-    public TruckName getTruckName() {
-        return truckName;
-    }
-
-    public void setTruckName(TruckName truckName) {
-        this.truckName = truckName;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     private static int idScania = 1001;
     private static int idMan = 1011;
     private static int idActros = 1026;
-    private int id;
+
 
     public TruckImpl(String name) throws LimitBreak {
-         setTruckName(ParsingHelpers.tryParseEnum(name, TruckName.class, String.format("Wrong truck type %s", name)));
+        super();
+        setTruckName(ParsingHelpers.tryParseEnum(name, TruckName.class, String.format("Wrong truck type %s", name)));
+        setUpTruck();
 
-         if(getTruckName() == TruckName.SCANIA){
+    }
+    public  void setUpTruck(){
+        if(getTruckName() == TruckName.SCANIA){
             setCapacity(42000);
             setMaxRange(8000);
             if(idScania < 1011){
                 setId(idScania);
                 idScania++;
             }else{
-                throw new LimitBreak(String.format("Company cannot provide additional %s trucks",name.toUpperCase()));
+                throw new LimitBreak(String.format("Company cannot provide additional %s trucks",getTruckName()));
             }
-         }
-         if(getTruckName() == TruckName.MAN){
-             setCapacity(37000);
-             setMaxRange(10000);
-             if(idMan < 1026){
-                 setId(idMan);
-                 idMan++;
-             }else{
-                 throw new LimitBreak(String.format("Company cannot provide additional %s trucks",name.toUpperCase()));
-             }
-         }
+        }
+        if(getTruckName() == TruckName.MAN){
+            setCapacity(37000);
+            setMaxRange(10000);
+            if(idMan < 1026){
+                setId(idMan);
+                idMan++;
+            }else{
+                throw new LimitBreak(String.format("Company cannot provide additional %s trucks",getTruckName()));
+            }
+        }
         if(getTruckName() == TruckName.ACTROS){
             setCapacity(26000);
             setMaxRange(13000);
@@ -58,11 +50,11 @@ public class TruckImpl implements Truck {
                 setId(idActros);
                 idActros++;
             }else{
-                throw new LimitBreak(String.format("Company cannot provide additional %s trucks",name.toUpperCase()));
+                throw new LimitBreak(String.format("Company cannot provide additional %s trucks",getTruckName()));
             }
         }
-
     }
+
 
     public int getCapacity() {
         return capacity;
@@ -83,5 +75,16 @@ public class TruckImpl implements Truck {
     @Override
     public int getId() {
         return this.id;
+    }
+    public TruckName getTruckName() {
+        return truckName;
+    }
+
+    public void setTruckName(TruckName truckName) {
+        this.truckName = truckName;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

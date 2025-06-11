@@ -23,4 +23,5 @@ public interface ObjectRepository {
     boolean isVehicleAssigned(Truck vehicle);
 
     Truck createVehicle(String truckName);
+    public void assignPackage(int packageId, int deliveryRouteId);
 }

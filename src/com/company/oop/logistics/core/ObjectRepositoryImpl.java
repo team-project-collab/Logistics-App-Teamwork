@@ -1,9 +1,7 @@
 package com.company.oop.logistics.core;
 
 import com.company.oop.logistics.core.contracts.ObjectRepository;
-import com.company.oop.logistics.models.DeliveryRouteImpl;
-import com.company.oop.logistics.models.LocationImpl;
-import com.company.oop.logistics.models.TruckImpl;
+import com.company.oop.logistics.models.*;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
@@ -19,7 +17,7 @@ public class ObjectRepositoryImpl implements ObjectRepository {
     public static final String ERROR_NO_VEHICLE_ID = "There is no vehicle with id %s.";
     public static final String ERROR_NO_ROUTE_ID = "There is no delivery route with id %s.";
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route";
-    private int nextId;
+    private static int nextId;
 
     //TODO: locations list is probably not needed, as they are stored in route
     List<Location> locations = new ArrayList<>();
@@ -27,6 +25,7 @@ public class ObjectRepositoryImpl implements ObjectRepository {
     List<DeliveryRoute> routes = new ArrayList<>();
 
     List<Truck> vehicles = new ArrayList<>();
+    List<DeliveryPackage> packages = new ArrayList<>();
 
 
     public ObjectRepositoryImpl() {
@@ -95,4 +94,29 @@ public class ObjectRepositoryImpl implements ObjectRepository {
         }
         throw new IllegalArgumentException(String.format(ERROR_NO_ROUTE_ID, deliveryRouteId));
     }
+    public void assignPackage(int packageId, int deliveryRouteId){
+        DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
+        DeliveryRoute route = getRouteById(deliveryRouteId);
+        if(deliveryPackage.isAssigned()){
+            throw new IllegalStateException("Package is already assigned");
+        }
+        route.assignPackage(deliveryPackage);
+
+    }
+    public DeliveryPackage createDeliveryPackage(Location startLocation, Location endLocation, double weightKg, CustomerContactInfoImpl customerContactInfo){
+        DeliveryPackage p = new DeliveryPackageImpl(++nextId,startLocation,endLocation,weightKg,customerContactInfo);
+        this.packages.add(p);
+        return p;
+
+    }
+    public DeliveryPackage getDeliveryPackageById(int packageId){
+        for (DeliveryPackage p:
+             this.packages) {
+            if(p.getId() == packageId){
+                return p;
+            }
+        }
+        throw new IllegalArgumentException("No package with this id.");
+    }
+
 }
