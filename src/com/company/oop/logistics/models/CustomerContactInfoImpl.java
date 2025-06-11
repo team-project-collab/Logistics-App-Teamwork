@@ -6,18 +6,28 @@ import com.company.oop.logistics.models.enums.City;
 public class CustomerContactInfoImpl implements CustomerContactInfo {
     private String fullName;
     private String phoneNumber;
+    private String email;
     private City address;
 
-    public CustomerContactInfoImpl(String fullName, String phoneNumber, City address) {
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
+    public CustomerContactInfoImpl(String fullName, String phoneNumber, String email, City address) {
+        setFullName(fullName);
+        setPhoneNumber(phoneNumber);
+        setEmail(email);
+        setAddress(address);
     }
 
+    public String getEmail() {
+        return email;
+    }
+    // TODO: Must implement validation.
+    private void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getFullName() {
         return fullName;
     }
+
     // TODO: Must implement validation.
     private void setFullName(String fullName) {
         this.fullName = fullName;
@@ -26,6 +36,7 @@ public class CustomerContactInfoImpl implements CustomerContactInfo {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
     // TODO: Must implement validation.
     private void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
@@ -34,8 +45,9 @@ public class CustomerContactInfoImpl implements CustomerContactInfo {
     public City getAddress() {
         return address;
     }
+
     // TODO: Must implement validation.
-     private void setAddress(City address) {
+    private void setAddress(City address) {
         this.address = address;
     }
 }
