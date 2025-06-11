@@ -2,7 +2,7 @@ package com.company.oop.logistics.models;
 
 import com.company.oop.logistics.models.contracts.CustomerContactInfo;
 import com.company.oop.logistics.models.enums.City;
-
+// This is a test.
 public class CustomerContactInfoImpl implements CustomerContactInfo {
     private String fullName;
     private String phoneNumber;
