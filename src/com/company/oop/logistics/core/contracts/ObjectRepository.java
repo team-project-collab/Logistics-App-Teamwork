@@ -2,6 +2,7 @@ package com.company.oop.logistics.core.contracts;
 
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
+import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 
 import java.time.LocalDateTime;
@@ -16,4 +17,10 @@ public interface ObjectRepository {
     List<DeliveryRoute> getRoutes();
 
     DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<Location> locations);
+
+    void assignVehicleToRoute(int vehicleId, int deliveryRouteId);
+
+    boolean isVehicleAssigned(Truck vehicle);
+
+    Truck createVehicle(String truckName);
 }

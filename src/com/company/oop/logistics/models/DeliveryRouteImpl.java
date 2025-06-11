@@ -10,6 +10,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class DeliveryRouteImpl implements DeliveryRoute{
+    public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "A vehicle is already assigned to route %d.";
+    public static final String ERROR_START_TIME_NULL = "Start time cannot be null";
+    public static final String ERROR_START_TIME_IN_THE_PAST = "Start time cannot be in the past.";
+    public static final String ERROR_NO_VEHICLE = "Route %d has no vehicle yet.";
     private int id;
     private LocalDateTime startTime;
     private ArrayList<Location> locations = new ArrayList<>();
@@ -29,10 +33,10 @@ public class DeliveryRouteImpl implements DeliveryRoute{
 
     private void setStartTime(LocalDateTime startTime) {
         if(startTime == null){
-            throw new IllegalArgumentException("Start time cannot be null");
+            throw new IllegalArgumentException(ERROR_START_TIME_NULL);
         }
         if(startTime.isBefore(LocalDateTime.now())){
-            throw new IllegalArgumentException("Start time cannot be in the past.");
+            throw new IllegalArgumentException(ERROR_START_TIME_IN_THE_PAST);
         }
         this.startTime = startTime;
     }
@@ -88,12 +92,17 @@ public class DeliveryRouteImpl implements DeliveryRoute{
 
     @Override
     public void assignTruck(Truck truck) {
-
+        if (this.assignedVehicle != null){
+            throw new IllegalArgumentException(String.format(ERROR_VEHICLE_ALREADY_ASSIGNED, id));
+        }
+        assignedVehicle = truck;
     }
 
     @Override
     public void assignPackage(DeliveryPackage deliveryPackage) {
-
+        if (this.assignedVehicle == null){
+            throw new IllegalStateException(String.format(ERROR_NO_VEHICLE, id));
+        }
     }
 
 }

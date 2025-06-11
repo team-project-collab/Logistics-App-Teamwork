@@ -20,6 +20,11 @@ public class ListRoutesCommand implements Command {
             output.append("===\n");
             output.append(String.format(" Route id: %d - from %s to %s\n", route.getId(), route.getOrigin().getName(),
                     route.getDestination().getName()));
+            try{
+                output.append(String.format("  Assigned truck %s\n", route.getAssignedVehicle().getId()));
+            }catch (RuntimeException e){
+                output.append("  No assigned truck yet\n");
+            }
             for (Location location: route.getLocations()) {
                 output.append(String.format("  === Destination: %s at %s\n", location.getName(), location.getArrivalTime()));
             }
