@@ -1,6 +1,6 @@
 package com.company.oop.logistics.core;
 
-import com.company.oop.logistics.commands.AssignVehicleToRouteCommand;
+import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
 import com.company.oop.logistics.commands.CommandType;
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.commands.creation.CreateLocationCommand;

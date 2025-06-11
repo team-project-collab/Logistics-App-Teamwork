@@ -1,6 +1,5 @@
 package com.company.oop.logistics.models;
 
-import com.company.oop.logistics.models.contracts.CustomerContactInfo;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.Location;
 
@@ -9,9 +8,18 @@ public class DeliveryPackageImpl implements DeliveryPackage {
     private Location startLocation;
     private Location endLocation;
     private double weightKg;
-    private CustomerContactInfo customerContactInfo;
+    private CustomerContactInfoImpl customerContactInfo;
+    private boolean isAssigned = false;
 
-    public DeliveryPackageImpl(int id, Location startLocation, Location endLocation, double weightKg, CustomerContactInfo customerContactInfo) {
+    public boolean isAssigned() {
+        return isAssigned;
+    }
+
+    public void setAssigned(boolean assigned) {
+        isAssigned = assigned;
+    }
+
+    public DeliveryPackageImpl(int id, Location startLocation, Location endLocation, double weightKg, CustomerContactInfoImpl customerContactInfo) {
         setId(id);
         setStartLocation(startLocation);
         setEndLocation(endLocation);
@@ -47,11 +55,11 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         this.weightKg = weightKg;
     }
 
-    public CustomerContactInfo getCustomerContactInfo() {
+    public CustomerContactInfoImpl getCustomerContactInfo() {
         return customerContactInfo;
     }
 
-    private void setCustomerContactInfo(CustomerContactInfo customerContactInfo) {
+    private void setCustomerContactInfo(CustomerContactInfoImpl customerContactInfo) {
         this.customerContactInfo = customerContactInfo;
     }
 
