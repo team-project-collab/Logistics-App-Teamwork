@@ -1,15 +1,18 @@
 package com.company.oop.logistics.models;
 
+import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.enums.City;
 
-// This is a test.
-public class CustomerContactInfoImpl{
+
+public class CustomerContactInfo implements Identifiable {
+    private int id;
     private String fullName;
     private String phoneNumber;
     private String email;
     private City address;
 
-    public CustomerContactInfoImpl(String fullName, String phoneNumber, String email, City address) {
+    public CustomerContactInfo(int id, String fullName, String phoneNumber, String email, City address) {
+        this.id = id;
         setFullName(fullName);
         setPhoneNumber(phoneNumber);
         setEmail(email);
@@ -22,7 +25,7 @@ public class CustomerContactInfoImpl{
 
     private void setEmail(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
-        if(email == null || !email.matches(emailRegex)){
+        if (email == null || !email.matches(emailRegex)) {
             throw new IllegalArgumentException("Invalid email address provided: " + email);
         }
         this.email = email.trim();
@@ -73,9 +76,15 @@ public class CustomerContactInfoImpl{
 
 
     private void setAddress(City address) {
-        if(address == null){
+        if (address == null) {
             throw new IllegalArgumentException("Address (City) cannot be null.");
         }
         this.address = address;
+    }
+
+
+    @Override
+    public int getId() {
+        return this.id;
     }
 }

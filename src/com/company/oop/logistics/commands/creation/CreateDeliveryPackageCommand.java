@@ -1,0 +1,47 @@
+package com.company.oop.logistics.commands.creation;
+
+import com.company.oop.logistics.commands.contracts.Command;
+import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.models.CustomerContactInfo;
+import com.company.oop.logistics.models.contracts.DeliveryPackage;
+import com.company.oop.logistics.models.contracts.Location;
+import com.company.oop.logistics.utils.parcing.ParsingHelpers;
+
+import java.util.List;
+
+public class CreateDeliveryPackageCommand implements Command {
+    public static final int EXPECTED_NUMBER_OF_PARAMETERS = 4;
+    public static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters.",
+            EXPECTED_NUMBER_OF_PARAMETERS);
+
+    private int startLocationId;
+    private int endLocationId;
+    private double weightKg;
+    private int customerContactInfoId;
+    private final ObjectRepository objectRepository;
+
+    public CreateDeliveryPackageCommand(ObjectRepository objectRepository) {
+        this.objectRepository = objectRepository;
+    }
+
+    @Override
+    public String execute(List<String> parameters) {
+        if (parameters.size()!=EXPECTED_NUMBER_OF_PARAMETERS) {
+            throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
+        }
+        parseParameters(parameters);
+
+        Location startLocation = objectRepository.getLocationById(startLocationId);
+        Location endLocation = objectRepository.getLocationById(endLocationId);
+        CustomerContactInfo customerContactInfo = objectRepository.getCustomerContactById(customerContactInfoId);
+        DeliveryPackage createdPackage=objectRepository.createDeliveryPackage(startLocation, endLocation, weightKg, customerContactInfo);
+        return String.format("Created new delivery package with id: %d",createdPackage.getId());
+    }
+
+    private void parseParameters(List<String> parameters) {
+        startLocationId = ParsingHelpers.tryParseInteger(parameters.get(0), "start location id");
+        endLocationId = ParsingHelpers.tryParseInteger(parameters.get(1), "end location id");
+        weightKg = ParsingHelpers.tryParseDouble(parameters.get(2), "weight (kg)");
+        customerContactInfoId = ParsingHelpers.tryParseInteger(parameters.get(3), "customer contact info id");
+    }
+}

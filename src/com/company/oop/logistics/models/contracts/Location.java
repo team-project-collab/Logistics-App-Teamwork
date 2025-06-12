@@ -4,7 +4,7 @@ import com.company.oop.logistics.models.enums.City;
 
 import java.time.LocalDateTime;
 
-public interface Location{
+public interface Location extends Identifiable{
     City getName();
 
     LocalDateTime getArrivalTime();

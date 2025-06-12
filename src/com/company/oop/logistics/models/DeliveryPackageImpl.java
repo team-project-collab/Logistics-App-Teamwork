@@ -8,7 +8,7 @@ public class DeliveryPackageImpl implements DeliveryPackage {
     private Location startLocation;
     private Location endLocation;
     private double weightKg;
-    private CustomerContactInfoImpl customerContactInfo;
+    private CustomerContactInfo customerContactInfo;
     private boolean isAssigned = false;
 
     public boolean isAssigned() {
@@ -19,7 +19,7 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         isAssigned = assigned;
     }
 
-    public DeliveryPackageImpl(int id, Location startLocation, Location endLocation, double weightKg, CustomerContactInfoImpl customerContactInfo) {
+    public DeliveryPackageImpl(int id, Location startLocation, Location endLocation, double weightKg, CustomerContactInfo customerContactInfo) {
         setId(id);
         setStartLocation(startLocation);
         setEndLocation(endLocation);
@@ -55,11 +55,11 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         this.weightKg = weightKg;
     }
 
-    public CustomerContactInfoImpl getCustomerContactInfo() {
+    public CustomerContactInfo getCustomerContactInfo() {
         return customerContactInfo;
     }
 
-    private void setCustomerContactInfo(CustomerContactInfoImpl customerContactInfo) {
+    private void setCustomerContactInfo(CustomerContactInfo customerContactInfo) {
         this.customerContactInfo = customerContactInfo;
     }
 
