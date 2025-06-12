@@ -19,7 +19,7 @@ public interface ObjectRepository {
 
     List<DeliveryRoute> getRoutes();
 
-    DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<Location> locations);
+    DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities);
 
     DeliveryPackage createDeliveryPackage(Location startLocation, Location endLocation, double weightKg, CustomerContactInfo customerContactInfo);
 

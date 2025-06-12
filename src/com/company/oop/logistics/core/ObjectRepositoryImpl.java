@@ -7,6 +7,7 @@ import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.utils.constants.CityDistance;
 
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
@@ -22,8 +23,10 @@ public class ObjectRepositoryImpl implements ObjectRepository {
     public static final String ERROR_NO_PACKAGE_ID = "No package with this id.";
     public static final String ERROR_NO_LOCATION_ID = "No location with this id.";
     public static final String ERROR_PACKAGE_ALREADY_ASSIGNED = "Package is already assigned.";
+    public static final String ERROR_ORIGIN_EQUALS_DESTINATION = "Origin and destination must be different.";
+    public static final int INT_TRUCK_SPEED = 87;
 
-    private static int nextId;
+    private int nextId;
 
     //TODO: locations list is probably not needed, as they are stored in route
     List<Location> locations = new ArrayList<>();
@@ -52,8 +55,20 @@ public class ObjectRepositoryImpl implements ObjectRepository {
         throw new IllegalArgumentException(ERROR_NO_LOCATION_ID);
     }
 
-    public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<Location> locations) {
-        DeliveryRoute route = new DeliveryRouteImpl(++nextId, startTime, locations);
+    public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities) {
+        ArrayList<Location> parsedLocations = new ArrayList<>();
+        LocalDateTime currentTime = startTime;
+        for (int i = 0; i < cities.size(); i++) {
+            int timeToTravel = 0;
+            if (i < cities.size() - 1) {
+                timeToTravel = (int) ((float) CityDistance.getDistance(cities.get(i), cities.get(i + 1))
+                        / INT_TRUCK_SPEED * 60) * 60;
+            }
+            currentTime = currentTime.plusSeconds(timeToTravel);
+            parsedLocations.add(new LocationImpl(cities.get(i), currentTime.plusSeconds(-timeToTravel), currentTime));
+
+        }
+        DeliveryRoute route = new DeliveryRouteImpl(++nextId, startTime, parsedLocations);
         this.routes.add(route);
         return route;
     }
@@ -149,6 +164,9 @@ public class ObjectRepositoryImpl implements ObjectRepository {
 
     public ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination){
         ArrayList<Integer> result = new ArrayList<>();
+        if (origin.equals(destination)){
+            throw new IllegalArgumentException(ERROR_ORIGIN_EQUALS_DESTINATION);
+        }
         for (DeliveryRoute route: routes){
             ArrayList<Location> routeLocations = route.getLocations();
             for (int i = 0; i < routeLocations.size() - 1; i++) {

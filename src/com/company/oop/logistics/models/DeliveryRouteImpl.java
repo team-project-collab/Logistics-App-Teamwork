@@ -6,6 +6,7 @@ import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.utils.constants.CityDistance;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public class DeliveryRouteImpl implements DeliveryRoute{
         }
         assignedPackages.add(deliveryPackage);
     }
+
     public double getTotalLoad(){
         double total = 0;
         for (DeliveryPackage deliveryPackage:
@@ -123,6 +125,14 @@ public class DeliveryRouteImpl implements DeliveryRoute{
             total += deliveryPackage.getWeightKg();
         }
         return total;
+    }
+
+    public int getDistance(){
+        int result = 0;
+        for (int i = 0; i < locations.size() - 1; i++){
+            result += CityDistance.getDistance(locations.get(i).getName(), locations.get(i + 1).getName());
+        }
+        return result;
     }
 
 }
