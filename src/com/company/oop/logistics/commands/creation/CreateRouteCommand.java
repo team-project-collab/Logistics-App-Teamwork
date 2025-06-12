@@ -41,7 +41,7 @@ public class CreateRouteCommand implements Command {
             int timeToTravel = 5*60*60;
             currentTime = currentTime.plusSeconds(timeToTravel);
 
-            locations.add(new LocationImpl(city, currentTime.plusSeconds(-timeToTravel), currentTime));
+            locations.add(new LocationImpl( city, currentTime.plusSeconds(-timeToTravel), currentTime));
         }
         DeliveryRoute createdRoute = objectRepository.createDeliveryRoute(startTime, locations);
         return String.format("Created new route with id: %d", createdRoute.getId());

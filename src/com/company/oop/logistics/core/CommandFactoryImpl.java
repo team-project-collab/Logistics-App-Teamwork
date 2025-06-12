@@ -3,6 +3,7 @@ package com.company.oop.logistics.core;
 import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
 import com.company.oop.logistics.commands.CommandType;
 import com.company.oop.logistics.commands.contracts.Command;
+import com.company.oop.logistics.commands.creation.CreateDeliveryPackageCommand;
 import com.company.oop.logistics.commands.creation.CreateLocationCommand;
 import com.company.oop.logistics.commands.creation.CreateRouteCommand;
 import com.company.oop.logistics.commands.creation.CreateTruckCommand;
@@ -33,6 +34,8 @@ public class CommandFactoryImpl implements CommandFactory {
                 return new AssignVehicleToRouteCommand(objectRepository);
             case CREATETRUCK:
                 return new CreateTruckCommand(objectRepository);
+            case CREATEDELIVERYPACKAGE:
+                return new CreateDeliveryPackageCommand(objectRepository);
         }
         return null;
     }
