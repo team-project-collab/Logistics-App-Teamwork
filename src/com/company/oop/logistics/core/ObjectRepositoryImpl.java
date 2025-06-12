@@ -8,6 +8,7 @@ import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,7 +119,6 @@ public class ObjectRepositoryImpl implements ObjectRepository {
             throw new IllegalStateException(ERROR_PACKAGE_ALREADY_ASSIGNED);
         }
         route.assignPackage(deliveryPackage);
-
     }
 
     public DeliveryPackage createDeliveryPackage(Location startLocation, Location endLocation, double weightKg, CustomerContactInfo customerContactInfo) {
@@ -147,4 +147,20 @@ public class ObjectRepositoryImpl implements ObjectRepository {
         throw new IllegalArgumentException(ERROR_NO_CUSTOMER_ID);
     }
 
+    public ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination){
+        ArrayList<Integer> result = new ArrayList<>();
+        for (DeliveryRoute route: routes){
+            ArrayList<Location> routeLocations = route.getLocations();
+            for (int i = 0; i < routeLocations.size() - 1; i++) {
+                if (routeLocations.get(i).getName().equals(origin)){
+                    for (int j = i; j < routeLocations.size(); j++) {
+                        if (routeLocations.get(j).getName().equals(destination)){
+                            result.add(route.getId());
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }

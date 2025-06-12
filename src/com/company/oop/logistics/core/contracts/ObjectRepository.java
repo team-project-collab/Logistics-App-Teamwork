@@ -34,4 +34,6 @@ public interface ObjectRepository {
     Location getLocationById(int startLocationId);
 
     CustomerContactInfo getCustomerContactById(int customerContactInfoId);
+
+    ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination);
 }

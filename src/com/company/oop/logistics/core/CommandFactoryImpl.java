@@ -1,5 +1,6 @@
 package com.company.oop.logistics.core;
 
+import com.company.oop.logistics.commands.FindRoutesServicingStartAndEndCommand;
 import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
 import com.company.oop.logistics.commands.CommandType;
 import com.company.oop.logistics.commands.contracts.Command;
@@ -36,6 +37,8 @@ public class CommandFactoryImpl implements CommandFactory {
                 return new CreateTruckCommand(objectRepository);
             case CREATEDELIVERYPACKAGE:
                 return new CreateDeliveryPackageCommand(objectRepository);
+            case FINDROUTESSERVICINGSTARTANDEND:
+                return new FindRoutesServicingStartAndEndCommand(objectRepository);
         }
         return null;
     }
