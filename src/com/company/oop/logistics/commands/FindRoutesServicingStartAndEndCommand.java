@@ -10,9 +10,12 @@ import java.util.List;
 
 public class FindRoutesServicingStartAndEndCommand implements Command {
     private static final int EXPECTED_NUMBER_OF_PARAMETERS = 2;
-    private static final String MESSAGE_LIST_ROUTES = "Routes ids servicing this start and end: %s";
+    private static final String MESSAGE_LIST_ROUTES = "Routes servicing route %s to %s: %s";
+    private static final String MESSAGE_NO_ROUTES = "There are no routes servicing %s to %s";
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
+    private static final String INVALID_CITY = "City %s not supported.";
+
     private final ObjectRepository objectRepository;
     private City origin;
     private City destination;
@@ -28,10 +31,13 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
         }
         parseParameters(parameters);
         ArrayList<Integer> result = objectRepository.findRoutesServicingStartAndEnd(origin, destination);
-        return String.format(MESSAGE_LIST_ROUTES, result.toString());
+        if (result.isEmpty()){
+            return String.format(MESSAGE_NO_ROUTES, origin, destination);
+        }
+        return String.format(MESSAGE_LIST_ROUTES, origin, destination, result);
     }
     private void parseParameters(List<String> parameters){
-        origin = ParsingHelpers.tryParseEnum(parameters.get(0), City.class, "city name");
-        destination = ParsingHelpers.tryParseEnum(parameters.get(1), City.class, "city name");
+        origin = ParsingHelpers.tryParseEnum(parameters.get(0), City.class, String.format(INVALID_CITY, parameters.get(0)));
+        destination = ParsingHelpers.tryParseEnum(parameters.get(1), City.class, String.format(INVALID_CITY, parameters.get(1)));
     }
 }

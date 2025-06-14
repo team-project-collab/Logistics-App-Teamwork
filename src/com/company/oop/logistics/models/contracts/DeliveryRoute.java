@@ -13,4 +13,5 @@ public interface DeliveryRoute extends Identifiable{
     DeliveryPackage assignedPackages();
     Location getOrigin();
     Location getDestination();
+    int getDistance();
 }
