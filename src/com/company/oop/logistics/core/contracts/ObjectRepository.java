@@ -40,4 +40,6 @@ public interface ObjectRepository {
     DeliveryRoute getRouteById(int routeId);
 
     CustomerContactInfo createCustomerContactInfo(String fullName, String phoneNumber, String email, City address);
+
+    String getPackageState(int packageId, LocalDateTime time);
 }

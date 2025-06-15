@@ -4,6 +4,7 @@ import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class DeliveryPackageImpl implements DeliveryPackage {
@@ -80,5 +81,31 @@ public class DeliveryPackageImpl implements DeliveryPackage {
     @Override
     public int getId() {
         return this.id;
+    }
+
+    public String getState(LocalDateTime time){
+        boolean packageSent = false;
+        boolean packageInTransit = false;
+        City travelingTo = null;
+        for (int i = 0; i < locations.size(); i++) {
+            if (locations.get(i).getArrivalTime().isAfter(time) && !packageSent){
+                break;
+            }
+            if (locations.get(i).getArrivalTime().isBefore(time)){
+                packageSent = true;
+            }
+            if (locations.get(i).getArrivalTime().isAfter(time) && packageSent){
+                packageInTransit = true;
+                travelingTo = locations.get(i).getName();
+                break;
+            }
+        }
+        if (packageInTransit){
+            return String.format("Package is in transit. Currently traveling to: %s", travelingTo);
+        }
+        if (packageSent && !packageInTransit){
+            return String.format("Package is delivered to %s", locations.get(locations.size() - 1).getName());
+        }
+        return "Package is not yet assigned";
     }
 }

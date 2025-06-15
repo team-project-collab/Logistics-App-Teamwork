@@ -2,6 +2,7 @@ package com.company.oop.logistics.models.contracts;
 
 import com.company.oop.logistics.models.enums.City;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public interface DeliveryPackage extends Identifiable{
@@ -13,4 +14,5 @@ public interface DeliveryPackage extends Identifiable{
     void setLocations(ArrayList<Location> locations);
     City getStartLocation();
     City getEndLocation();
+    String getState(LocalDateTime time);
 }

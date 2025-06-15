@@ -191,4 +191,9 @@ public class ObjectRepositoryImpl implements ObjectRepository {
         customerContacts.add(createdCustomerContactInfo);
         return createdCustomerContactInfo;
     }
+
+    public String getPackageState(int packageId, LocalDateTime time){
+        DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
+        return deliveryPackage.getState(time);
+    }
 }
