@@ -12,6 +12,7 @@ import com.company.oop.logistics.utils.constants.CityDistance;
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -43,7 +44,9 @@ public class ObjectRepositoryImpl implements ObjectRepository {
     }
 
     public Location createLocation(City name, LocalDateTime arrivalTime, LocalDateTime departureTime) {
-        return new LocationImpl(name, arrivalTime, departureTime);
+        Location createdLocation = new LocationImpl(name, arrivalTime, departureTime);
+        locations.add(createdLocation);
+        return createdLocation;
     }
 
     public Location getLocationById(int locationId) {
@@ -65,7 +68,7 @@ public class ObjectRepositoryImpl implements ObjectRepository {
                         / INT_TRUCK_SPEED * 60) * 60;
             }
             currentTime = currentTime.plusSeconds(timeToTravel);
-            parsedLocations.add(new LocationImpl(cities.get(i), currentTime.plusSeconds(-timeToTravel), currentTime));
+            parsedLocations.add(createLocation(cities.get(i), currentTime.plusSeconds(-timeToTravel), currentTime));
 
         }
         DeliveryRoute route = new DeliveryRouteImpl(++nextId, startTime, parsedLocations);
@@ -136,11 +139,10 @@ public class ObjectRepositoryImpl implements ObjectRepository {
         route.assignPackage(deliveryPackage);
     }
 
-    public DeliveryPackage createDeliveryPackage(Location startLocation, Location endLocation, double weightKg, CustomerContactInfo customerContactInfo) {
+    public DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo) {
         DeliveryPackage p = new DeliveryPackageImpl(++nextId, startLocation, endLocation, weightKg, customerContactInfo);
         this.packages.add(p);
         return p;
-
     }
 
     public DeliveryPackage getDeliveryPackageById(int packageId) {
@@ -180,5 +182,13 @@ public class ObjectRepositoryImpl implements ObjectRepository {
             }
         }
         return result;
+    }
+
+
+    public CustomerContactInfo createCustomerContactInfo(String fullName, String phoneNumber, String email, City address) {
+        //TODO: Fix error: Ids get incremented when an error is thrown
+        CustomerContactInfo createdCustomerContactInfo = new CustomerContactInfo(++nextId, fullName, phoneNumber, email, address);
+        customerContacts.add(createdCustomerContactInfo);
+        return createdCustomerContactInfo;
     }
 }

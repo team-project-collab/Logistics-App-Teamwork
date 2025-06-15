@@ -5,6 +5,7 @@ import com.company.oop.logistics.core.contracts.ObjectRepository;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.Location;
+import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parcing.ParsingHelpers;
 
 import java.util.List;
@@ -14,8 +15,8 @@ public class CreateDeliveryPackageCommand implements Command {
     public static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters.",
             EXPECTED_NUMBER_OF_PARAMETERS);
 
-    private int startLocationId;
-    private int endLocationId;
+    private City startLocation;
+    private City endLocation;
     private double weightKg;
     private int customerContactInfoId;
     private final ObjectRepository objectRepository;
@@ -31,16 +32,14 @@ public class CreateDeliveryPackageCommand implements Command {
         }
         parseParameters(parameters);
 
-        Location startLocation = objectRepository.getLocationById(startLocationId);
-        Location endLocation = objectRepository.getLocationById(endLocationId);
         CustomerContactInfo customerContactInfo = objectRepository.getCustomerContactById(customerContactInfoId);
         DeliveryPackage createdPackage=objectRepository.createDeliveryPackage(startLocation, endLocation, weightKg, customerContactInfo);
         return String.format("Created new delivery package with id: %d",createdPackage.getId());
     }
 
     private void parseParameters(List<String> parameters) {
-        startLocationId = ParsingHelpers.tryParseInteger(parameters.get(0), "start location id");
-        endLocationId = ParsingHelpers.tryParseInteger(parameters.get(1), "end location id");
+        startLocation = ParsingHelpers.tryParseEnum(parameters.get(0), City.class, "city name");
+        endLocation = ParsingHelpers.tryParseEnum(parameters.get(1), City.class, "city name");
         weightKg = ParsingHelpers.tryParseDouble(parameters.get(2), "weight (kg)");
         customerContactInfoId = ParsingHelpers.tryParseInteger(parameters.get(3), "customer contact info id");
     }

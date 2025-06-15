@@ -8,7 +8,7 @@ import java.util.List;
 
 public class AssignPackageCommand implements Command {
     private static final int EXPECTED_NUMBER_OF_PARAMETERS = 2;
-    private static final String MESSAGE_VEHICLE_ADDED_TO_ROUTE = "Vehicle %d added to route %d";
+    private static final String MESSAGE_PACKAGE_ADDED_TO_ROUTE = "Package %d added to route %d";
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
     private final ObjectRepository objectRepository;
@@ -26,7 +26,7 @@ public class AssignPackageCommand implements Command {
         }
         parseParameters(parameters);
         objectRepository.assignPackage(packageId, deliveryRouteId);
-        return String.format(MESSAGE_VEHICLE_ADDED_TO_ROUTE, packageId ,deliveryRouteId);
+        return String.format(MESSAGE_PACKAGE_ADDED_TO_ROUTE, packageId ,deliveryRouteId);
     }
     private void parseParameters(List<String> parameters){
         packageId = ParsingHelpers.tryParseInteger(parameters.get(0), "package id");
