@@ -11,35 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface ObjectRepository {
-    Location createLocation(City name, LocalDateTime arrivalTime, LocalDateTime departureTime);
+public interface ObjectRepository extends LocationService, RouteService, DeliverPackageService, VehicleService, CustomerService {
 
 
-    List<Location> getLocations();
-
-    List<DeliveryRoute> getRoutes();
-
-    DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities);
-
-    DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo);
-
-    void assignVehicleToRoute(int vehicleId, int deliveryRouteId);
-
-    boolean isVehicleAssigned(Truck vehicle);
-
-    Truck createVehicle(String truckName);
-
-    public void assignPackage(int packageId, int deliveryRouteId);
-
-    Location getLocationById(int startLocationId);
-
-    CustomerContactInfo getCustomerContactById(int customerContactInfoId);
-
-    ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination);
-
-    DeliveryRoute getRouteById(int routeId);
-
-    CustomerContactInfo createCustomerContactInfo(String fullName, String phoneNumber, String email, City address);
-
-    String getPackageState(int packageId, LocalDateTime time);
 }
