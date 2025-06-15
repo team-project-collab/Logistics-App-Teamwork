@@ -9,8 +9,7 @@ import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.constants.CityDistance;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class DeliveryRouteImpl implements DeliveryRoute{
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "A vehicle is already assigned to route %d.";
@@ -25,6 +24,7 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     private final ArrayList<DeliveryPackage> assignedPackages = new ArrayList<>();
 
     public DeliveryRouteImpl(int id, LocalDateTime startTime, ArrayList<Location> locations){
+        //TODO: Validate: Route cannot have the same city twice
         setLocations(locations);
         setStartTime(startTime);
         setId(id);
@@ -70,8 +70,8 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     }
 
     @Override
-    public DeliveryPackage assignedPackages() {
-        return null;
+    public ArrayList<DeliveryPackage> assignedPackages() {
+        return new ArrayList<>(assignedPackages);
     }
 
     @Override
@@ -115,6 +115,20 @@ public class DeliveryRouteImpl implements DeliveryRoute{
         if((deliveryPackage.getWeightKg() + getTotalLoad()) > assignedVehicle.getCapacity()){
             throw new LimitBreak("Exceeds capacity of truck");
         }
+        boolean withinStartEnd = false;
+        ArrayList<Location> packageLocations = new ArrayList<>();
+        for (int i = 0; i < locations.size(); i++) {
+            if (locations.get(i).getName() == deliveryPackage.getStartLocation()){
+                withinStartEnd = true;
+            }
+            if (withinStartEnd) {
+                packageLocations.add(locations.get(i));
+            }
+            if (locations.get(i).getName() == deliveryPackage.getEndLocation()){
+                break;
+            }
+        }
+        deliveryPackage.setLocations(packageLocations);
         assignedPackages.add(deliveryPackage);
     }
 
@@ -133,6 +147,34 @@ public class DeliveryRouteImpl implements DeliveryRoute{
             result += CityDistance.getDistance(locations.get(i).getName(), locations.get(i + 1).getName());
         }
         return result;
+    }
+
+    public HashMap <City, Double> getLoad(City startLocation, City endLocation){
+        boolean withinSubroute = false;
+        HashMap <City, Double> result = new HashMap<>();
+        for (int i = 0; i < locations.size(); i++) {
+            if (locations.get(i).getName().equals(startLocation)) {
+                withinSubroute = true;
+            }
+            if (locations.get(i).getName().equals(endLocation)) {
+                withinSubroute = false;
+            }
+            if (withinSubroute) {
+                double weightSum = 0;
+                for (int j = 0; j < assignedPackages.size(); j++) {
+                    if (assignedPackages.get(j).getLocations().contains(locations.get(i))) {
+                        weightSum += assignedPackages.get(j).getWeightKg();
+                    }
+                }
+                result.put(locations.get(i).getName(), weightSum);
+            }
+        }
+        return result;
+    }
+
+
+    public double getMaxLoad(City startLocation, City endLocation){
+        return Collections.max(getLoad(startLocation, endLocation).entrySet(), Map.Entry.comparingByValue()).getValue();
     }
 
 }

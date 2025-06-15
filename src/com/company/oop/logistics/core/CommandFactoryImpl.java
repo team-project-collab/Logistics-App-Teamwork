@@ -1,13 +1,12 @@
 package com.company.oop.logistics.core;
 
 import com.company.oop.logistics.commands.FindRoutesServicingStartAndEndCommand;
+import com.company.oop.logistics.commands.GetPackageStateCommand;
+import com.company.oop.logistics.commands.assign.AssignPackageCommand;
 import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
 import com.company.oop.logistics.commands.CommandType;
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.commands.creation.CreateDeliveryPackageCommand;
-import com.company.oop.logistics.commands.creation.CreateLocationCommand;
-import com.company.oop.logistics.commands.creation.CreateRouteCommand;
-import com.company.oop.logistics.commands.creation.CreateTruckCommand;
+import com.company.oop.logistics.commands.creation.*;
 import com.company.oop.logistics.commands.listing.ListLocationsCommand;
 import com.company.oop.logistics.commands.listing.ListRoutesCommand;
 import com.company.oop.logistics.core.contracts.CommandFactory;
@@ -39,6 +38,12 @@ public class CommandFactoryImpl implements CommandFactory {
                 return new CreateDeliveryPackageCommand(objectRepository);
             case FINDROUTESSERVICINGSTARTANDEND:
                 return new FindRoutesServicingStartAndEndCommand(objectRepository);
+            case ASSIGNPACKAGE:
+                return new AssignPackageCommand(objectRepository);
+            case CREATECUSTOMERCONTACTINFO:
+                return new CreateCustomerContactInfo(objectRepository);
+            case GETPACKAGESTATECOMMAND:
+                return new GetPackageStateCommand(objectRepository);
         }
         return null;
     }

@@ -21,7 +21,7 @@ public interface ObjectRepository {
 
     DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities);
 
-    DeliveryPackage createDeliveryPackage(Location startLocation, Location endLocation, double weightKg, CustomerContactInfo customerContactInfo);
+    DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo);
 
     void assignVehicleToRoute(int vehicleId, int deliveryRouteId);
 
@@ -36,4 +36,10 @@ public interface ObjectRepository {
     CustomerContactInfo getCustomerContactById(int customerContactInfoId);
 
     ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination);
+
+    DeliveryRoute getRouteById(int routeId);
+
+    CustomerContactInfo createCustomerContactInfo(String fullName, String phoneNumber, String email, City address);
+
+    String getPackageState(int packageId, LocalDateTime time);
 }
