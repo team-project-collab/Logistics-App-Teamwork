@@ -1,0 +1,62 @@
+package com.company.oop.logistics.core;
+
+import com.company.oop.logistics.core.contracts.DeliveryPackageService;
+import com.company.oop.logistics.core.contracts.RouteService;
+import com.company.oop.logistics.models.CustomerContactInfo;
+import com.company.oop.logistics.models.DeliveryPackageImpl;
+import com.company.oop.logistics.models.contracts.DeliveryPackage;
+import com.company.oop.logistics.models.contracts.DeliveryRoute;
+import com.company.oop.logistics.models.enums.City;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DeliveryPackageServiceImpl implements DeliveryPackageService {
+
+    public static final String ERROR_NO_PACKAGE_ID = "No package with this id.";
+    public static final String ERROR_PACKAGE_ALREADY_ASSIGNED = "Package is already assigned.";
+
+    private final RouteService routeService;
+    private int nextId;
+    List<DeliveryPackage> packages = new ArrayList<>();
+
+
+
+    public DeliveryPackageServiceImpl(RouteService routeService) {
+        this.routeService = routeService;
+        nextId = 0;
+    }
+
+    @Override
+    public DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo) {
+        DeliveryPackage p = new DeliveryPackageImpl(++nextId, startLocation, endLocation, weightKg, customerContactInfo);
+        this.packages.add(p);
+        return p;
+    }
+    public DeliveryPackage getDeliveryPackageById(int packageId) {
+        for (DeliveryPackage p :
+                this.packages) {
+            if (p.getId() == packageId) {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException(ERROR_NO_PACKAGE_ID);
+    }
+
+    @Override
+    public void assignPackage(int packageId, int deliveryRouteId) {
+        DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
+        DeliveryRoute route = routeService.getRouteById(deliveryRouteId);
+        if (deliveryPackage.isAssigned()) {
+            throw new IllegalStateException(ERROR_PACKAGE_ALREADY_ASSIGNED);
+        }
+        route.assignPackage(deliveryPackage);
+    }
+
+    @Override
+    public String getPackageState(int packageId, LocalDateTime time) {
+        DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
+        return deliveryPackage.getState(time);
+    }
+}

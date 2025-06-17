@@ -1,10 +1,10 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.core.contracts.CustomerService;
+import com.company.oop.logistics.core.contracts.DeliveryPackageService;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
-import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parcing.ParsingHelpers;
 
@@ -19,10 +19,13 @@ public class CreateDeliveryPackageCommand implements Command {
     private City endLocation;
     private double weightKg;
     private int customerContactInfoId;
-    private final ObjectRepository objectRepository;
+    private final DeliveryPackageService deliveryPackageService;
+    private final CustomerService customerService;
 
-    public CreateDeliveryPackageCommand(ObjectRepository objectRepository) {
-        this.objectRepository = objectRepository;
+    public CreateDeliveryPackageCommand(DeliveryPackageService deliveryPackageService, CustomerService customerService) {
+
+        this.deliveryPackageService= deliveryPackageService;
+        this.customerService = customerService;
     }
 
     @Override
@@ -32,8 +35,8 @@ public class CreateDeliveryPackageCommand implements Command {
         }
         parseParameters(parameters);
 
-        CustomerContactInfo customerContactInfo = objectRepository.getCustomerContactById(customerContactInfoId);
-        DeliveryPackage createdPackage=objectRepository.createDeliveryPackage(startLocation, endLocation, weightKg, customerContactInfo);
+        CustomerContactInfo customerContactInfo = customerService.getCustomerContactById(customerContactInfoId);
+        DeliveryPackage createdPackage=deliveryPackageService.createDeliveryPackage(startLocation, endLocation, weightKg, customerContactInfo);
         return String.format("Created new delivery package with id: %d",createdPackage.getId());
     }
 

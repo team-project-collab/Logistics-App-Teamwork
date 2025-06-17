@@ -1,7 +1,7 @@
 package com.company.oop.logistics.commands;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.core.contracts.DeliveryPackageService;
 import com.company.oop.logistics.utils.parcing.ParsingHelpers;
 
 import java.time.LocalDateTime;
@@ -13,12 +13,12 @@ public class GetPackageStateCommand implements Command {
             EXPECTED_NUMBER_OF_PARAMETERS);
     private static final String INVALID_CITY = "City %s not supported.";
 
-    private final ObjectRepository objectRepository;
+    private final DeliveryPackageService deliveryPackageService;
     private int packageId;
     private LocalDateTime time;
 
-    public GetPackageStateCommand(ObjectRepository objectRepository) {
-        this.objectRepository = objectRepository;
+    public GetPackageStateCommand(DeliveryPackageService deliveryPackageService) {
+        this.deliveryPackageService = deliveryPackageService;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class GetPackageStateCommand implements Command {
         }
         parseParameters(parameters);
 
-        return objectRepository.getPackageState(packageId, time);
+        return deliveryPackageService.getPackageState(packageId, time);
     }
     private void parseParameters(List<String> parameters){
         packageId = ParsingHelpers.tryParseInteger(parameters.get(0), "package id");

@@ -1,13 +1,11 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.core.contracts.CustomerService;
 import com.company.oop.logistics.models.CustomerContactInfo;
-import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parcing.ParsingHelpers;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class CreateCustomerContactInfo implements Command {
@@ -20,12 +18,12 @@ public class CreateCustomerContactInfo implements Command {
     private String phoneNumber;
     private String email;
     private City address;
-    private final ObjectRepository objectRepository;
+    private final CustomerService customerService;
 
 
 
-    public CreateCustomerContactInfo(ObjectRepository objectRepository) {
-        this.objectRepository = objectRepository;
+    public CreateCustomerContactInfo(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class CreateCustomerContactInfo implements Command {
 
         parseParameters(parameters);
 
-        CustomerContactInfo createdCustomer = objectRepository.createCustomerContactInfo(fullName, phoneNumber, email, address);
+        CustomerContactInfo createdCustomer =customerService.createCustomerContactInfo(fullName, phoneNumber, email, address);
         return String.format("Created new customer with id: %d", createdCustomer.getId());
     }
 

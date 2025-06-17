@@ -1,8 +1,7 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.ObjectRepository;
-import com.company.oop.logistics.models.LocationImpl;
+import com.company.oop.logistics.core.contracts.RouteService;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
@@ -21,10 +20,10 @@ public class CreateRouteCommand implements Command {
     private LocalDateTime currentTime;
     private ArrayList<City> cities;
     private ArrayList<Location> locations = new ArrayList<>();
-    private final ObjectRepository objectRepository;
+    private final RouteService routeService;
 
-    public CreateRouteCommand(ObjectRepository objectRepository) {
-        this.objectRepository = objectRepository;
+    public CreateRouteCommand(RouteService routeService) {
+        this.routeService = routeService;
     }
 
     @Override
@@ -34,7 +33,7 @@ public class CreateRouteCommand implements Command {
         }
 
         parseParameters(parameters);
-        DeliveryRoute createdRoute = objectRepository.createDeliveryRoute(startTime, cities);
+        DeliveryRoute createdRoute = routeService.createDeliveryRoute(startTime, cities);
         return String.format("Created new route with id: %d", createdRoute.getId());
     }
 

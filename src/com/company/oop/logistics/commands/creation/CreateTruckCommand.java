@@ -1,7 +1,7 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.core.contracts.VehicleService;
 import com.company.oop.logistics.models.contracts.Truck;
 import java.util.List;
 
@@ -11,11 +11,11 @@ public class CreateTruckCommand implements Command {
             EXPECTED_NUMBER_OF_PARAMETERS);
     private static final String INVALID_TRUCK = "Truck %s not supported.";
 
-    private final ObjectRepository objectRepository;
+    private final VehicleService vehicleService;
     private String truckName;
 
-    public CreateTruckCommand(ObjectRepository objectRepository) {
-        this.objectRepository = objectRepository;
+    public CreateTruckCommand( VehicleService vehicleService) {
+        this.vehicleService = vehicleService;
     }
     @Override
 
@@ -24,7 +24,7 @@ public class CreateTruckCommand implements Command {
             throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
         parseParameters(parameters);
-        Truck createdVehicle = objectRepository.createVehicle(truckName);
+        Truck createdVehicle = vehicleService.createVehicle(truckName);
         return String.format("Created truck %s with id %d\n", createdVehicle.getTruckName(), createdVehicle.getId());
     }
 
