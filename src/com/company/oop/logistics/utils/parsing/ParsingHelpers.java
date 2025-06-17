@@ -1,4 +1,4 @@
-package com.company.oop.logistics.utils.parcing;
+package com.company.oop.logistics.utils.parsing;
 
 import java.security.InvalidParameterException;
 import java.time.DateTimeException;

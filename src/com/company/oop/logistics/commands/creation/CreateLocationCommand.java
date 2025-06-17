@@ -4,7 +4,7 @@ import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.core.contracts.LocationService;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
-import com.company.oop.logistics.utils.parcing.ParsingHelpers;
+import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.time.LocalDateTime;
 import java.util.List;

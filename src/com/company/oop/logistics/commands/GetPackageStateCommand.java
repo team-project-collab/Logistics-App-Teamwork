@@ -2,7 +2,7 @@ package com.company.oop.logistics.commands;
 
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.core.contracts.DeliveryPackageService;
-import com.company.oop.logistics.utils.parcing.ParsingHelpers;
+import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.time.LocalDateTime;
 import java.util.List;

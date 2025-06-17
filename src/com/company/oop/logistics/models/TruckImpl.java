@@ -3,7 +3,7 @@ package com.company.oop.logistics.models;
 import com.company.oop.logistics.exceptions.custom.LimitBreak;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.TruckName;
-import com.company.oop.logistics.utils.parcing.ParsingHelpers;
+import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 public class TruckImpl extends Vehicle implements Truck {
     private int capacity;
