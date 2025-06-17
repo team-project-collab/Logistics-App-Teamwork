@@ -36,8 +36,11 @@ public class ParsingHelpers {
     }
 
     public static LocalDateTime tryParseLocalDateTime(String valueToParse, String parameterName){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
+        if (valueToParse.equalsIgnoreCase("now")){
+            return LocalDateTime.now().plusMinutes(1).withSecond(0).withNano(0);
+        }
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
             return LocalDateTime.parse(valueToParse, formatter);
         } catch (RuntimeException e) {
             throw new DateTimeException(String.format(INVALID_DATETIME_FIELD_MESSAGE, parameterName));
