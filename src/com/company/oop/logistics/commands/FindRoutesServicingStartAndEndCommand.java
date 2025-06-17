@@ -1,7 +1,7 @@
 package com.company.oop.logistics.commands;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.core.contracts.RouteService;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parcing.ParsingHelpers;
 
@@ -16,12 +16,12 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
             EXPECTED_NUMBER_OF_PARAMETERS);
     private static final String INVALID_CITY = "City %s not supported.";
 
-    private final ObjectRepository objectRepository;
+    private final RouteService routeService;
     private City origin;
     private City destination;
 
-    public FindRoutesServicingStartAndEndCommand(ObjectRepository objectRepository) {
-        this.objectRepository = objectRepository;
+    public FindRoutesServicingStartAndEndCommand(RouteService routeService) {
+        this.routeService = routeService;
     }
 
     @Override
@@ -30,13 +30,13 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
             throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
         parseParameters(parameters);
-        ArrayList<Integer> result = objectRepository.findRoutesServicingStartAndEnd(origin, destination);
+        ArrayList<Integer> result = routeService.findRoutesServicingStartAndEnd(origin, destination);
         if (result.isEmpty()){
             return String.format(MESSAGE_NO_ROUTES, origin, destination);
         }
         String returnString = "";
         for (int i = 0; i < result.size(); i++) {
-            returnString += String.format(MESSAGE_LIST_ROUTES, origin, destination, result.get(i), objectRepository.getRouteById(result.get(i)).getMaxLoad(origin, destination));
+            returnString += String.format(MESSAGE_LIST_ROUTES, origin, destination, result.get(i), routeService.getRouteById(result.get(i)).getMaxLoad(origin, destination));
         }
         return returnString;
     }

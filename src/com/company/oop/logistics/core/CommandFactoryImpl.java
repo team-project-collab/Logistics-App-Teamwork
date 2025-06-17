@@ -9,41 +9,53 @@ import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.commands.creation.*;
 import com.company.oop.logistics.commands.listing.ListLocationsCommand;
 import com.company.oop.logistics.commands.listing.ListRoutesCommand;
-import com.company.oop.logistics.core.contracts.CommandFactory;
-import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.utils.parcing.ParsingHelpers;
 
 public class CommandFactoryImpl implements CommandFactory {
 
     private static final String INVALID_COMMAND = "Invalid command name: %s!";
+    private final LocationService locationService;
+    private final RouteService routeService;
+    private final VehicleService vehicleService;
+    private final DeliveryPackageService deliveryPackageService;
+    private final CustomerService customerService;
+
+    public CommandFactoryImpl(LocationService locationService, RouteService routeService, VehicleService vehicleService, DeliveryPackageService deliveryPackageService, CustomerService customerService) {
+        this.locationService = locationService;
+        this.routeService = routeService;
+        this.vehicleService = vehicleService;
+        this.deliveryPackageService = deliveryPackageService;
+        this.customerService = customerService;
+    }
 
     @Override
-    public Command createCommandFromCommandName(String commandTypeValue, ObjectRepository objectRepository) {
+    public Command createCommandFromCommandName(String commandTypeValue) {
         CommandType commandType = ParsingHelpers.tryParseEnum(commandTypeValue, CommandType.class, String.format(INVALID_COMMAND, commandTypeValue));
 
         switch (commandType) {
             case CREATELOCATION:
-                return new CreateLocationCommand(objectRepository);
+                return new CreateLocationCommand(locationService);
             case LISTLOCATIONS:
-                return new ListLocationsCommand(objectRepository);
+                return new ListLocationsCommand(locationService);
             case CREATEROUTE:
-                return new CreateRouteCommand(objectRepository);
+                return new CreateRouteCommand(routeService);
             case LISTROUTES:
-                return new ListRoutesCommand(objectRepository);
+                return new ListRoutesCommand(routeService);
             case ASSIGNVEHICLETOROUTE:
-                return new AssignVehicleToRouteCommand(objectRepository);
+                return new AssignVehicleToRouteCommand(routeService);
             case CREATETRUCK:
-                return new CreateTruckCommand(objectRepository);
+                return new CreateTruckCommand(vehicleService);
             case CREATEDELIVERYPACKAGE:
-                return new CreateDeliveryPackageCommand(objectRepository);
+                return new CreateDeliveryPackageCommand(deliveryPackageService,customerService);
             case FINDROUTESSERVICINGSTARTANDEND:
-                return new FindRoutesServicingStartAndEndCommand(objectRepository);
+                return new FindRoutesServicingStartAndEndCommand(routeService);
             case ASSIGNPACKAGE:
-                return new AssignPackageCommand(objectRepository);
+                return new AssignPackageCommand(deliveryPackageService);
             case CREATECUSTOMERCONTACTINFO:
-                return new CreateCustomerContactInfo(objectRepository);
+                return new CreateCustomerContactInfo(customerService);
             case GETPACKAGESTATECOMMAND:
-                return new GetPackageStateCommand(objectRepository);
+                return new GetPackageStateCommand(deliveryPackageService);
         }
         return null;
     }

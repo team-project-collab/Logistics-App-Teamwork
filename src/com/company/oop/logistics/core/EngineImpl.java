@@ -1,9 +1,7 @@
 package com.company.oop.logistics.core;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.CommandFactory;
-import com.company.oop.logistics.core.contracts.Engine;
-import com.company.oop.logistics.core.contracts.ObjectRepository;
+import com.company.oop.logistics.core.contracts.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +13,16 @@ public class EngineImpl implements Engine {
     private static final String EMPTY_COMMAND_ERROR = "Command cannot be empty.";
 
     private final CommandFactory commandFactory;
-    private final ObjectRepository objectRepository;
+
 
     public EngineImpl() {
-        this.commandFactory = new CommandFactoryImpl();
-        this.objectRepository = new ObjectRepositoryImpl();
+        LocationService locationService = new LocationServiceImpl();
+        VehicleService vehicleService = new VehicleServiceImpl();
+        RouteService routeService = new RouteServiceImpl(vehicleService,locationService);
+        DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(routeService);
+        CustomerService customerService = new CustomerServiceImpl();
+        this.commandFactory = new CommandFactoryImpl(locationService,routeService,vehicleService,deliveryPackageService,customerService);
+
     }
 
 
@@ -48,7 +51,7 @@ public class EngineImpl implements Engine {
         String commandName = extractCommandName(inputLine);
         Command command;
         List<String> parameters = extractCommandParameters(inputLine);
-        command = commandFactory.createCommandFromCommandName(commandName, objectRepository);
+        command = commandFactory.createCommandFromCommandName(commandName);
         String executionResult = command.execute(parameters);
         System.out.println(executionResult);
     }

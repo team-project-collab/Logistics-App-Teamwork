@@ -6,10 +6,12 @@ import com.company.oop.logistics.models.enums.City;
 
 import java.time.LocalDateTime;
 
-public interface DeliverPackageService {
+public interface DeliveryPackageService {
     DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo);
 
     void assignPackage(int packageId, int deliveryRouteId);
 
     String getPackageState(int packageId, LocalDateTime time);
+
+    DeliveryPackage getDeliveryPackageById(int packageId);
 }
