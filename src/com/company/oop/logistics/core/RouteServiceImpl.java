@@ -13,6 +13,7 @@ import com.company.oop.logistics.utils.constants.CityDistance;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RouteServiceImpl implements RouteService {
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route";
@@ -57,12 +58,8 @@ public class RouteServiceImpl implements RouteService {
 
 
     public boolean isVehicleAssigned(Truck vehicle) {
-        for (DeliveryRoute route : routes) {
-            if (vehicle.equals(route.getAssignedVehicle())) {
-                return true;
-            }
-        }
-        return false;
+        return routes.stream()
+                .anyMatch(r -> vehicle.equals(r.getAssignedVehicle()));
     }
 
     @Override
@@ -78,10 +75,11 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination) {
-        ArrayList<Integer> result = new ArrayList<>();
         if (origin.equals(destination)) {
             throw new IllegalArgumentException(ERROR_ORIGIN_EQUALS_DESTINATION);
         }
+        ArrayList<Integer> result = new ArrayList<>();
+
         for (DeliveryRoute route : routes) {
             ArrayList<Location> routeLocations = route.getLocations();
             for (int i = 0; i < routeLocations.size() - 1; i++) {
@@ -99,11 +97,9 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public DeliveryRoute getRouteById(int deliveryRouteId) {
-        for (DeliveryRoute route : routes) {
-            if (route.getId() == deliveryRouteId) {
-                return route;
-            }
-        }
-        throw new IllegalArgumentException(String.format(ERROR_NO_ROUTE_ID, deliveryRouteId));
+        return routes.stream()
+                .filter(r -> r.getId() == deliveryRouteId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_NO_ROUTE_ID, deliveryRouteId)));
     }
 }
