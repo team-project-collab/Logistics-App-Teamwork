@@ -2,7 +2,7 @@ package com.company.oop.logistics.commands.assign;
 
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.core.contracts.RouteService;
-import com.company.oop.logistics.utils.parcing.ParsingHelpers;
+import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.util.List;
 

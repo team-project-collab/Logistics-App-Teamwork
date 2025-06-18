@@ -10,7 +10,7 @@ import com.company.oop.logistics.commands.creation.*;
 import com.company.oop.logistics.commands.listing.ListLocationsCommand;
 import com.company.oop.logistics.commands.listing.ListRoutesCommand;
 import com.company.oop.logistics.core.contracts.*;
-import com.company.oop.logistics.utils.parcing.ParsingHelpers;
+import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 public class CommandFactoryImpl implements CommandFactory {
 

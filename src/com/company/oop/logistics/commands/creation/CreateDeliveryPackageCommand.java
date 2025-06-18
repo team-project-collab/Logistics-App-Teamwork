@@ -6,7 +6,7 @@ import com.company.oop.logistics.core.contracts.DeliveryPackageService;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.enums.City;
-import com.company.oop.logistics.utils.parcing.ParsingHelpers;
+import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.util.List;
 
