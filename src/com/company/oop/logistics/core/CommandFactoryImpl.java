@@ -2,6 +2,7 @@ package com.company.oop.logistics.core;
 
 import com.company.oop.logistics.commands.FindRoutesServicingStartAndEndCommand;
 import com.company.oop.logistics.commands.GetPackageStateCommand;
+import com.company.oop.logistics.commands.GetUnassignedPackagesCommand;
 import com.company.oop.logistics.commands.assign.AssignPackageCommand;
 import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
 import com.company.oop.logistics.commands.CommandType;
@@ -54,8 +55,10 @@ public class CommandFactoryImpl implements CommandFactory {
                 return new AssignPackageCommand(deliveryPackageService);
             case CREATECUSTOMERCONTACTINFO:
                 return new CreateCustomerContactInfo(customerService);
-            case GETPACKAGESTATECOMMAND:
+            case GETPACKAGESTATE:
                 return new GetPackageStateCommand(deliveryPackageService);
+            case GETUNASSIGNEDPACKAGES:
+                return new GetUnassignedPackagesCommand(deliveryPackageService);
         }
         return null;
     }

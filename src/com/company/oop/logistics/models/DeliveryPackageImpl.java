@@ -3,6 +3,7 @@ package com.company.oop.logistics.models;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.models.enums.PackageStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -83,29 +84,67 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         return this.id;
     }
 
-    public String getState(LocalDateTime time){
-        boolean packageSent = false;
-        boolean packageInTransit = false;
-        City travelingTo = null;
-        for (int i = 0; i < locations.size(); i++) {
-            if (locations.get(i).getArrivalTime().isAfter(time) && !packageSent){
-                break;
-            }
-            if (locations.get(i).getArrivalTime().isBefore(time)){
-                packageSent = true;
-            }
-            if (locations.get(i).getArrivalTime().isAfter(time) && packageSent){
-                packageInTransit = true;
-                travelingTo = locations.get(i).getName();
-                break;
+    public PackageStatus getPackageStatus(LocalDateTime time) {
+        if (locations == null || locations.isEmpty()) {
+            return PackageStatus.NOT_ASSIGNED;
+        }
+        if (time.isBefore(locations.get(0).getDepartureTime())) {
+            return PackageStatus.SCHEDULED;
+        }
+        for (Location location : locations) {
+            if (time.isBefore(location.getDepartureTime())) {
+                if (time.isAfter(location.getArrivalTime())) {
+                    return PackageStatus.STATIONARY;
+                } else {
+                    return PackageStatus.IN_TRANSIT;
+                }
             }
         }
-        if (packageInTransit){
-            return String.format("Package is in transit. Currently traveling to: %s", travelingTo);
+        Location last = locations.get(locations.size() - 1);
+        if (time.isAfter(last.getArrivalTime())) {
+            return PackageStatus.DELIVERED;
         }
-        if (packageSent && !packageInTransit){
-            return String.format("Package is delivered to %s", locations.get(locations.size() - 1).getName());
+        throw new RuntimeException("Error getting package status");
+    }
+
+    public String getPackageStatusDescription(LocalDateTime time) {
+        PackageStatus state = getPackageStatus(time);
+        switch (state) {
+            case NOT_ASSIGNED:
+                return "Package is not yet assigned";
+            case SCHEDULED:
+                return "Package is scheduled but has not yet entered transit";
+            case STATIONARY:
+                return String.format("Package is currently stationary in %s", getCurrentLocation(time).getName());
+            case IN_TRANSIT:
+                return String.format("Package is in transit. Currently traveling to: %s", getNextLocation(time).getName());
+            case DELIVERED:
+                return String.format("Package is delivered to %s", getLastLocation().getName());
+            default:
+                return "Unknown state";
         }
-        return "Package is not yet assigned";
+    }
+
+    private Location getCurrentLocation(LocalDateTime time){
+        return locations.stream()
+                .filter(l -> l.getArrivalTime().isBefore(time) && l.getDepartureTime().isAfter(time))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Illegal method call for package that is not stationary"));
+    }
+
+    private Location getNextLocation(LocalDateTime time){
+        return locations.stream()
+                .filter(l -> l.getDepartureTime().isAfter(time))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Illegal method call for package that is not in transit"));
+    }
+
+    private Location getLastLocation(){
+        return locations.get(locations.size() - 1);
+    }
+
+    public String toString(){
+        return String.format("Package id: %d; Origin: %s; Destination: %s;", id, startLocation,
+                endLocation);
     }
 }
