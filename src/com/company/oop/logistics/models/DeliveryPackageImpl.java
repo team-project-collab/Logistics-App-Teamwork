@@ -9,6 +9,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class DeliveryPackageImpl implements DeliveryPackage {
+    public static final String ERROR_BAD_CALL_STATIONARY = "Illegal method call for package that is not stationary";
+    public static final String ERROR_BAD_CALL_IN_TRANSIT = "Illegal method call for package that is not in transit";
+    public static final String PACKAGE_TO_STRING = "Package id: %d; Origin: %s; Destination: %s;";
+    public static final String ERROR_GETTING_PACKAGE_STATUS = "Error getting package status";
+    public static final String MESSAGE_PACKAGE_STATUS_NOT_ASSIGNED = "Package is not yet assigned";
+    public static final String MESSAGE_PACKAGE_STATUS_SCHEDULED = "Package is scheduled but has not yet entered transit";
+    public static final String MESSAGE_PACKAGE_STATUS_STATIONARY = "Package is currently stationary in %s";
+    public static final String MESSAGE_PACKAGE_STATUS_IN_TRANSIT = "Package is in transit. Currently traveling to: %s";
+    public static final String MESSAGE_PACKAGE_STAUTS_DELIVERED = "Package is delivered to %s";
     private int id;
     private City startLocation;
     private City endLocation;
@@ -104,24 +113,24 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         if (time.isAfter(last.getArrivalTime())) {
             return PackageStatus.DELIVERED;
         }
-        throw new RuntimeException("Error getting package status");
+        throw new RuntimeException(ERROR_GETTING_PACKAGE_STATUS);
     }
 
     public String getPackageStatusDescription(LocalDateTime time) {
         PackageStatus state = getPackageStatus(time);
         switch (state) {
             case NOT_ASSIGNED:
-                return "Package is not yet assigned";
+                return MESSAGE_PACKAGE_STATUS_NOT_ASSIGNED;
             case SCHEDULED:
-                return "Package is scheduled but has not yet entered transit";
+                return MESSAGE_PACKAGE_STATUS_SCHEDULED;
             case STATIONARY:
-                return String.format("Package is currently stationary in %s", getCurrentLocation(time).getName());
+                return String.format(MESSAGE_PACKAGE_STATUS_STATIONARY, getCurrentLocation(time).getName());
             case IN_TRANSIT:
-                return String.format("Package is in transit. Currently traveling to: %s", getNextLocation(time).getName());
+                return String.format(MESSAGE_PACKAGE_STATUS_IN_TRANSIT, getNextLocation(time).getName());
             case DELIVERED:
-                return String.format("Package is delivered to %s", getLastLocation().getName());
+                return String.format(MESSAGE_PACKAGE_STAUTS_DELIVERED, getLastLocation().getName());
             default:
-                return "Unknown state";
+                return null;
         }
     }
 
@@ -129,14 +138,14 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         return locations.stream()
                 .filter(l -> l.getArrivalTime().isBefore(time) && l.getDepartureTime().isAfter(time))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Illegal method call for package that is not stationary"));
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_BAD_CALL_STATIONARY));
     }
 
     private Location getNextLocation(LocalDateTime time){
         return locations.stream()
                 .filter(l -> l.getDepartureTime().isAfter(time))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Illegal method call for package that is not in transit"));
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_BAD_CALL_IN_TRANSIT));
     }
 
     private Location getLastLocation(){
@@ -144,7 +153,6 @@ public class DeliveryPackageImpl implements DeliveryPackage {
     }
 
     public String toString(){
-        return String.format("Package id: %d; Origin: %s; Destination: %s;", id, startLocation,
-                endLocation);
+        return String.format(PACKAGE_TO_STRING, id, startLocation, endLocation);
     }
 }

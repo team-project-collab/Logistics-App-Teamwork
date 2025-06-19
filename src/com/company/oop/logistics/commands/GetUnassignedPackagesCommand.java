@@ -13,6 +13,8 @@ public class GetUnassignedPackagesCommand implements Command {
     private static final int EXPECTED_NUMBER_OF_PARAMETERS = 1;
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
+    public static final String MESSAGE_NO_PACKAGES = "There are no unassigned packages.";
+    public static final String MESSAGE_LIST_PACKAGES = "Here is the list of unassigned packages:";
 
     private final DeliveryPackageService deliveryPackageService;
     private LocalDateTime time;
@@ -30,7 +32,10 @@ public class GetUnassignedPackagesCommand implements Command {
         StringBuilder result = new StringBuilder();
         ArrayList<DeliveryPackage> unassignedPackages = deliveryPackageService.getUnassignedPackages(time);
         if (unassignedPackages.isEmpty()){
-            result.append("There are no unassigned packages.");
+            result.append(MESSAGE_NO_PACKAGES);
+        }else{
+            result.append(MESSAGE_LIST_PACKAGES);
+            result.append(System.lineSeparator());
         }
         for (DeliveryPackage deliveryPackage: unassignedPackages){
             result.append(deliveryPackage.toString()).append(System.lineSeparator());
