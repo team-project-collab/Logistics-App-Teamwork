@@ -7,10 +7,12 @@ import com.company.oop.logistics.models.DeliveryPackageImpl;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.models.enums.PackageStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DeliveryPackageServiceImpl implements DeliveryPackageService {
 
@@ -57,6 +59,12 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
     @Override
     public String getPackageState(int packageId, LocalDateTime time) {
         DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
-        return deliveryPackage.getState(time);
+        return deliveryPackage.getPackageStatusDescription(time);
+    }
+
+    public ArrayList<DeliveryPackage> getUnassignedPackages(LocalDateTime time){
+        return packages.stream()
+                .filter(p -> p.getPackageStatus(time).equals(PackageStatus.NOT_ASSIGNED))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }

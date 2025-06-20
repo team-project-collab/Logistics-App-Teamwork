@@ -26,7 +26,7 @@ public class ListRoutesCommand implements Command {
                 output.append("  No assigned truck yet\n");
             }
             for (Location location: route.getLocations()) {
-                output.append(String.format("  === Destination: %s at %s\n", location.getName(), location.getArrivalTime()));
+                output.append(String.format("  === Destination: %s at %s to %s\n", location.getName(), location.getArrivalTime(), location.getDepartureTime()));
             }
         }
         return output.toString();

@@ -5,6 +5,7 @@ import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.enums.City;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public interface DeliveryPackageService {
     DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo);
@@ -14,4 +15,6 @@ public interface DeliveryPackageService {
     String getPackageState(int packageId, LocalDateTime time);
 
     DeliveryPackage getDeliveryPackageById(int packageId);
+
+    ArrayList<DeliveryPackage> getUnassignedPackages(LocalDateTime time);
 }

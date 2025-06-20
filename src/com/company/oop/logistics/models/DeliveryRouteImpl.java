@@ -16,6 +16,7 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     public static final String ERROR_START_TIME_NULL = "Start time cannot be null";
     public static final String ERROR_START_TIME_IN_THE_PAST = "Start time cannot be in the past.";
     public static final String ERROR_NO_VEHICLE = "Route %d has no vehicle yet.";
+    public static final String ERROR_CITIES_NOT_UNIQUE = "One route can visit the same city only once.";
     private int id;
     private LocalDateTime startTime;
     private ArrayList<Location> locations = new ArrayList<>();
@@ -24,10 +25,18 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     private final ArrayList<DeliveryPackage> assignedPackages = new ArrayList<>();
 
     public DeliveryRouteImpl(int id, LocalDateTime startTime, ArrayList<Location> locations){
-        //TODO: Validate: Route cannot have the same city twice
+        if (!hasUniqueCities(locations)){
+            throw new IllegalArgumentException(ERROR_CITIES_NOT_UNIQUE);
+        }
         setLocations(locations);
         setStartTime(startTime);
         setId(id);
+    }
+
+    private boolean hasUniqueCities(ArrayList<Location> locations){
+        return locations.size() == locations.stream()
+                .map(Location::getName)
+                .distinct().count();
     }
 
 
@@ -117,14 +126,14 @@ public class DeliveryRouteImpl implements DeliveryRoute{
         }
         boolean withinStartEnd = false;
         ArrayList<Location> packageLocations = new ArrayList<>();
-        for (int i = 0; i < locations.size(); i++) {
-            if (locations.get(i).getName() == deliveryPackage.getStartLocation()){
+        for (Location location : locations) {
+            if (location.getName() == deliveryPackage.getStartLocation()) {
                 withinStartEnd = true;
             }
             if (withinStartEnd) {
-                packageLocations.add(locations.get(i));
+                packageLocations.add(location);
             }
-            if (locations.get(i).getName() == deliveryPackage.getEndLocation()){
+            if (location.getName() == deliveryPackage.getEndLocation()) {
                 break;
             }
         }
@@ -152,21 +161,21 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     public HashMap <City, Double> getLoad(City startLocation, City endLocation){
         boolean withinSubroute = false;
         HashMap <City, Double> result = new HashMap<>();
-        for (int i = 0; i < locations.size(); i++) {
-            if (locations.get(i).getName().equals(startLocation)) {
+        for (Location location : locations) {
+            if (location.getName().equals(startLocation)) {
                 withinSubroute = true;
             }
-            if (locations.get(i).getName().equals(endLocation)) {
+            if (location.getName().equals(endLocation)) {
                 withinSubroute = false;
             }
             if (withinSubroute) {
                 double weightSum = 0;
-                for (int j = 0; j < assignedPackages.size(); j++) {
-                    if (assignedPackages.get(j).getLocations().contains(locations.get(i))) {
-                        weightSum += assignedPackages.get(j).getWeightKg();
+                for (DeliveryPackage assignedPackage : assignedPackages) {
+                    if (assignedPackage.getLocations().contains(location)) {
+                        weightSum += assignedPackage.getWeightKg();
                     }
                 }
-                result.put(locations.get(i).getName(), weightSum);
+                result.put(location.getName(), weightSum);
             }
         }
         return result;
@@ -176,5 +185,7 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     public double getMaxLoad(City startLocation, City endLocation){
         return Collections.max(getLoad(startLocation, endLocation).entrySet(), Map.Entry.comparingByValue()).getValue();
     }
+
+
 
 }
