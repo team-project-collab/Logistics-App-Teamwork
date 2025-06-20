@@ -2,7 +2,8 @@
 .idea/
 *.iml
 *.iws
-out/
+out
+
 
 # Gradle
 .gradle/
