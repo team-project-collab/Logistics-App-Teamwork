@@ -28,11 +28,9 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location getLocationById(int locationId) {
-        for (Location location : locations) {
-            if (location.getId() == locationId) {
-                return location;
-            }
-        }
-        throw new IllegalArgumentException(ERROR_NO_LOCATION_ID);
+        return locations.stream()
+                .filter(l -> l.getId() == locationId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_NO_LOCATION_ID));
     }
 }

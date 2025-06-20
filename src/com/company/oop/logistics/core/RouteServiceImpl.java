@@ -14,6 +14,7 @@ import com.company.oop.logistics.utils.misc.ComparingHelpers;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class RouteServiceImpl implements RouteService {
@@ -62,6 +63,7 @@ public class RouteServiceImpl implements RouteService {
         return result;
     }
 
+
     @Override
     public boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime, LocalDateTime endTime) {
         boolean result = false;
@@ -91,10 +93,11 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination) {
-        ArrayList<Integer> result = new ArrayList<>();
         if (origin.equals(destination)) {
             throw new IllegalArgumentException(ERROR_ORIGIN_EQUALS_DESTINATION);
         }
+        ArrayList<Integer> result = new ArrayList<>();
+
         for (DeliveryRoute route : routes) {
             ArrayList<Location> routeLocations = route.getLocations();
             for (int i = 0; i < routeLocations.size() - 1; i++) {
@@ -112,11 +115,9 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public DeliveryRoute getRouteById(int deliveryRouteId) {
-        for (DeliveryRoute route : routes) {
-            if (route.getId() == deliveryRouteId) {
-                return route;
-            }
-        }
-        throw new IllegalArgumentException(String.format(ERROR_NO_ROUTE_ID, deliveryRouteId));
+        return routes.stream()
+                .filter(r -> r.getId() == deliveryRouteId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_NO_ROUTE_ID, deliveryRouteId)));
     }
 }
