@@ -21,11 +21,9 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     public Truck getVehicleById(int vehicleId) {
-        for (Truck vehicle : vehicles) {
-            if (vehicle.getId() == vehicleId) {
-                return vehicle;
-            }
-        }
-        throw new IllegalArgumentException(String.format(ERROR_NO_VEHICLE_ID, vehicleId));
+        return vehicles.stream()
+                .filter(v -> v.getId() == vehicleId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_NO_VEHICLE_ID, vehicleId)));
     }
 }
