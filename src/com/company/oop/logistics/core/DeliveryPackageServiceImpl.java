@@ -1,5 +1,6 @@
 package com.company.oop.logistics.core;
 
+import com.company.oop.logistics.commands.assign.BulkAssignPackagesCommand;
 import com.company.oop.logistics.core.contracts.DeliveryPackageService;
 import com.company.oop.logistics.core.contracts.RouteService;
 import com.company.oop.logistics.models.CustomerContactInfo;
@@ -12,6 +13,8 @@ import com.company.oop.logistics.models.enums.PackageStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class DeliveryPackageServiceImpl implements DeliveryPackageService {
@@ -66,5 +69,18 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
         return packages.stream()
                 .filter(p -> p.getPackageStatus(time).equals(PackageStatus.NOT_ASSIGNED))
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public void bulkAssignPackages(int deliveryRouteId, LocalDateTime time) {
+        ArrayList<DeliveryPackage> unassignedPackages = getUnassignedPackages(time);
+        Logger log = Logger.getLogger(DeliveryPackageServiceImpl.class.getName());
+        for (DeliveryPackage deliveryPackage : unassignedPackages) {
+            try {
+                assignPackage(deliveryPackage.getId(), deliveryRouteId);
+            } catch (Exception e) {
+                log.log(Level.WARNING, "Failed to assign package with ID: " + deliveryPackage.getId(), e);
+            }
+        }
     }
 }
