@@ -6,6 +6,7 @@ import com.company.oop.logistics.commands.GetUnassignedPackagesCommand;
 import com.company.oop.logistics.commands.assign.AssignPackageCommand;
 import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
 import com.company.oop.logistics.commands.CommandType;
+import com.company.oop.logistics.commands.assign.BulkAssignPackagesCommand;
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.commands.creation.*;
 import com.company.oop.logistics.commands.listing.ListLocationsCommand;
@@ -59,6 +60,8 @@ public class CommandFactoryImpl implements CommandFactory {
                 return new GetPackageStateCommand(deliveryPackageService);
             case GETUNASSIGNEDPACKAGES:
                 return new GetUnassignedPackagesCommand(deliveryPackageService);
+            case BULKASSIGNPACKAGES:
+                return new BulkAssignPackagesCommand(deliveryPackageService);
         }
         return null;
     }
