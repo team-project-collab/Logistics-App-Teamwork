@@ -11,12 +11,17 @@ import java.util.List;
 
 public class LocationServiceImpl implements LocationService {
     public static final String ERROR_NO_LOCATION_ID = "No location with this id.";
-    List<Location> locations = new ArrayList<>();
+    private final List<Location> locations = new ArrayList<>();
+    private int nextId;
 
+    public LocationServiceImpl(int startId){
+        nextId = startId;
+    }
 
     @Override
     public Location createLocation(City name, LocalDateTime arrivalTime, LocalDateTime departureTime) {
-        Location createdLocation = new LocationImpl(name, arrivalTime, departureTime);
+        Location createdLocation = new LocationImpl(nextId, name, arrivalTime, departureTime);
+        nextId ++;
         locations.add(createdLocation);
         return createdLocation;
     }

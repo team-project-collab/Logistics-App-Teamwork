@@ -14,7 +14,6 @@ import com.company.oop.logistics.utils.misc.ComparingHelpers;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class RouteServiceImpl implements RouteService {
@@ -27,10 +26,10 @@ public class RouteServiceImpl implements RouteService {
     private final VehicleService vehicleService;
     private final LocationService locationService;
     private int nextId;
-    List<DeliveryRoute> routes = new ArrayList<>();
+    private final List<DeliveryRoute> routes = new ArrayList<>();
 
-    public RouteServiceImpl(VehicleService vehicleService, LocationService locationService) {
-        nextId = 0;
+    public RouteServiceImpl(int startId, VehicleService vehicleService, LocationService locationService) {
+        nextId = startId;
         this.vehicleService = vehicleService;
         this.locationService = locationService;
     }
@@ -42,7 +41,8 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities) {
-        DeliveryRoute route = new DeliveryRouteImpl(++nextId, startTime, generateRouteLocations(startTime, cities));
+        DeliveryRoute route = new DeliveryRouteImpl(nextId, startTime, generateRouteLocations(startTime, cities));
+        nextId++;
         this.routes.add(route);
         return route;
     }

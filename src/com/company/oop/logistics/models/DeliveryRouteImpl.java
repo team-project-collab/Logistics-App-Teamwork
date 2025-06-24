@@ -17,6 +17,7 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     public static final String ERROR_START_TIME_IN_THE_PAST = "Start time cannot be in the past.";
     public static final String ERROR_NO_VEHICLE = "Route %d has no vehicle yet.";
     public static final String ERROR_CITIES_NOT_UNIQUE = "One route can visit the same city only once.";
+    public static final String ERROR_ROUTE_STARTED_BEFORE_PACKAGE_ASSIGN = "Cannot assign the package, as the route already left the starting location";
     private int id;
     private LocalDateTime startTime;
     private ArrayList<Location> locations = new ArrayList<>();
@@ -128,6 +129,9 @@ public class DeliveryRouteImpl implements DeliveryRoute{
                 getMaxLoad(deliveryPackage.getStartLocation(), deliveryPackage.getEndLocation()))
                 > assignedVehicle.getCapacity()){
             throw new LimitBreak("Exceeds capacity of truck");
+        }
+        if (locationsToAdd.get(0).getDepartureTime().isBefore(LocalDateTime.now())){
+            throw new IllegalStateException(ERROR_ROUTE_STARTED_BEFORE_PACKAGE_ASSIGN);
         }
         deliveryPackage.setLocations(locationsToAdd);
         assignedPackages.add(deliveryPackage);
