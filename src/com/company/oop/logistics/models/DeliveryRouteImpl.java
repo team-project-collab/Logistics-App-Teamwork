@@ -121,23 +121,15 @@ public class DeliveryRouteImpl implements DeliveryRoute{
         if (this.assignedVehicle == null){
             throw new IllegalStateException(String.format(ERROR_NO_VEHICLE, id));
         }
-        if((deliveryPackage.getWeightKg() + getTotalLoad()) > assignedVehicle.getCapacity()){
+        ArrayList<Location> locationsToAdd =
+                getLocations(deliveryPackage.getStartLocation(), deliveryPackage.getEndLocation());
+
+        if((deliveryPackage.getWeightKg() +
+                getMaxLoad(deliveryPackage.getStartLocation(), deliveryPackage.getEndLocation()))
+                > assignedVehicle.getCapacity()){
             throw new LimitBreak("Exceeds capacity of truck");
         }
-        boolean withinStartEnd = false;
-        ArrayList<Location> packageLocations = new ArrayList<>();
-        for (Location location : locations) {
-            if (location.getName() == deliveryPackage.getStartLocation()) {
-                withinStartEnd = true;
-            }
-            if (withinStartEnd) {
-                packageLocations.add(location);
-            }
-            if (location.getName() == deliveryPackage.getEndLocation()) {
-                break;
-            }
-        }
-        deliveryPackage.setLocations(packageLocations);
+        deliveryPackage.setLocations(locationsToAdd);
         assignedPackages.add(deliveryPackage);
     }
 
@@ -171,7 +163,9 @@ public class DeliveryRouteImpl implements DeliveryRoute{
             if (withinSubroute) {
                 double weightSum = 0;
                 for (DeliveryPackage assignedPackage : assignedPackages) {
-                    if (assignedPackage.getLocations().contains(location)) {
+                    ArrayList<Location> packageLocations = assignedPackage.getLocations();
+                    packageLocations = new ArrayList<>(packageLocations.subList(0, packageLocations.size() - 1));
+                    if (packageLocations.contains(location)) {
                         weightSum += assignedPackage.getWeightKg();
                     }
                 }
@@ -181,6 +175,22 @@ public class DeliveryRouteImpl implements DeliveryRoute{
         return result;
     }
 
+    private ArrayList<Location> getLocations(City startLocation, City endLocation){
+        boolean withinStartEnd = false;
+        ArrayList<Location> packageLocations = new ArrayList<>();
+        for (Location location : locations) {
+            if (location.getName() == startLocation) {
+                withinStartEnd = true;
+            }
+            if (withinStartEnd) {
+                packageLocations.add(location);
+            }
+            if (withinStartEnd && location.getName() == endLocation) {
+                return packageLocations;
+            }
+        }
+        throw new IllegalArgumentException("Route does not service this package");
+    }
 
     public double getMaxLoad(City startLocation, City endLocation){
         return Collections.max(getLoad(startLocation, endLocation).entrySet(), Map.Entry.comparingByValue()).getValue();
