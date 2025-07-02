@@ -2,10 +2,12 @@ package com.company.oop.logistics.core;
 
 import com.company.oop.logistics.core.contracts.DeliveryPackageService;
 import com.company.oop.logistics.core.contracts.RouteService;
+import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.DeliveryPackageImpl;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
+import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.models.enums.PackageStatus;
 
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 
 public class DeliveryPackageServiceImpl implements DeliveryPackageService {
 
+    private final String storagePath = "data/deliveryPackages.xml";
+    private final PersistenceManager persistenceManager = new PersistenceManager();
     public static final String ERROR_NO_PACKAGE_ID = "No package with this id.";
     public static final String ERROR_PACKAGE_ALREADY_ASSIGNED = "Package is already assigned.";
 
@@ -27,16 +31,30 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
 
 
 
-    public DeliveryPackageServiceImpl(int startId, RouteService routeService) {
+    public DeliveryPackageServiceImpl(RouteService routeService) {
         this.routeService = routeService;
-        nextId = startId;
+        load();
     }
+
+    public void save() {
+        persistenceManager.saveData(packages, storagePath);
+    }
+
+    public void load() {
+        List<DeliveryPackage> loaded = persistenceManager.loadData(storagePath);
+        if (loaded != null) {
+            this.packages = loaded;
+        }
+        nextId = packages.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
+    }
+
 
     @Override
     public DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo) {
         DeliveryPackage p = new DeliveryPackageImpl(nextId, startLocation, endLocation, weightKg, customerContactInfo);
         nextId++;
         this.packages.add(p);
+        save();
         return p;
     }
     public DeliveryPackage getDeliveryPackageById(int packageId) {
@@ -57,6 +75,8 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
             throw new IllegalStateException(ERROR_PACKAGE_ALREADY_ASSIGNED);
         }
         route.assignPackage(deliveryPackage);
+        save();
+        routeService.save();
     }
 
     @Override
