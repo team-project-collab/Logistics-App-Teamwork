@@ -11,22 +11,20 @@ public class LocationImpl implements Location {
     public static final String ATTRIBUTE_NAME_DEPARTURE_TIME = "departure time";
     public static final String ERROR_DEPARTURE_TIME_BEFORE_ARRIVAL_TIME = "Departure time cannot be before arrival time";
 
-    private static int nextId = 1;
     private int id;
     private City name;
     private LocalDateTime arrivalTime;
     private LocalDateTime departureTime;
 
-    public LocationImpl(City name, LocalDateTime arrivalTime, LocalDateTime departureTime) {
-        this.id = nextId++;
+    public LocationImpl(int id, City name, LocalDateTime arrivalTime, LocalDateTime departureTime) {
+        setId(id);
         setName(name);
         setArrivalTime(arrivalTime);
         setDepartureTime(departureTime);
     }
 
-    public LocationImpl(City name, LocalDateTime arrivalTime) {
-        setName(name);
-        setArrivalTime(arrivalTime);
+    private void setId(int id){
+        this.id = id;
     }
 
     private void setName(City name) {
