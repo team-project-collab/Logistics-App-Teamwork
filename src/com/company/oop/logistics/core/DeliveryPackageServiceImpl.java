@@ -162,6 +162,7 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
                 .orElseThrow(() -> new IllegalArgumentException(ERROR_BAD_CALL_IN_TRANSIT));
     }
 
+
     private Location getLastLocation(int packageId){
         DeliveryPackage currentPackage = getDeliveryPackageById(packageId);
         List<Location> locations = currentPackage.getLocations().stream()

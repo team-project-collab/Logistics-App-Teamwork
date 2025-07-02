@@ -17,4 +17,5 @@ public interface DeliveryPackageService {
     DeliveryPackage getDeliveryPackageById(int packageId);
 
     List<DeliveryPackage> getUnassignedPackages(LocalDateTime time);
+
 }
