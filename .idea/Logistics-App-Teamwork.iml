@@ -8,5 +8,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="xstream-1.4.21" level="project" />
+    <orderEntry type="library" name="xstream-benchmark-1.4.21" level="project" />
+    <orderEntry type="library" name="xstream-1.4.21 (2)" level="project" />
+    <orderEntry type="library" name="xstream-benchmark-1.4.21 (2)" level="project" />
+    <orderEntry type="library" name="xstream-hibernate-1.4.21" level="project" />
+    <orderEntry type="library" name="xstream-jmh-1.4.21" level="project" />
+    <orderEntry type="library" name="xstream-hibernate" level="project" />
+    <orderEntry type="library" name="xstream" level="project" />
   </component>
 </module>

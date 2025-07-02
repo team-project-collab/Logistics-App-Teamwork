@@ -20,4 +20,6 @@ public interface RouteService {
     ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination);
 
     DeliveryRoute getRouteById(int routeId);
+
+    void save();
 }

@@ -17,11 +17,11 @@ public class EngineImpl implements Engine {
 
     public EngineImpl() {
         //Note: startId will be injected from database file based on highest ID recorded in file
-        LocationService locationService = new LocationServiceImpl(1);
+        LocationService locationService = new LocationServiceImpl();
         VehicleService vehicleService = new VehicleServiceImpl();
-        RouteService routeService = new RouteServiceImpl(1, vehicleService,locationService);
-        DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(1, routeService);
-        CustomerService customerService = new CustomerServiceImpl(1);
+        RouteService routeService = new RouteServiceImpl(vehicleService,locationService);
+        DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(routeService);
+        CustomerService customerService = new CustomerServiceImpl();
         this.commandFactory = new CommandFactoryImpl(locationService,routeService,vehicleService,deliveryPackageService,customerService);
 
     }

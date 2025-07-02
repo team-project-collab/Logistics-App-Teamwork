@@ -3,8 +3,10 @@ package com.company.oop.logistics.core;
 import com.company.oop.logistics.core.contracts.LocationService;
 import com.company.oop.logistics.core.contracts.RouteService;
 import com.company.oop.logistics.core.contracts.VehicleService;
+import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.DeliveryRouteImpl;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
+import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
@@ -17,6 +19,8 @@ import java.util.List;
 
 
 public class RouteServiceImpl implements RouteService {
+    private final String storagePath = "data/routes.xml";
+    private final PersistenceManager persistenceManager = new PersistenceManager();
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route";
     public static final String ERROR_NO_ROUTE_ID = "There is no delivery route with id %s.";
     public static final String ERROR_ORIGIN_EQUALS_DESTINATION = "Origin and destination must be different.";
@@ -26,12 +30,24 @@ public class RouteServiceImpl implements RouteService {
     private final VehicleService vehicleService;
     private final LocationService locationService;
     private int nextId;
-    private final List<DeliveryRoute> routes = new ArrayList<>();
+    private List<DeliveryRoute> routes = new ArrayList<>();
 
-    public RouteServiceImpl(int startId, VehicleService vehicleService, LocationService locationService) {
-        nextId = startId;
+    public RouteServiceImpl(VehicleService vehicleService, LocationService locationService) {
         this.vehicleService = vehicleService;
         this.locationService = locationService;
+        load();
+    }
+
+    public void save() {
+        persistenceManager.saveData(routes, storagePath);
+    }
+
+    public void load() {
+        List<DeliveryRoute> loaded = persistenceManager.loadData(storagePath);
+        if (loaded != null) {
+            this.routes = loaded;
+        }
+        nextId = routes.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
     }
 
     @Override
@@ -44,6 +60,7 @@ public class RouteServiceImpl implements RouteService {
         DeliveryRoute route = new DeliveryRouteImpl(nextId, startTime, generateRouteLocations(startTime, cities));
         nextId++;
         this.routes.add(route);
+        save();
         return route;
     }
 
@@ -89,6 +106,7 @@ public class RouteServiceImpl implements RouteService {
             throw new IllegalArgumentException(String.format(ERROR_VEHICLE_ALREADY_ASSIGNED, vehicle.getId()));
         }
         route.assignTruck(vehicle);
+        save();
     }
 
     @Override
