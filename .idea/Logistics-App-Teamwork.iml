@@ -8,15 +8,63 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="xstream-1.4.21" level="project" />
-    <orderEntry type="library" name="xstream-benchmark-1.4.21" level="project" />
-    <orderEntry type="library" name="xstream-1.4.21 (2)" level="project" />
-    <orderEntry type="library" name="xstream-benchmark-1.4.21 (2)" level="project" />
-    <orderEntry type="library" name="xstream-hibernate-1.4.21" level="project" />
-    <orderEntry type="library" name="xstream-jmh-1.4.21" level="project" />
-    <orderEntry type="library" name="xstream-hibernate" level="project" />
-    <orderEntry type="library" name="xstream" level="project" />
-    <orderEntry type="library" name="xstream-1.4.21" level="project" />
-    <orderEntry type="library" name="xstream-1.4.21" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/xstream" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib/xstream" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/xstream-hibernate" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib/xstream-hibernate" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/xstream-jmh-1.4.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/xstream-jmh-1.4.21.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/xstream-hibernate-1.4.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/xstream-benchmark-1.4.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/xstream-1.4.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

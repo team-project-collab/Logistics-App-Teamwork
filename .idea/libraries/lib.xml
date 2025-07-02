@@ -13,10 +13,16 @@
       <root url="jar://$PROJECT_DIR$/lib/xstream-benchmark-1.4.21.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/xstream-hibernate-1.4.21.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/xstream-jmh-1.4.21.jar!/" />
+      <root url="file://$PROJECT_DIR$/lib" />
+      <root url="file://$PROJECT_DIR$/lib/xstream" />
+      <root url="file://$PROJECT_DIR$/lib/xstream-hibernate" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/lib/xstream-jmh-1.4.21.jar!/" />
     </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/xstream" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/lib/xstream-hibernate" recursive="false" />
   </library>
 </component>
