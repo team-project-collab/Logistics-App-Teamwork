@@ -17,5 +17,8 @@ public interface DeliveryPackageService {
     DeliveryPackage getDeliveryPackageById(int packageId);
 
     ArrayList<DeliveryPackage> getUnassignedPackages(LocalDateTime time);
+
     void bulkAssignPackages(int deliveryRouteId, LocalDateTime time);
+
+
 }
