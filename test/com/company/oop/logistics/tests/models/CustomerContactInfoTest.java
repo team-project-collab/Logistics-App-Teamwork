@@ -11,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CustomerContactInfoTest {
 
     @Test
-    void validCustomerContactInfo_CreatesSuccessfully() {
-        String fullName="Ivan Ivanov";
+    void constructorCustomerContactInfo_Should_SetValuesWithSuccess() {
+        ;
         CustomerContactInfo customerContactInfo = new CustomerContactInfo(1,
-                fullName,
+                "Ivan Ivanov",
                 "+1234567890",
                 "ivan@example.com",
                 City.MEL);
@@ -25,7 +25,7 @@ public class CustomerContactInfoTest {
     }
 
     @Test
-    void invalidFullName_ThrowsException() {
+    void invalidFullName_Should_ThrowsException() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 new CustomerContactInfo(1,
                         "",
@@ -45,7 +45,7 @@ public class CustomerContactInfoTest {
     }
 
     @Test
-    void invalidEmail_ThrowsException() {
+    void invalidEmail_Should_ThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
                 new CustomerContactInfo(1,
                         "Ivan Ivanov",
@@ -56,7 +56,7 @@ public class CustomerContactInfoTest {
     }
 
     @Test
-    void nullCity_ThrowsException() {
+    void nullCity_Should_ThrowsException() {
         assertThrows(IllegalArgumentException.class, () ->
                 new CustomerContactInfo(1,
                         "John Doe",
