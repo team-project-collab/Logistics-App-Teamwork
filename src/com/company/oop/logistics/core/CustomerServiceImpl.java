@@ -10,10 +10,10 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
     public static final String ERROR_NO_CUSTOMER_ID = "No customer contact with this id.";
     private int nextId;
-    private List<CustomerContactInfo> customerContacts = new ArrayList<>();
+    private final List<CustomerContactInfo> customerContacts = new ArrayList<>();
 
-    public CustomerServiceImpl() {
-        nextId = 0;
+    public CustomerServiceImpl(int startId) {
+        nextId = startId;
     }
 
     @Override
@@ -28,7 +28,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerContactInfo createCustomerContactInfo(String fullName, String phoneNumber, String email, City address) {
-        CustomerContactInfo createdCustomerContactInfo = new CustomerContactInfo(++nextId, fullName, phoneNumber, email, address);
+        CustomerContactInfo createdCustomerContactInfo = new CustomerContactInfo(nextId, fullName, phoneNumber, email, address);
+        nextId++;
         customerContacts.add(createdCustomerContactInfo);
         return createdCustomerContactInfo;
     }

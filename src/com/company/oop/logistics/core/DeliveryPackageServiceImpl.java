@@ -1,6 +1,5 @@
 package com.company.oop.logistics.core;
 
-import com.company.oop.logistics.commands.assign.BulkAssignPackagesCommand;
 import com.company.oop.logistics.core.contracts.DeliveryPackageService;
 import com.company.oop.logistics.core.contracts.RouteService;
 import com.company.oop.logistics.models.CustomerContactInfo;
@@ -28,14 +27,15 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
 
 
 
-    public DeliveryPackageServiceImpl(RouteService routeService) {
+    public DeliveryPackageServiceImpl(int startId, RouteService routeService) {
         this.routeService = routeService;
-        nextId = 0;
+        nextId = startId;
     }
 
     @Override
     public DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo) {
-        DeliveryPackage p = new DeliveryPackageImpl(++nextId, startLocation, endLocation, weightKg, customerContactInfo);
+        DeliveryPackage p = new DeliveryPackageImpl(nextId, startLocation, endLocation, weightKg, customerContactInfo);
+        nextId++;
         this.packages.add(p);
         return p;
     }
