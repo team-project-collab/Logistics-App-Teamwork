@@ -2,6 +2,7 @@ package com.company.oop.logistics.commands.assign;
 
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.core.contracts.DeliveryPackageService;
+import com.company.oop.logistics.core.contracts.RouteService;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.util.List;
@@ -12,12 +13,13 @@ public class AssignPackageCommand implements Command {
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
     private final DeliveryPackageService deliveryPackageService;
+    private final RouteService deliveryRouteService;
     private int packageId;
     private int deliveryRouteId;
 
-    public AssignPackageCommand(DeliveryPackageService deliveryPackageService) {
+    public AssignPackageCommand(DeliveryPackageService deliveryPackageService, RouteService deliveryRouteService) {
         this.deliveryPackageService = deliveryPackageService;
-
+        this.deliveryRouteService = deliveryRouteService;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class AssignPackageCommand implements Command {
             throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
         parseParameters(parameters);
-        deliveryPackageService.assignPackage(packageId, deliveryRouteId);
+        deliveryRouteService.assignPackage(packageId, deliveryRouteId);
         return String.format(MESSAGE_PACKAGE_ADDED_TO_ROUTE, packageId ,deliveryRouteId);
     }
     private void parseParameters(List<String> parameters){

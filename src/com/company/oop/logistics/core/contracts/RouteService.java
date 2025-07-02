@@ -22,4 +22,10 @@ public interface RouteService {
     DeliveryRoute getRouteById(int routeId);
 
     void save();
+
+    void assignPackage(int packageId, int deliveryRouteId);
+
+    double getMaxLoad(int routeId, City startLocation, City endLocation);
+
+    void bulkAssignPackages(int deliveryRouteId, LocalDateTime time);
 }

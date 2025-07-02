@@ -19,8 +19,8 @@ public class EngineImpl implements Engine {
         //Note: startId will be injected from database file based on highest ID recorded in file
         LocationService locationService = new LocationServiceImpl();
         VehicleService vehicleService = new VehicleServiceImpl();
-        RouteService routeService = new RouteServiceImpl(vehicleService,locationService);
-        DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(routeService);
+        DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(locationService);
+        RouteService routeService = new RouteServiceImpl(vehicleService,locationService, deliveryPackageService);
         CustomerService customerService = new CustomerServiceImpl();
         this.commandFactory = new CommandFactoryImpl(locationService,routeService,vehicleService,deliveryPackageService,customerService);
 

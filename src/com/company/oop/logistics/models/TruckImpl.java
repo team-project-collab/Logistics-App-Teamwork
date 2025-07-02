@@ -11,9 +11,9 @@ public class TruckImpl extends Vehicle implements Truck {
     private int id;
     private TruckName truckName;
 
-    private static int idScania = 1001;
-    private static int idMan = 1011;
-    private static int idActros = 1026;
+    private static int idScania;
+    private static int idMan;
+    private static int idActros;
 
 
     public TruckImpl(String name) throws LimitBreak {
@@ -22,6 +22,13 @@ public class TruckImpl extends Vehicle implements Truck {
         setUpTruck();
 
     }
+
+    public static void setIds(int scaniaStartId, int manStartId, int actrosStartId){
+        idScania = scaniaStartId;
+        idMan = manStartId;
+        idActros = actrosStartId;
+    }
+
     public  void setUpTruck(){
         if(getTruckName() == TruckName.SCANIA){
             setCapacity(42000);

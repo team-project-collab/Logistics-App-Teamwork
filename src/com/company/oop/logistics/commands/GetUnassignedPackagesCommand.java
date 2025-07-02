@@ -6,7 +6,6 @@ import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GetUnassignedPackagesCommand implements Command {
@@ -30,7 +29,7 @@ public class GetUnassignedPackagesCommand implements Command {
         }
         parseParameters(parameters);
         StringBuilder result = new StringBuilder();
-        ArrayList<DeliveryPackage> unassignedPackages = deliveryPackageService.getUnassignedPackages(time);
+        List<DeliveryPackage> unassignedPackages = deliveryPackageService.getUnassignedPackages(time);
         if (unassignedPackages.isEmpty()){
             result.append(MESSAGE_NO_PACKAGES);
         }else{
