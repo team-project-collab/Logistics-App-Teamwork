@@ -5,11 +5,11 @@ import com.company.oop.logistics.models.contracts.Truck;
 import java.util.List;
 
 public interface VehicleService {
-
-
     Truck createVehicle(String truckName);
 
     Truck getVehicleById(int vehicleId);
-    public List<Truck> getVehicles();
 
+    List<Truck> getVehicles();
+
+    void assignVehicle(int vehicleId, List<Integer> locationIds);
 }

@@ -70,4 +70,10 @@ public class VehicleServiceImpl implements VehicleService {
     public List<Truck> getVehicles() {
         return this.vehicles;
     }
+
+    public void assignVehicle(int vehicleId, List<Integer> locationIds){
+        Truck truck = getVehicleById(vehicleId);
+        truck.addLocationIds(locationIds);
+        save();
+    }
 }

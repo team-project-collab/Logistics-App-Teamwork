@@ -15,7 +15,7 @@ public interface RouteService {
 
     void assignVehicleToRoute(int vehicleId, int deliveryRouteId);
 
-    boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime, LocalDateTime endTime);
+    boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime);
 
     ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination);
 

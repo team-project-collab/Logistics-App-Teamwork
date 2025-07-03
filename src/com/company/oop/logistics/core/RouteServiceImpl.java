@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class RouteServiceImpl implements RouteService {
     private final String storagePath = "data/routes.xml";
     private final PersistenceManager persistenceManager;
-    public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route";
+    public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route at this time";
     public static final String ERROR_NO_ROUTE_ID = "There is no delivery route with id %s.";
     public static final String ERROR_ORIGIN_EQUALS_DESTINATION = "Origin and destination must be different.";
     public static final String ERROR_NO_VEHICLE = "Route %d has no vehicle yet.";
@@ -82,21 +82,13 @@ public class RouteServiceImpl implements RouteService {
 
 
     @Override
-    public boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime, LocalDateTime endTime) {
+    public boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime) {
         boolean result = false;
-        Truck routeVehicle;
-        for (DeliveryRoute route : routes) {
-            try {
-                routeVehicle = vehicleService.getVehicleById(route.getAssignedVehicleId());
-            }catch (RuntimeException e){
-                return false;
-            }
-            if (routeVehicle != null && routeVehicle.getId() == vehicle.getId()) {
-                if (ComparingHelpers.doTimeFramesOverlap(startTime, endTime,
-                        locationService.getLocationById(route.getOrigin()).getDepartureTime(),
-                        locationService.getLocationById(route.getDestination()).getArrivalTime())) {
-                    result = true;
-                }
+        if (!vehicle.getLocationIds().isEmpty()) {
+            LocalDateTime freeAfter = locationService
+                    .getLocationById(vehicle.getLocationIds().getLast()).getArrivalTime();
+            if (freeAfter.isAfter(startTime)) {
+                result = true;
             }
         }
         return result;
@@ -105,14 +97,22 @@ public class RouteServiceImpl implements RouteService {
     @Override
     public void assignVehicleToRoute(int vehicleId, int deliveryRouteId) {
         Truck vehicle = vehicleService.getVehicleById(vehicleId);
+        List<Location> vehicleLocations = vehicle.getLocationIds().stream()
+                .map(locationService::getLocationById).toList();
+
         DeliveryRoute route = getRouteById(deliveryRouteId);
         Location origin = locationService.getLocationById(route.getOrigin());
-        Location destination = locationService.getLocationById(route.getDestination());
 
-        if (isVehicleAssigned(vehicle,origin.getDepartureTime(), destination.getArrivalTime())) {
+        if (isVehicleAssigned(vehicle,origin.getDepartureTime())) {
             throw new IllegalArgumentException(String.format(ERROR_VEHICLE_ALREADY_ASSIGNED, vehicle.getId()));
         }
+        if (!vehicleLocations.isEmpty()){
+            if (!vehicleLocations.getLast().getName().equals(origin.getName())) {
+                throw new IllegalStateException("Vehicle is not stationed in the correct city at that time.");
+            }
+        }
         route.assignTruck(vehicle.getId());
+        vehicleService.assignVehicle(vehicleId, route.getLocations());
         save();
     }
 
