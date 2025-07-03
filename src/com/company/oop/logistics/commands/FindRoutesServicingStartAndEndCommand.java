@@ -34,11 +34,12 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
         if (result.isEmpty()){
             return String.format(MESSAGE_NO_ROUTES, origin, destination);
         }
-        String returnString = "";
+        StringBuilder returnString = new StringBuilder();
         for (int i = 0; i < result.size(); i++) {
-            returnString += String.format(MESSAGE_LIST_ROUTES, origin, destination, result.get(i), routeService.getRouteById(result.get(i)).getMaxLoad(origin, destination));
+            returnString.append(String.format(MESSAGE_LIST_ROUTES, origin, destination, result.get(i),
+                    routeService.getMaxLoad(result.get(i), origin, destination)));
         }
-        return returnString;
+        return returnString.toString();
     }
     private void parseParameters(List<String> parameters){
         origin = ParsingHelpers.tryParseEnum(parameters.get(0), City.class, String.format(INVALID_CITY, parameters.get(0)));
