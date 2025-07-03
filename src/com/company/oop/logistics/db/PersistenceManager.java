@@ -3,6 +3,8 @@ package com.company.oop.logistics.db;
 import com.thoughtworks.xstream.XStream;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PersistenceManager {
     private final XStream xStream;
@@ -25,7 +27,7 @@ public class PersistenceManager {
 
     public <T> T loadData(String filePath) {
         File file = new File(filePath);
-        if (!file.exists()) return null;
+        if (!file.exists()) return (T) new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream(file);
              ObjectInputStream in = xStream.createObjectInputStream(fis)) {

@@ -72,6 +72,10 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         this.customerContactInfoId = customerContactInfoId;
     }
 
+    public int getCustomerContactInfoId(){
+        return this.customerContactInfoId;
+    }
+
     @Override
     public int getId() {
         return this.id;
