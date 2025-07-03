@@ -70,11 +70,12 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
     }
 
     @Override
-    public void assignPackage(int packageId, int deliveryRouteId) {
+    public void assignPackage(int deliveryRouteId, int packageId) {
         DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
         if (deliveryPackage.isAssigned()) {
             throw new IllegalStateException(ERROR_PACKAGE_ALREADY_ASSIGNED);
         }
+        deliveryPackage.assign(deliveryRouteId);
         save();
     }
 

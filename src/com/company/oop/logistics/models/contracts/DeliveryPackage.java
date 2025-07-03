@@ -18,4 +18,8 @@ public interface DeliveryPackage extends Identifiable{
     City getEndLocation();
 
     int getCustomerContactInfoId();
+
+    int getAssignedRoute();
+
+    void assign(int packageId);
 }

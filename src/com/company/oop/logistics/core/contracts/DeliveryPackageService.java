@@ -10,7 +10,7 @@ import java.util.List;
 public interface DeliveryPackageService {
     DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo);
 
-    void assignPackage(int packageId, int deliveryRouteId);
+    void assignPackage(int deliveryRouteId, int packageId);
 
     String getPackageState(int packageId, LocalDateTime time);
 

@@ -163,6 +163,8 @@ public class RouteServiceImpl implements RouteService {
         deliveryPackage.setLocations(locationsToAdd.stream().map(Identifiable::getId)
                 .collect(Collectors.toCollection(ArrayList::new)));
         deliveryRoute.addPackage(deliveryPackage.getId());
+
+        deliveryPackageService.assignPackage(deliveryRouteId, deliveryPackageId);
         save();
     }
 
