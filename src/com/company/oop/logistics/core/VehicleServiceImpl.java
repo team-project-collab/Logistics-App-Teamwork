@@ -63,4 +63,8 @@ public class VehicleServiceImpl implements VehicleService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_NO_VEHICLE_ID, vehicleId)));
                 */
     }
+
+    public List<Truck> getVehicles() {
+        return this.vehicles;
+    }
 }
