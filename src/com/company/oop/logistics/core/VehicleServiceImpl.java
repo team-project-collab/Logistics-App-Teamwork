@@ -12,13 +12,16 @@ import java.util.List;
 
 public class VehicleServiceImpl implements VehicleService {
     private final String storagePath = "data/vehicles.xml";
-    private final PersistenceManager persistenceManager = new PersistenceManager();
+    private final PersistenceManager persistenceManager;
     public static final String ERROR_NO_VEHICLE_ID = "There is no vehicle with id %s.";
-    List<Truck> vehicles = new ArrayList<>();
+    private List<Truck> vehicles;
 
-    public VehicleServiceImpl(){
-        load();
+    public VehicleServiceImpl(PersistenceManager persistenceManager){
+        this.persistenceManager = persistenceManager;
+        vehicles = persistenceManager.loadData(storagePath);
+        setIds();
     }
+
     @Override
     public Truck createVehicle(String truckName) {
         Truck vehicle = new TruckImpl(truckName);
@@ -31,7 +34,7 @@ public class VehicleServiceImpl implements VehicleService {
         persistenceManager.saveData(vehicles, storagePath);
     }
 
-    public void load() {
+    public void setIds() {
         List<Truck> loaded = persistenceManager.loadData(storagePath);
         if (loaded != null) {
             this.vehicles = loaded;

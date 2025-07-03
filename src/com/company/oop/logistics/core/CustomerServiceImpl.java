@@ -11,25 +11,19 @@ import java.util.List;
 
 public class CustomerServiceImpl implements CustomerService {
     private final String storagePath = "data/customerContacts.xml";
-    private final PersistenceManager persistenceManager = new PersistenceManager();
+    private final PersistenceManager persistenceManager;
     public static final String ERROR_NO_CUSTOMER_ID = "No customer contact with this id.";
     private int nextId;
-    private List<CustomerContactInfo> customerContacts = new ArrayList<>();
+    private final List<CustomerContactInfo> customerContacts;
 
-    public CustomerServiceImpl() {
-        load();
+    public CustomerServiceImpl(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+        customerContacts = persistenceManager.loadData(storagePath);
+        nextId = customerContacts.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
     }
 
     public void save() {
         persistenceManager.saveData(customerContacts, storagePath);
-    }
-
-    public void load() {
-        List<CustomerContactInfo> loaded = persistenceManager.loadData(storagePath);
-        if (loaded != null) {
-            this.customerContacts = loaded;
-        }
-        nextId = customerContacts.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
     }
 
     @Override

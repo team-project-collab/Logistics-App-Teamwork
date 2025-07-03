@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class RouteServiceImpl implements RouteService {
     private final String storagePath = "data/routes.xml";
-    private final PersistenceManager persistenceManager = new PersistenceManager();
+    private final PersistenceManager persistenceManager;
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route";
     public static final String ERROR_NO_ROUTE_ID = "There is no delivery route with id %s.";
     public static final String ERROR_ORIGIN_EQUALS_DESTINATION = "Origin and destination must be different.";
@@ -35,25 +35,19 @@ public class RouteServiceImpl implements RouteService {
     private final LocationService locationService;
     private final DeliveryPackageService deliveryPackageService;
     private int nextId;
-    private List<DeliveryRoute> routes = new ArrayList<>();
+    private final List<DeliveryRoute> routes;
 
-    public RouteServiceImpl(VehicleService vehicleService, LocationService locationService, DeliveryPackageService deliveryPackageService) {
+    public RouteServiceImpl(PersistenceManager persistenceManager, VehicleService vehicleService, LocationService locationService, DeliveryPackageService deliveryPackageService) {
+        this.persistenceManager = persistenceManager;
         this.vehicleService = vehicleService;
         this.locationService = locationService;
         this.deliveryPackageService = deliveryPackageService;
-        load();
+        routes = persistenceManager.loadData(storagePath);
+        nextId = routes.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
     }
 
     public void save() {
         persistenceManager.saveData(routes, storagePath);
-    }
-
-    public void load() {
-        List<DeliveryRoute> loaded = persistenceManager.loadData(storagePath);
-        if (loaded != null) {
-            this.routes = loaded;
-        }
-        nextId = routes.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
     }
 
     @Override

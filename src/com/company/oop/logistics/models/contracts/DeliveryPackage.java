@@ -16,4 +16,6 @@ public interface DeliveryPackage extends Identifiable{
     City getStartLocation();
   
     City getEndLocation();
+
+    int getCustomerContactInfoId();
 }

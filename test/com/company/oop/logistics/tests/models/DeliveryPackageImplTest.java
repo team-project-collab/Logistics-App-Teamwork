@@ -32,7 +32,7 @@ public class DeliveryPackageImplTest {
                 City.MEL,
                 City.ADL,
                 40.5,
-                contact);
+                contact.getId());
 
     }
 
@@ -44,7 +44,7 @@ public class DeliveryPackageImplTest {
         Assertions.assertEquals(City.MEL, deliveryPackage.getStartLocation());
         Assertions.assertEquals(City.ADL, deliveryPackage.getEndLocation());
         Assertions.assertEquals(40.5, deliveryPackage.getWeightKg());
-        Assertions.assertEquals(contact, deliveryPackage.getCustomerContactInfo());
+        Assertions.assertEquals(contact.getId(), deliveryPackage.getCustomerContactInfoId());
 
     }
 

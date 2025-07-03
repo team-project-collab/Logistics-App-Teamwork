@@ -13,26 +13,21 @@ import java.util.List;
 
 public class LocationServiceImpl implements LocationService {
     private final String storagePath = "data/locations.xml";
-    private final PersistenceManager persistenceManager = new PersistenceManager();
+    private final PersistenceManager persistenceManager;
     public static final String ERROR_NO_LOCATION_ID = "No location with this id.";
-    private List<Location> locations = new ArrayList<>();
+    private final List<Location> locations;
     private int nextId;
 
-    public LocationServiceImpl(){
-        load();
+    public LocationServiceImpl(PersistenceManager persistenceManager){
+        this.persistenceManager = persistenceManager;
+        locations = persistenceManager.loadData(storagePath);
+        nextId = locations.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
     }
 
     public void save() {
         persistenceManager.saveData(locations, storagePath);
     }
 
-    public void load() {
-        List<Location> loaded = persistenceManager.loadData(storagePath);
-        if (loaded != null) {
-            this.locations = loaded;
-        }
-        nextId = locations.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
-    }
     @Override
     public Location createLocation(City name, LocalDateTime arrivalTime, LocalDateTime departureTime) {
         Location createdLocation = new LocationImpl(nextId, name, arrivalTime, departureTime);
