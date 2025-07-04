@@ -43,7 +43,7 @@ public class CommandFactoryImpl implements CommandFactory {
             case CREATEROUTE:
                 return new CreateRouteCommand(routeService);
             case LISTROUTES:
-                return new ListRoutesCommand(routeService);
+                return new ListRoutesCommand(routeService, locationService);
             case ASSIGNVEHICLETOROUTE:
                 return new AssignVehicleToRouteCommand(routeService);
             case CREATETRUCK:
@@ -53,7 +53,7 @@ public class CommandFactoryImpl implements CommandFactory {
             case FINDROUTESSERVICINGSTARTANDEND:
                 return new FindRoutesServicingStartAndEndCommand(routeService);
             case ASSIGNPACKAGE:
-                return new AssignPackageCommand(deliveryPackageService);
+                return new AssignPackageCommand(deliveryPackageService, routeService);
             case CREATECUSTOMERCONTACTINFO:
                 return new CreateCustomerContactInfo(customerService);
             case GETPACKAGESTATE:
@@ -61,7 +61,7 @@ public class CommandFactoryImpl implements CommandFactory {
             case GETUNASSIGNEDPACKAGES:
                 return new GetUnassignedPackagesCommand(deliveryPackageService);
             case BULKASSIGNPACKAGES:
-                return new BulkAssignPackagesCommand(deliveryPackageService);
+                return new BulkAssignPackagesCommand(deliveryPackageService, routeService);
         }
         return null;
     }

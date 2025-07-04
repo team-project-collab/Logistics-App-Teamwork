@@ -2,6 +2,7 @@ package com.company.oop.logistics.core;
 
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.core.contracts.*;
+import com.company.oop.logistics.db.PersistenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +17,14 @@ public class EngineImpl implements Engine {
 
 
     public EngineImpl() {
-        //Note: startId will be injected from database file based on highest ID recorded in file
-        LocationService locationService = new LocationServiceImpl();
-        VehicleService vehicleService = new VehicleServiceImpl();
-        RouteService routeService = new RouteServiceImpl(vehicleService,locationService);
-        DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(routeService);
-        CustomerService customerService = new CustomerServiceImpl();
+        PersistenceManager persistenceManager = new PersistenceManager();
+        LocationService locationService = new LocationServiceImpl(persistenceManager);
+        VehicleService vehicleService = new VehicleServiceImpl(persistenceManager);
+        DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager,
+                locationService);
+        RouteService routeService = new RouteServiceImpl(persistenceManager,
+                vehicleService,locationService, deliveryPackageService);
+        CustomerService customerService = new CustomerServiceImpl(persistenceManager);
         this.commandFactory = new CommandFactoryImpl(locationService,routeService,vehicleService,deliveryPackageService,customerService);
 
     }

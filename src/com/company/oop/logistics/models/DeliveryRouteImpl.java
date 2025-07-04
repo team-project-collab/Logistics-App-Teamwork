@@ -1,12 +1,6 @@
 package com.company.oop.logistics.models;
 
-import com.company.oop.logistics.exceptions.custom.LimitBreak;
-import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
-import com.company.oop.logistics.models.contracts.Location;
-import com.company.oop.logistics.models.contracts.Truck;
-import com.company.oop.logistics.models.enums.City;
-import com.company.oop.logistics.utils.constants.CityDistance;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -15,31 +9,18 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "A vehicle is already assigned to route %d.";
     public static final String ERROR_START_TIME_NULL = "Start time cannot be null";
     public static final String ERROR_START_TIME_IN_THE_PAST = "Start time cannot be in the past.";
-    public static final String ERROR_NO_VEHICLE = "Route %d has no vehicle yet.";
-    public static final String ERROR_CITIES_NOT_UNIQUE = "One route can visit the same city only once.";
-    public static final String ERROR_ROUTE_STARTED_BEFORE_PACKAGE_ASSIGN = "Cannot assign the package, as the route already left the starting location";
     private int id;
     private LocalDateTime startTime;
-    private ArrayList<Location> locations = new ArrayList<>();
-    private Truck assignedVehicle;
+    private List<Integer> locationIds = new ArrayList<>();
+    private final List<Integer> assignedPackageIds = new ArrayList<>();
+    private int assignedVehicleId;
 
-    private final ArrayList<DeliveryPackage> assignedPackages = new ArrayList<>();
 
-    public DeliveryRouteImpl(int id, LocalDateTime startTime, ArrayList<Location> locations){
-        if (!hasUniqueCities(locations)){
-            throw new IllegalArgumentException(ERROR_CITIES_NOT_UNIQUE);
-        }
-        setLocations(locations);
+    public DeliveryRouteImpl(int id, LocalDateTime startTime, List<Integer> locationIds){
+        setLocations(locationIds);
         setStartTime(startTime);
         setId(id);
     }
-
-    private boolean hasUniqueCities(ArrayList<Location> locations){
-        return locations.size() == locations.stream()
-                .map(Location::getName)
-                .distinct().count();
-    }
-
 
     public LocalDateTime getStartTime() {
         return startTime;
@@ -59,147 +40,51 @@ public class DeliveryRouteImpl implements DeliveryRoute{
         this.id = id;
     }
 
-    private void setLocations(ArrayList<Location> locations){
-        this.locations = new ArrayList<>(locations);
-    }
-
-    private void setAssignedVehicle(Truck assignedVehicle) {
-        this.assignedVehicle = assignedVehicle;
+    private void setLocations(List<Integer> locationIds){
+        this.locationIds = new ArrayList<>(locationIds);
     }
 
     public int getId() {
         return id;
     }
 
-    public ArrayList<Location> getLocations() {
-        return locations;
+    public List<Integer> getLocations() {
+        return locationIds;
     }
 
-    public Truck getAssignedVehicle() {
-        return assignedVehicle;
-    }
-
-    @Override
-    public ArrayList<DeliveryPackage> assignedPackages() {
-        return new ArrayList<>(assignedPackages);
+    public int getAssignedVehicleId() {
+        return assignedVehicleId;
     }
 
     @Override
-    public Location getOrigin() {
-        return locations.get(0);
+    public int getOrigin() {
+        return locationIds.get(0);
     }
 
     @Override
-    public Location getDestination() {
-        return locations.get(locations.size()-1);
+    public int getDestination() {
+        return locationIds.get(locationIds.size()-1);
     }
 
-    public ArrayList<DeliveryPackage> getAssignedPackages() {
-        return assignedPackages;
+    public ArrayList<Integer> getAssignedPackages() {
+        return new ArrayList<>(assignedPackageIds);
     }
 
-    @Override
-    public void addLocation(Location location) {
-        locations.add(location);
-
-    }
-
-    @Override
-    public void assignTruck(Truck truck) {
-        if (truck == null) {
-            throw new IllegalArgumentException("Truck cannot be null");
-        }
-
-        if (this.assignedVehicle != null){
-            throw new IllegalArgumentException(String.format(ERROR_VEHICLE_ALREADY_ASSIGNED, id));
-        }
-
-        assignedVehicle = truck;
+    public void addPackage(int packageId){
+        assignedPackageIds.add(packageId);
     }
 
     @Override
-    public void assignPackage(DeliveryPackage deliveryPackage) {
-        if (this.assignedVehicle == null){
-            throw new IllegalStateException(String.format(ERROR_NO_VEHICLE, id));
-        }
-        ArrayList<Location> locationsToAdd =
-                getLocations(deliveryPackage.getStartLocation(), deliveryPackage.getEndLocation());
+    public void addLocation(int locationId) {
+        locationIds.add(locationId);
 
-        if((deliveryPackage.getWeightKg() +
-                getMaxLoad(deliveryPackage.getStartLocation(), deliveryPackage.getEndLocation()))
-                > assignedVehicle.getCapacity()){
-            throw new LimitBreak("Exceeds capacity of truck");
-        }
-        if (locationsToAdd.get(0).getDepartureTime().isBefore(LocalDateTime.now())){
-            throw new IllegalStateException(ERROR_ROUTE_STARTED_BEFORE_PACKAGE_ASSIGN);
-        }
-        deliveryPackage.setLocations(locationsToAdd);
-        assignedPackages.add(deliveryPackage);
     }
 
-    public double getTotalLoad(){
-        double total = 0;
-        for (DeliveryPackage deliveryPackage:
-        getAssignedPackages()) {
-            total += deliveryPackage.getWeightKg();
+    @Override
+    public void assignTruck(int truckId) {
+        if (this.assignedVehicleId != 0){
+            throw new IllegalArgumentException(String.format(ERROR_VEHICLE_ALREADY_ASSIGNED, truckId));
         }
-        return total;
+        assignedVehicleId = truckId;
     }
-
-    public int getDistance(){
-        int result = 0;
-        for (int i = 0; i < locations.size() - 1; i++){
-            result += CityDistance.getDistance(locations.get(i).getName(), locations.get(i + 1).getName());
-        }
-        return result;
-    }
-
-    public HashMap <City, Double> getLoad(City startLocation, City endLocation){
-        boolean withinSubroute = false;
-        HashMap <City, Double> result = new HashMap<>();
-        for (Location location : locations) {
-            if (location.getName().equals(startLocation)) {
-                withinSubroute = true;
-            }
-            if (location.getName().equals(endLocation)) {
-                withinSubroute = false;
-            }
-            if (withinSubroute) {
-                double weightSum = 0;
-                for (DeliveryPackage assignedPackage : assignedPackages) {
-                    ArrayList<Location> packageLocations = assignedPackage.getLocations();
-                    packageLocations = new ArrayList<>(packageLocations.subList(0, packageLocations.size() - 1));
-                    if (packageLocations.contains(location)) {
-                        weightSum += assignedPackage.getWeightKg();
-                    }
-                }
-                result.put(location.getName(), weightSum);
-            }
-        }
-        return result;
-    }
-
-    private ArrayList<Location> getLocations(City startLocation, City endLocation){
-        boolean withinStartEnd = false;
-        ArrayList<Location> packageLocations = new ArrayList<>();
-        for (Location location : locations) {
-            if (location.getName() == startLocation) {
-                withinStartEnd = true;
-            }
-            if (withinStartEnd) {
-                packageLocations.add(location);
-            }
-            if (withinStartEnd && location.getName() == endLocation) {
-                return packageLocations;
-            }
-        }
-        throw new IllegalArgumentException("Route does not service this package");
-    }
-
-    public double getMaxLoad(City startLocation, City endLocation){
-        return Collections.max(getLoad(startLocation, endLocation).entrySet(), Map.Entry.comparingByValue()).getValue();
-    }
-
-
-
 }
