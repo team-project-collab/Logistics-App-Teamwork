@@ -15,25 +15,16 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DeliveryPackageImplTest {
-    private CustomerContactInfo contact;
+
     private DeliveryPackageImpl deliveryPackage;
-    private LocalDateTime now;
-    private ArrayList<Location> locations;
 
     @BeforeEach
     public void setUp() {
-        CustomerContactInfo contact = new CustomerContactInfo(1,
-                "Ivan Ivanov",
-                "+1234567890",
-                "ivan@example.com",
-                City.MEL);
-
-        DeliveryPackageImpl deliveryPackage = new DeliveryPackageImpl(1,
+        deliveryPackage = new DeliveryPackageImpl(1,
                 City.MEL,
                 City.ADL,
                 40.5,
-                contact.getId());
-
+                10);
     }
 
 
@@ -44,14 +35,30 @@ public class DeliveryPackageImplTest {
         Assertions.assertEquals(City.MEL, deliveryPackage.getStartLocation());
         Assertions.assertEquals(City.ADL, deliveryPackage.getEndLocation());
         Assertions.assertEquals(40.5, deliveryPackage.getWeightKg());
-        Assertions.assertEquals(contact.getId(), deliveryPackage.getCustomerContactInfoId());
-
+        Assertions.assertEquals(10, deliveryPackage.getCustomerContactInfoId());
     }
 
+    @Test
+    public void setLocations_Should_UpdateLocationsSuccessfully() {
+        ArrayList<Integer> locations = new ArrayList<>();
+        locations.add(1);
+        locations.add(2);
+        deliveryPackage.setLocations(locations);
+        Assertions.assertEquals(locations, deliveryPackage.getLocations());
+    }
 
+    @Test
+    public void setAssigned_Should_ShowIfThePackageIsAssignedSuccessfuly() {
+        deliveryPackage.setAssigned(true);
+        Assertions.assertTrue(deliveryPackage.isAssigned());
+    }
+
+    @Test
+    public void toString_Should_ReturnFormattedString() {
+        String expectedOutput = "Package id: 1; Origin: MEL; Destination: ADL;";
+        Assertions.assertEquals(expectedOutput, deliveryPackage.toString());
+    }
 
 }
 
 
-//@Test
-//public void getProducts_Should_ReturnCopyOfTheCollection()
