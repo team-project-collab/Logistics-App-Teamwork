@@ -14,6 +14,7 @@ public class DeliveryPackageImpl implements DeliveryPackage {
     private int customerContactInfoId;
     private boolean isAssigned = false;
     private ArrayList<Integer> locationIds;
+    private int assignedRoute;
 
     public DeliveryPackageImpl(int id, City startLocation, City endLocation, double weightKg, int customerContactInfoId) {
         setId(id);
@@ -30,10 +31,6 @@ public class DeliveryPackageImpl implements DeliveryPackage {
     @Override
     public ArrayList<Integer> getLocations() {
         return locationIds;
-    }
-
-    public void setAssigned(boolean assigned) {
-        isAssigned = assigned;
     }
 
     public void setLocations(ArrayList<Integer> locationIds){
@@ -83,5 +80,14 @@ public class DeliveryPackageImpl implements DeliveryPackage {
 
     public String toString(){
         return String.format(PACKAGE_TO_STRING, id, startLocation, endLocation);
+    }
+
+    public int getAssignedRoute() {
+        return assignedRoute;
+    }
+
+    public void assign(int packageId){
+        isAssigned = true;
+        assignedRoute = packageId;
     }
 }
