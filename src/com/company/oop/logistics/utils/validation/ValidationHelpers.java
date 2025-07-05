@@ -1,7 +1,9 @@
 package com.company.oop.logistics.utils.validation;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +55,15 @@ public class ValidationHelpers {
     public static void validateTimeAgainstTime(LocalDateTime timeBefore, LocalDateTime timeAfter, String fieldBefore, String fieldAfter) {
         if (timeBefore.isAfter(timeAfter)) {
             throw new IllegalArgumentException(String.format("Time for %s cannot be after time for %s.", fieldBefore, fieldAfter));
+        }
+    }
+
+    public static <T> void validateUniqueList(List<T> list, String message) {
+        Set<T> uniqueSet = new HashSet<>();
+        for (T item : list) {
+            if (!uniqueSet.add(item)) {
+                throw new IllegalArgumentException(message);
+            }
         }
     }
 }

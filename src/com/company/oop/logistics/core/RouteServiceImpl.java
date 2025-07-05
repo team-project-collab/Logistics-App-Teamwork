@@ -10,7 +10,7 @@ import com.company.oop.logistics.models.DeliveryRouteImpl;
 import com.company.oop.logistics.models.contracts.*;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.constants.CityDistance;
-import com.company.oop.logistics.utils.misc.ComparingHelpers;
+import com.company.oop.logistics.utils.validation.ValidationHelpers;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -57,6 +57,7 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities) {
+        ValidationHelpers.validateUniqueList(cities, ERROR_CITIES_NOT_UNIQUE);
         List<Integer> locations = generateRouteLocations(startTime, cities);
         DeliveryRoute route = new DeliveryRouteImpl(nextId, startTime, locations);
         nextId++;
@@ -90,8 +91,9 @@ public class RouteServiceImpl implements RouteService {
     public boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime) {
         boolean result = false;
         if (!vehicle.getLocationIds().isEmpty()) {
+            int lastLocationId = vehicle.getLocationIds().get(vehicle.getLocationIds().size() - 1);
             LocalDateTime freeAfter = locationService
-                    .getLocationById(vehicle.getLocationIds().getLast()).getArrivalTime();
+                    .getLocationById(lastLocationId).getArrivalTime();
             if (freeAfter.isAfter(startTime)) {
                 result = true;
             }
@@ -112,7 +114,7 @@ public class RouteServiceImpl implements RouteService {
             throw new IllegalArgumentException(String.format(ERROR_VEHICLE_ALREADY_ASSIGNED, vehicle.getId()));
         }
         if (!vehicleLocations.isEmpty()){
-            if (!vehicleLocations.getLast().getName().equals(origin.getName())) {
+            if (!vehicleLocations.get(vehicleLocations.size() - 1).getName().equals(origin.getName())) {
                 throw new IllegalStateException("Vehicle is not stationed in the correct city at that time.");
             }
         }
