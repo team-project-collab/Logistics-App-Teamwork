@@ -57,7 +57,8 @@ public class RouteServiceImpl implements RouteService {
 
     @Override
     public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities) {
-        DeliveryRoute route = new DeliveryRouteImpl(nextId, startTime, generateRouteLocations(startTime, cities));
+        List<Integer> locations = generateRouteLocations(startTime, cities);
+        DeliveryRoute route = new DeliveryRouteImpl(nextId, startTime, locations);
         nextId++;
         this.routes.add(route);
         save();
@@ -66,18 +67,22 @@ public class RouteServiceImpl implements RouteService {
 
     public List<Integer> generateRouteLocations(LocalDateTime startTime, ArrayList<City> cities) {
         ArrayList<Location> result = new ArrayList<>();
-        LocalDateTime currentTime = startTime;
+        LocalDateTime arrivalTime = null;
+        LocalDateTime departureTime = startTime;
         for (int i = 0; i < cities.size(); i++) {
-            int timeToTravel = 0;
+            long timeToTravel = 0;
             if (i < cities.size() - 1) {
-                timeToTravel = (int) ((float) CityDistance.getDistance(cities.get(i), cities.get(i + 1))
-                        / INT_TRUCK_SPEED * 60) * 60;
+                timeToTravel = CityDistance.getTravelTimeSeconds(cities.get(i),cities.get(i + 1), INT_TRUCK_SPEED);
+            }else{
+                departureTime = null;
             }
-            result.add(locationService.createLocation(cities.get(i),
-                    currentTime, currentTime.plusMinutes(RESTING_MINUTES)));
-            currentTime = currentTime.plusMinutes(RESTING_MINUTES).plusSeconds(timeToTravel);
+            result.add(locationService.createLocation(cities.get(i), arrivalTime, departureTime));
+            if (departureTime != null) {
+                arrivalTime = departureTime.plusSeconds(timeToTravel);
+                departureTime = arrivalTime.plusMinutes(RESTING_MINUTES);
+            }
         }
-        return result.stream().map(Identifiable::getId).toList();
+        return result.stream().map(Location::getId).toList();
     }
 
 
