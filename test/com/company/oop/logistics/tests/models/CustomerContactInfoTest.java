@@ -12,7 +12,7 @@ public class CustomerContactInfoTest {
 
     @Test
     void constructorCustomerContactInfo_Should_SetValuesWithSuccess() {
-        ;
+
         CustomerContactInfo customerContactInfo = new CustomerContactInfo(1,
                 "Ivan Ivanov",
                 "+1234567890",
@@ -25,7 +25,7 @@ public class CustomerContactInfoTest {
     }
 
     @Test
-    void invalidFullName_Should_ThrowsException() {
+    void invalidFullName_Should_ThrowException() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 new CustomerContactInfo(1,
                         "",
@@ -35,7 +35,7 @@ public class CustomerContactInfoTest {
     }
 
     @Test
-    void invalidPhoneNumber_ThrowsException() {
+    void invalidPhoneNumber_Should_ThrowException() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 new CustomerContactInfo(1,
                         "Ivan Ivanov",
@@ -45,7 +45,7 @@ public class CustomerContactInfoTest {
     }
 
     @Test
-    void invalidEmail_Should_ThrowsException() {
+    void invalidEmail_Should_ThrowException() {
         assertThrows(IllegalArgumentException.class, () ->
                 new CustomerContactInfo(1,
                         "Ivan Ivanov",
