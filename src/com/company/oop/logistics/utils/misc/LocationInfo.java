@@ -1,6 +1,7 @@
 package com.company.oop.logistics.utils.misc;
 
 import com.company.oop.logistics.core.contracts.LocationService;
+import com.company.oop.logistics.models.LocationImpl;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.LocationType;
 
@@ -17,6 +18,7 @@ public final class LocationInfo {
     private Location currentLocation;
     private Location previousLocation;
     private Location nextLocation;
+    private Location locationAfterNext;
 
 
     public LocationInfo(LocationService locationService, List<Integer> locationIds, LocalDateTime time) {
@@ -26,14 +28,18 @@ public final class LocationInfo {
         generateLocations();
     }
 
+    public Location getCurrentLocation(){
+        return currentLocation;
+    }
+
     public String getTruckStatus(){
         String result = "";
-        if (currentLocation.getType().equals(LocationType.START)) {
+        if (currentLocation.getType().equals(LocationType.END)) {
             if (nextLocation != null) {
                 result = String.format("Assigned at %s and ready to depart to %s at %s",
                         currentLocation.getName(),
-                        nextLocation.getName(),
-                        currentLocation.getDepartureTime().format(formatter));
+                        locationAfterNext.getName(),
+                        nextLocation.getDepartureTime().format(formatter));
             }else{
                 result = String.format("Free, stationed at %s", currentLocation.getName());
             }
@@ -41,9 +47,9 @@ public final class LocationInfo {
         if (currentLocation.getType().equals(LocationType.INTERMEDIATE)){
             if (currentLocation.getArrivalTime().isBefore(time)){
                 result = String.format("On route, traveling from %s to %s. Expected arrival time: %s",
-                        previousLocation.getName(),
                         currentLocation.getName(),
-                        currentLocation.getArrivalTime().format(formatter));
+                        nextLocation.getName(),
+                        nextLocation.getArrivalTime().format(formatter));
             }else {
                 result = String.format("On route, stationed at %s. Leaving to %s at %s.",
                         currentLocation.getName(),
@@ -51,8 +57,11 @@ public final class LocationInfo {
                         nextLocation.getName());
             }
         }
-        if (currentLocation.getType().equals(LocationType.END)){
-            result = String.format("Free, stationed at %s", currentLocation.getName());
+        if (currentLocation.getType().equals(LocationType.START)){
+            result = String.format("On route, traveling from %s to %s. Expected arrival time: %s",
+                    currentLocation.getName(),
+                    nextLocation.getName(),
+                    nextLocation.getArrivalTime().format(formatter));
         }
         return result;
     }
@@ -122,18 +131,27 @@ public final class LocationInfo {
             return;
         }
         List<Location> locations = locationIds.stream().map(locationService::getLocationById).toList();
-        currentLocation = locations.get(0);
-        if (locations.size() > 1) {
-            nextLocation = locations.get(1);
-        }
+
         for (int i = locations.size() - 1; i > 0 ; i--) {
             if (isMatch(locations.get(i))){
                 currentLocation = locations.get(i);
                 previousLocation = locations.get(i - 1);
                 if (i < locations.size() - 1){
                     nextLocation = locations.get(i + 1);
+                    if (i < locations.size() - 2){
+                        locationAfterNext = locations.get(i + 2);
+                    }
                 }
                 break;
+            }
+        }
+        if (currentLocation == null){
+            currentLocation = locations.get(0);
+            if (locations.size() > 1 && nextLocation == null) {
+                nextLocation = locations.get(1);
+                if (locations.size() > 2 && locationAfterNext == null){
+                    locationAfterNext = locations.get(2);
+                }
             }
         }
     }

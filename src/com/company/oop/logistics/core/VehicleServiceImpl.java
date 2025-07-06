@@ -8,6 +8,7 @@ import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.misc.InitializeTrucks;
+import com.company.oop.logistics.utils.misc.LocationInfo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,8 +42,6 @@ public class VehicleServiceImpl implements VehicleService {
         persistenceManager.saveData(vehicles, storagePath);
     }
 
-
-
     public Truck getVehicleById(int vehicleId) {
         return vehicles.stream()
                 .filter(t -> t.getId() == vehicleId)
@@ -58,5 +57,16 @@ public class VehicleServiceImpl implements VehicleService {
         Truck truck = getVehicleById(vehicleId);
         truck.addLocationIds(locationIds);
         save();
+    }
+
+    public boolean isVehicleFree(int vehicleId, LocalDateTime time){
+        List<Integer> vehicleLocationIds = getVehicleById(vehicleId).getLocationIds();
+        Location lastLocation = locationService.getLocationById(vehicleLocationIds.get(vehicleLocationIds.size() - 1));
+        return LocalDateTime.now().isAfter(lastLocation.getArrivalTime());
+    }
+
+    public Location getCurrentLocation(int vehicleId, LocalDateTime time){
+        LocationInfo locationInfo = new LocationInfo(locationService, getVehicleById(vehicleId).getLocationIds(), time);
+        return locationInfo.getCurrentLocation();
     }
 }
