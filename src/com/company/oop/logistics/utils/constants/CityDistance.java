@@ -85,4 +85,8 @@ public abstract class CityDistance {
     public static int getDistance(City city1, City city2){
         return distances.get(city1).get(city2);
     }
+
+    public static long getTravelTimeSeconds(City city1, City city2, int vehicleSpeed){
+        return (long) Math.ceil((double) distances.get(city1).get(city2) / vehicleSpeed * 60) * 60;
+    }
 }

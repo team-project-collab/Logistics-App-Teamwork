@@ -6,6 +6,7 @@ import com.company.oop.logistics.models.LocationImpl;
 import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.utils.misc.LocationInfo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,5 +49,16 @@ public class LocationServiceImpl implements LocationService {
                 .filter(l -> l.getId() == locationId)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ERROR_NO_LOCATION_ID));
+    }
+
+    public List<Location> trimLocations(List<Location> entryList){
+        List<Location> result = new ArrayList<>(entryList);
+        if (entryList.size() > 1){
+            Location start = entryList.get(0);
+            Location end = entryList.get(entryList.size() - 1);
+            entryList.set(0, createLocation(start.getName(), null, start.getDepartureTime()));
+            entryList.set(entryList.size() - 1, createLocation(end.getName(), end.getArrivalTime(), null));
+        }
+        return result;
     }
 }

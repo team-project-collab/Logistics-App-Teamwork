@@ -86,8 +86,8 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         return assignedRoute;
     }
 
-    public void assign(int packageId){
+    public void assign(int routeId){
         isAssigned = true;
-        assignedRoute = packageId;
+        assignedRoute = routeId;
     }
 }

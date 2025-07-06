@@ -5,6 +5,7 @@ import com.company.oop.logistics.core.contracts.LocationService;
 import com.company.oop.logistics.models.contracts.Location;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListLocationsCommand implements Command {
     private final LocationService locationService;
@@ -16,11 +17,10 @@ public class ListLocationsCommand implements Command {
     @Override
     public String execute(List<String> parameters) {
         StringBuilder output = new StringBuilder();
-        for (Location location: locationService.getLocations()){
-            output.append("===\n");
-            output.append(String.format(" Arrival time: %s\n", location.getArrivalTime()));
-            output.append(String.format(" Departure time: %s\n", location.getDepartureTime()));
-        }
+        output.append(locationService.getLocations().stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(""))
+        );
         return output.toString();
     }
 }
