@@ -118,10 +118,10 @@ public final class LocationInfo {
     }
 
     private void generateLocations(){
-        List<Location> locations = locationIds.stream().map(locationService::getLocationById).toList();
-        if (locations.isEmpty()){
+        if (locationIds == null || locationIds.isEmpty()){
             return;
         }
+        List<Location> locations = locationIds.stream().map(locationService::getLocationById).toList();
         currentLocation = locations.get(0);
         if (locations.size() > 1) {
             nextLocation = locations.get(1);
