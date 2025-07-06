@@ -66,6 +66,21 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
+    public List<DeliveryRoute> getRoutesInProgress() {
+        LocalDateTime now = LocalDateTime.now();
+        List<DeliveryRoute> result = new ArrayList<>();
+        for (DeliveryRoute route: getRoutes()){
+            List<Location> routeLocations = route.getLocations().stream().map(locationService::getLocationById).toList();
+            Location startLocation = routeLocations.get(0);
+            Location endLocation = routeLocations.get(routeLocations.size() - 1);
+            if (startLocation.getDepartureTime().isBefore(now) && endLocation.getArrivalTime().isAfter(now)){
+                result.add(route);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public DeliveryRoute getRouteById(int deliveryRouteId) {
         return routes.stream()
                 .filter(r -> r.getId() == deliveryRouteId)

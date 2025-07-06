@@ -10,6 +10,8 @@ import java.util.List;
 public interface RouteService {
     List<DeliveryRoute> getRoutes();
 
+    List<DeliveryRoute> getRoutesInProgress();
+
     DeliveryRoute createDeliveryRoute(LocalDateTime startTime, List<City> cities);
 
     void assignVehicleToRoute(int vehicleId, int deliveryRouteId);
