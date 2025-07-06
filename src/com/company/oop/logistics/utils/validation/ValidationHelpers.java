@@ -47,7 +47,7 @@ public class ValidationHelpers {
     }
 
     public static void validateTimeAgainstPresent(LocalDateTime time, String field) {
-        if (LocalDateTime.now().isAfter(time)) {
+        if (LocalDateTime.now().isBefore(time)) {
             throw new IllegalArgumentException(String.format(TIME_IN_THE_PAST_ERR, field));
         }
     }

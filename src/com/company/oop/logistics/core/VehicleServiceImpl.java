@@ -4,11 +4,10 @@ import com.company.oop.logistics.core.contracts.LocationService;
 import com.company.oop.logistics.core.contracts.VehicleService;
 import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.TruckImpl;
-import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
-import com.company.oop.logistics.models.enums.TruckName;
+import com.company.oop.logistics.utils.misc.InitializeTrucks;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,13 +18,13 @@ public class VehicleServiceImpl implements VehicleService {
     private final PersistenceManager persistenceManager;
     private final LocationService locationService;
     public static final String ERROR_NO_VEHICLE_ID = "There is no vehicle with id %s.";
-    private List<Truck> vehicles;
+    private final List<Truck> vehicles;
 
     public VehicleServiceImpl(PersistenceManager persistenceManager, LocationService locationService){
         this.persistenceManager = persistenceManager;
         this.locationService = locationService;
         vehicles = persistenceManager.loadData(storagePath);
-        setIds();
+        InitializeTrucks.execute(this);
     }
 
     @Override
@@ -42,24 +41,7 @@ public class VehicleServiceImpl implements VehicleService {
         persistenceManager.saveData(vehicles, storagePath);
     }
 
-    public void setIds() {
-        List<Truck> loaded = persistenceManager.loadData(storagePath);
-        if (loaded != null) {
-            this.vehicles = loaded;
-        }
-        int maxScaniaId = vehicles.stream().
-                filter(t -> t.getTruckName().equals(TruckName.SCANIA)).
-                mapToInt(Identifiable::getId).max().orElse(1000) + 1;
-        int maxManId = vehicles.stream().
-                filter(t -> t.getTruckName().equals(TruckName.MAN))
-                .mapToInt(Identifiable::getId).max().orElse(1010) + 1;
-        int maxActrosId = vehicles.stream().
-                filter(t -> t.getTruckName().equals(TruckName.ACTROS)).
-                mapToInt(Identifiable::getId).max().orElse(1025) + 1;
 
-        TruckImpl.setIds(maxScaniaId, maxManId, maxActrosId);
-
-    }
 
     public Truck getVehicleById(int vehicleId) {
         return vehicles.stream()
