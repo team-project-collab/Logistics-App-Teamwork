@@ -2,7 +2,6 @@ package com.company.oop.logistics.models;
 
 import com.company.oop.logistics.exceptions.custom.LimitBreak;
 import com.company.oop.logistics.models.contracts.Truck;
-import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.models.enums.TruckName;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
@@ -104,5 +103,14 @@ public class TruckImpl extends Vehicle implements Truck {
 
     public void addLocationIds(List<Integer> locationIds) {
         this.locationIds.addAll(locationIds);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("""
+                id: %d
+                Brand: %d
+                Capacity: %d
+                Max range: %d""");
     }
 }

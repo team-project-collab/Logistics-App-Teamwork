@@ -6,10 +6,12 @@ import com.company.oop.logistics.models.enums.LocationType;
 import com.company.oop.logistics.utils.validation.ValidationHelpers;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class LocationImpl implements Location {
     public static final String ATTRIBUTE_NAME_ARRIVAL_TIME = "arrival time";
     public static final String ATTRIBUTE_NAME_DEPARTURE_TIME = "departure time";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private int id;
     private City name;
@@ -86,4 +88,25 @@ public class LocationImpl implements Location {
         }
     }
 
+    @Override
+    public String toString() {
+        return switch(getType()){
+            case START -> String.format("""
+                     * City: %s
+                      - Leaving at: %s
+                    """, getName(), getDepartureTime().format(formatter));
+            case INTERMEDIATE -> String.format("""
+                     * City: %s
+                      - Arriving at: %s
+                      - Leaving at: %s
+                    """,
+                    getName(),
+                    getArrivalTime().format(formatter),
+                    getDepartureTime().format(formatter));
+            case END -> String.format("""
+                     * City: %s
+                      - Arriving at: %s
+                    """, getName(), getArrivalTime().format(formatter));
+        };
+    }
 }
