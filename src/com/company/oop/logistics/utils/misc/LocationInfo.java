@@ -5,9 +5,11 @@ import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.LocationType;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public final class LocationInfo {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final LocationService locationService;
     private final List<Integer> locationIds;
     private final LocalDateTime time;
@@ -31,7 +33,7 @@ public final class LocationInfo {
                 result = String.format("Assigned at %s and ready to depart to %s at %s",
                         currentLocation.getName(),
                         nextLocation.getName(),
-                        currentLocation.getDepartureTime());
+                        currentLocation.getDepartureTime().format(formatter));
             }else{
                 result = String.format("Free, stationed at %s", currentLocation.getName());
             }
@@ -41,11 +43,11 @@ public final class LocationInfo {
                 result = String.format("On route, traveling from %s to %s. Expected arrival time: %s",
                         previousLocation.getName(),
                         currentLocation.getName(),
-                        currentLocation.getArrivalTime());
+                        currentLocation.getArrivalTime().format(formatter));
             }else {
                 result = String.format("On route, stationed at %s. Leaving to %s at %s.",
                         currentLocation.getName(),
-                        currentLocation.getDepartureTime(),
+                        currentLocation.getDepartureTime().format(formatter),
                         nextLocation.getName());
             }
         }
@@ -62,18 +64,18 @@ public final class LocationInfo {
                 result = String.format("Route not started. Starting at %s, next stop %s at %s",
                         currentLocation.getName(),
                         nextLocation.getName(),
-                        currentLocation.getDepartureTime());
+                        currentLocation.getDepartureTime().format(formatter));
             }
         }
         if (currentLocation.getType().equals(LocationType.INTERMEDIATE)) {
             if (currentLocation.getArrivalTime().isBefore(time)) {
                 result = String.format("Route in progress, traveling to %s. Expected arrival time: %s",
                         currentLocation.getName(),
-                        currentLocation.getArrivalTime());
+                        currentLocation.getArrivalTime().format(formatter));
             } else {
                 result = String.format("Route in progress, stationed at %s. Leaving to %s at %s.",
                         currentLocation.getName(),
-                        currentLocation.getDepartureTime(),
+                        currentLocation.getDepartureTime().format(formatter),
                         nextLocation.getName());
             }
         }
@@ -93,18 +95,18 @@ public final class LocationInfo {
                 result = String.format("Package scheduled at %s, next stop %s, departing at %s",
                         currentLocation.getName(),
                         nextLocation.getName(),
-                        currentLocation.getDepartureTime());
+                        currentLocation.getDepartureTime().format(formatter));
             }
         }
         if (currentLocation.getType().equals(LocationType.INTERMEDIATE)) {
             if (currentLocation.getArrivalTime().isBefore(time)) {
                 result = String.format("Package in transit, traveling to %s. Expected arrival time: %s",
                         currentLocation.getName(),
-                        currentLocation.getArrivalTime());
+                        currentLocation.getArrivalTime().format(formatter));
             } else {
                 result = String.format("Package stationary at %s. Leaving to %s at %s.",
                         currentLocation.getName(),
-                        currentLocation.getDepartureTime(),
+                        currentLocation.getDepartureTime().format(formatter),
                         nextLocation.getName());
             }
         }
