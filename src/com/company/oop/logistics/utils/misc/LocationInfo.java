@@ -18,6 +18,7 @@ public final class LocationInfo {
     private Location previousLocation;
     private Location nextLocation;
     private Location locationAfterNext;
+    private Location lastLocation;
 
 
     public LocationInfo(LocationService locationService, List<Integer> locationIds, LocalDateTime time) {
@@ -95,29 +96,40 @@ public final class LocationInfo {
 
     public String getPackageStatus() {
         String result = "";
-        if (currentLocation.getType().equals(LocationType.START)) {
+        if (locationIds.size() == 1){
+            result = String.format("Package is not yet assigned, stationed at %s", currentLocation.getName());
+            return result;
+        }
+        if (currentLocation.getType().equals(LocationType.END)) {
             if (nextLocation != null) {
-                result = String.format("Package scheduled at %s, next stop %s, departing at %s",
+                result = String.format("Package scheduled at %s, departing at %s, expected arrival to %s at %s",
                         currentLocation.getName(),
-                        nextLocation.getName(),
-                        currentLocation.getDepartureTime().format(formatter));
+                        nextLocation.getDepartureTime().format(formatter),
+                        lastLocation.getName(),
+                        lastLocation.getArrivalTime().format(formatter));
+            }else{
+                result = String.format("Package delivered, stationed at %s", currentLocation.getName());
             }
         }
         if (currentLocation.getType().equals(LocationType.INTERMEDIATE)) {
             if (currentLocation.getArrivalTime().isBefore(time)) {
-                result = String.format("Package in transit, traveling to %s. Expected arrival time: %s",
-                        currentLocation.getName(),
-                        currentLocation.getArrivalTime().format(formatter));
+                result = String.format("Package in transit, expected arrival to %s at %s",
+                        lastLocation.getName(),
+                        lastLocation.getArrivalTime().format(formatter));
             } else {
-                result = String.format("Package stationary at %s. Leaving to %s at %s.",
+                result = String.format("Package stationary at %s. Departing at %s. Expected arrival to %s at %s",
                         currentLocation.getName(),
                         currentLocation.getDepartureTime().format(formatter),
-                        nextLocation.getName());
+                        lastLocation.getName(),
+                        lastLocation.getArrivalTime());
             }
         }
-
-        if (currentLocation.getType().equals(LocationType.END)) {
-            result = String.format("Package delivered, stationed at %s", currentLocation.getName());
+        if (currentLocation.getType().equals(LocationType.START)) {
+            result = String.format("Package scheduled at %s, departing at %s, expected arrival to %s at %s",
+                    currentLocation.getName(),
+                    currentLocation.getDepartureTime().format(formatter),
+                    lastLocation.getName(),
+                    lastLocation.getArrivalTime().format(formatter));
         }
         return result;
     }
@@ -127,6 +139,7 @@ public final class LocationInfo {
             return;
         }
         List<Location> locations = locationIds.stream().map(locationService::getLocationById).toList();
+        lastLocation = locations.get(locations.size() - 1);
 
         for (int i = locations.size() - 1; i > 0 ; i--) {
             if (isMatch(locations.get(i))){
