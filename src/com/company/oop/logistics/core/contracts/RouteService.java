@@ -5,19 +5,16 @@ import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface RouteService {
     List<DeliveryRoute> getRoutes();
 
-    DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities);
+    DeliveryRoute createDeliveryRoute(LocalDateTime startTime, List<City> cities);
 
     void assignVehicleToRoute(int vehicleId, int deliveryRouteId);
 
     boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime);
-
-    ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination);
 
     DeliveryRoute getRouteById(int routeId);
 

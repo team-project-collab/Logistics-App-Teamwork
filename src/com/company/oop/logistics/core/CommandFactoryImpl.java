@@ -45,7 +45,7 @@ public class CommandFactoryImpl implements CommandFactory {
             case CREATEDELIVERYPACKAGE:
                 return new CreateDeliveryPackageCommand(deliveryPackageService,customerService);
             case FINDROUTESSERVICINGSTARTANDEND:
-                return new FindRoutesServicingStartAndEndCommand(routeService);
+                return new FindRoutesServicingStartAndEndCommand(routeService, locationService);
             case ASSIGNPACKAGE:
                 return new AssignPackageCommand(deliveryPackageService, routeService);
             case CREATECUSTOMERCONTACTINFO:

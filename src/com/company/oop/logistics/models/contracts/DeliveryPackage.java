@@ -1,16 +1,16 @@
 package com.company.oop.logistics.models.contracts;
 
 import com.company.oop.logistics.models.enums.City;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface DeliveryPackage extends Identifiable{
     double getWeightKg();
   
     boolean isAssigned();
 
-    ArrayList<Integer> getLocations();
+    List<Integer> getLocations();
 
-    void setLocations(ArrayList<Integer> locationIds);
+    void setLocations(List<Integer> locationIds);
   
     City getStartLocation();
   

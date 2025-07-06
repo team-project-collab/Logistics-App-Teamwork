@@ -1,7 +1,6 @@
 package com.company.oop.logistics.utils.misc;
 
 import com.company.oop.logistics.core.contracts.LocationService;
-import com.company.oop.logistics.models.LocationImpl;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.LocationType;
 
@@ -95,9 +94,6 @@ public final class LocationInfo {
     }
 
     public String getPackageStatus() {
-        if (currentLocation == null){
-            return "Package is not yet assigned.";
-        }
         String result = "";
         if (currentLocation.getType().equals(LocationType.START)) {
             if (nextLocation != null) {
