@@ -211,6 +211,13 @@ public class RouteServiceImpl implements RouteService {
         return Collections.max(getLoad(routeId, startLocation, endLocation).entrySet(), Map.Entry.comparingByValue()).getValue();
     }
 
+    public double getFreeCapacity(int routeId, City startLocation, City endLocation){
+        DeliveryRoute route = getRouteById(routeId);
+        double capacity = vehicleService.getVehicleById(route.getAssignedVehicleId()).getCapacity();
+        double load = getMaxLoad(routeId, startLocation, endLocation);
+        return capacity - load;
+    }
+
     private List<Integer> generateRouteLocations(LocalDateTime startTime, List<City> cities) {
         ArrayList<Location> result = new ArrayList<>();
         LocalDateTime arrivalTime = null;

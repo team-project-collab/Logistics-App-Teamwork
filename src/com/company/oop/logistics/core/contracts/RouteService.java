@@ -20,9 +20,11 @@ public interface RouteService {
 
     void save();
 
-    void assignPackage(int packageId, int deliveryRouteId);
+    void assignPackage(int deliveryRouteId, int packageId);
 
     double getMaxLoad(int routeId, City startLocation, City endLocation);
 
     void bulkAssignPackages(int deliveryRouteId, LocalDateTime time);
+
+    double getFreeCapacity(int routeId, City startLocation, City endLocation);
 }
