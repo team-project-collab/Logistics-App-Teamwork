@@ -156,7 +156,7 @@ public class RouteServiceImpl implements RouteService {
 
         Truck assignedVehicle = vehicleService.getVehicleById(deliveryRoute.getAssignedVehicleId());
 
-        ArrayList<Location> locationsToAdd =
+        List<Location> locationsToAdd =
                 getLocations(deliveryRouteId, deliveryPackage.getStartLocation(), deliveryPackage.getEndLocation());
 
         if((deliveryPackage.getWeightKg() +
@@ -167,6 +167,7 @@ public class RouteServiceImpl implements RouteService {
         if (locationsToAdd.get(0).getDepartureTime().isBefore(LocalDateTime.now())){
             throw new IllegalStateException(ERROR_ROUTE_STARTED_BEFORE_PACKAGE_ASSIGN);
         }
+        locationsToAdd = locationService.trimLocations(locationsToAdd);
         deliveryPackage.setLocations(locationsToAdd.stream().map(Identifiable::getId)
                 .collect(Collectors.toCollection(ArrayList::new)));
         deliveryRoute.addPackage(deliveryPackage.getId());
