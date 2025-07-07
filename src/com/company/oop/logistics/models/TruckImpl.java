@@ -5,11 +5,15 @@ import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.TruckName;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TruckImpl extends Vehicle implements Truck {
     private int capacity;
     private int maxRange;
     private int id;
     private TruckName truckName;
+    private final List<Integer> locationIds = new ArrayList<>();
 
     private static int idScania;
     private static int idMan;
@@ -20,7 +24,6 @@ public class TruckImpl extends Vehicle implements Truck {
         super();
         setTruckName(ParsingHelpers.tryParseEnum(name, TruckName.class, String.format("Wrong truck type %s", name)));
         setUpTruck();
-
     }
 
     public static void setIds(int scaniaStartId, int manStartId, int actrosStartId){
@@ -62,7 +65,6 @@ public class TruckImpl extends Vehicle implements Truck {
         }
     }
 
-
     public int getCapacity() {
         return capacity;
     }
@@ -93,5 +95,22 @@ public class TruckImpl extends Vehicle implements Truck {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public List<Integer> getLocationIds() {
+        return new ArrayList<>(locationIds);
+    }
+
+    public void addLocationIds(List<Integer> locationIds) {
+        this.locationIds.addAll(locationIds);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("""
+                id: %d
+                Brand: %d
+                Capacity: %d
+                Max range: %d""");
     }
 }

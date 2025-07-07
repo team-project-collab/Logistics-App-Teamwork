@@ -1,16 +1,10 @@
 package com.company.oop.logistics.core;
 
-import com.company.oop.logistics.commands.FindRoutesServicingStartAndEndCommand;
-import com.company.oop.logistics.commands.GetPackageStateCommand;
-import com.company.oop.logistics.commands.GetUnassignedPackagesCommand;
-import com.company.oop.logistics.commands.assign.AssignPackageCommand;
-import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
-import com.company.oop.logistics.commands.CommandType;
-import com.company.oop.logistics.commands.assign.BulkAssignPackagesCommand;
+import com.company.oop.logistics.commands.*;
+import com.company.oop.logistics.commands.assign.*;
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.commands.creation.*;
-import com.company.oop.logistics.commands.listing.ListLocationsCommand;
-import com.company.oop.logistics.commands.listing.ListRoutesCommand;
+import com.company.oop.logistics.commands.listing.*;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
@@ -51,7 +45,7 @@ public class CommandFactoryImpl implements CommandFactory {
             case CREATEDELIVERYPACKAGE:
                 return new CreateDeliveryPackageCommand(deliveryPackageService,customerService);
             case FINDROUTESSERVICINGSTARTANDEND:
-                return new FindRoutesServicingStartAndEndCommand(routeService);
+                return new FindRoutesServicingStartAndEndCommand(routeService, locationService);
             case ASSIGNPACKAGE:
                 return new AssignPackageCommand(deliveryPackageService, routeService);
             case CREATECUSTOMERCONTACTINFO:
@@ -62,6 +56,8 @@ public class CommandFactoryImpl implements CommandFactory {
                 return new GetUnassignedPackagesCommand(deliveryPackageService);
             case BULKASSIGNPACKAGES:
                 return new BulkAssignPackagesCommand(deliveryPackageService, routeService);
+            case LISTVEHICLES:
+                return new ListVehiclesCommand(vehicleService, locationService);
         }
         return null;
     }

@@ -19,7 +19,7 @@ public class EngineImpl implements Engine {
     public EngineImpl() {
         PersistenceManager persistenceManager = new PersistenceManager();
         LocationService locationService = new LocationServiceImpl(persistenceManager);
-        VehicleService vehicleService = new VehicleServiceImpl(persistenceManager);
+        VehicleService vehicleService = new VehicleServiceImpl(persistenceManager, locationService);
         DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager,
                 locationService);
         RouteService routeService = new RouteServiceImpl(persistenceManager,
