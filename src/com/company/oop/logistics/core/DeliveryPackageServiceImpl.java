@@ -11,7 +11,6 @@ import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.misc.LocationInfo;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryPackageServiceImpl implements DeliveryPackageService {
@@ -45,6 +44,7 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
                                                  double weightKg, CustomerContactInfo customerContactInfo) {
         DeliveryPackage p = new DeliveryPackageImpl(nextId, startLocation, endLocation,
                 weightKg, customerContactInfo.getId());
+        p.setLocations(List.of(locationService.createLocation(startLocation, LocalDateTime.now(), null).getId()));
         nextId++;
         this.packages.add(p);
         save();
@@ -79,7 +79,7 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
 
     public List<DeliveryPackage> getUnassignedPackages(LocalDateTime time){
         return packages.stream()
-                .filter(p -> p.getLocations() == null || p.getLocations().isEmpty())
+                .filter(p -> p.getLocations().size() == 1)
                 .toList();
     }
 }

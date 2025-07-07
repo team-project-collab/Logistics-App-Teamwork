@@ -28,7 +28,10 @@ public class GetPackageStateCommand implements Command {
         }
         parseParameters(parameters);
 
-        return deliveryPackageService.getPackageState(packageId, time);
+        return String.format("""
+                Information for package id: %d:
+                %s
+                """, packageId, deliveryPackageService.getPackageState(packageId, time));
     }
     private void parseParameters(List<String> parameters){
         packageId = ParsingHelpers.tryParseInteger(parameters.get(0), "package id");

@@ -7,6 +7,7 @@ import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GetUnassignedPackagesCommand implements Command {
     private static final int EXPECTED_NUMBER_OF_PARAMETERS = 1;
@@ -36,9 +37,9 @@ public class GetUnassignedPackagesCommand implements Command {
             result.append(MESSAGE_LIST_PACKAGES);
             result.append(System.lineSeparator());
         }
-        for (DeliveryPackage deliveryPackage: unassignedPackages){
-            result.append(deliveryPackage.toString()).append(System.lineSeparator());
-        }
+        result.append(
+                unassignedPackages.stream().map(Object::toString).collect(Collectors.joining(System.lineSeparator()))
+        );
         return result.toString();
     }
     private void parseParameters(List<String> parameters){

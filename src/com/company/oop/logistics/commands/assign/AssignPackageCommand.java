@@ -28,7 +28,7 @@ public class AssignPackageCommand implements Command {
             throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
         parseParameters(parameters);
-        deliveryRouteService.assignPackage(packageId, deliveryRouteId);
+        deliveryRouteService.assignPackage(deliveryRouteId, packageId);
         return String.format(MESSAGE_PACKAGE_ADDED_TO_ROUTE, packageId ,deliveryRouteId);
     }
     private void parseParameters(List<String> parameters){

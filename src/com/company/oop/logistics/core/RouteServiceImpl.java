@@ -24,7 +24,6 @@ public class RouteServiceImpl implements RouteService {
     private final PersistenceManager persistenceManager;
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route at this time";
     public static final String ERROR_NO_ROUTE_ID = "There is no delivery route with id %s.";
-    public static final String ERROR_ORIGIN_EQUALS_DESTINATION = "Origin and destination must be different.";
     public static final String ERROR_NO_VEHICLE = "Route %d has no vehicle yet.";
     public static final String ERROR_CITIES_NOT_UNIQUE = "One route can visit the same city only once.";
     public static final String ERROR_ROUTE_STARTED_BEFORE_PACKAGE_ASSIGN = "Cannot assign the package, as the route already left the starting location";
@@ -51,12 +50,7 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public List<DeliveryRoute> getRoutes() {
-        return routes;
-    }
-
-    @Override
-    public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, ArrayList<City> cities) {
+    public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, List<City> cities) {
         ValidationHelpers.validateUniqueList(cities, ERROR_CITIES_NOT_UNIQUE);
         List<Integer> locations = generateRouteLocations(startTime, cities);
         DeliveryRoute route = new DeliveryRouteImpl(nextId, startTime, locations);
@@ -66,25 +60,35 @@ public class RouteServiceImpl implements RouteService {
         return route;
     }
 
-    public List<Integer> generateRouteLocations(LocalDateTime startTime, ArrayList<City> cities) {
-        ArrayList<Location> result = new ArrayList<>();
-        LocalDateTime arrivalTime = null;
-        LocalDateTime departureTime = startTime;
-        for (int i = 0; i < cities.size(); i++) {
-            long timeToTravel = 0;
-            if (i < cities.size() - 1) {
-                timeToTravel = CityDistance.getTravelTimeSeconds(cities.get(i),cities.get(i + 1), INT_TRUCK_SPEED);
-            }else{
-                departureTime = null;
-            }
-            result.add(locationService.createLocation(cities.get(i), arrivalTime, departureTime));
-            if (departureTime != null) {
-                arrivalTime = departureTime.plusSeconds(timeToTravel);
-                departureTime = arrivalTime.plusMinutes(RESTING_MINUTES);
+    @Override
+    public List<DeliveryRoute> getRoutes() {
+        return new ArrayList<>(routes);
+    }
+
+    @Override
+    public List<DeliveryRoute> getRoutesInProgress() {
+        LocalDateTime now = LocalDateTime.now();
+        List<DeliveryRoute> result = new ArrayList<>();
+        for (DeliveryRoute route: getRoutes()){
+            List<Location> routeLocations = route.getLocations().stream().map(locationService::getLocationById).toList();
+            Location startLocation = routeLocations.get(0);
+            Location endLocation = routeLocations.get(routeLocations.size() - 1);
+            if (startLocation.getDepartureTime().isBefore(now) && endLocation.getArrivalTime().isAfter(now)){
+                result.add(route);
             }
         }
-        return result.stream().map(Location::getId).toList();
+        return result;
     }
+
+    @Override
+    public DeliveryRoute getRouteById(int deliveryRouteId) {
+        return routes.stream()
+                .filter(r -> r.getId() == deliveryRouteId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_NO_ROUTE_ID, deliveryRouteId)));
+    }
+
+
 
 
     @Override
@@ -121,29 +125,6 @@ public class RouteServiceImpl implements RouteService {
         route.assignTruck(vehicle.getId());
         vehicleService.assignVehicle(vehicleId, route.getLocations());
         save();
-    }
-
-    @Override
-    public ArrayList<Integer> findRoutesServicingStartAndEnd(City origin, City destination) {
-        if (origin.equals(destination)) {
-            throw new IllegalArgumentException(ERROR_ORIGIN_EQUALS_DESTINATION);
-        }
-        ArrayList<Integer> result = new ArrayList<>();
-
-        for (DeliveryRoute route : routes) {
-            List<Location> routeLocations = route.getLocations().stream()
-                    .map(locationService::getLocationById).toList();
-            for (int i = 0; i < routeLocations.size() - 1; i++) {
-                if (routeLocations.get(i).getName().equals(origin)) {
-                    for (int j = i; j < routeLocations.size(); j++) {
-                        if (routeLocations.get(j).getName().equals(destination)) {
-                            result.add(route.getId());
-                        }
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     @Override
@@ -188,7 +169,6 @@ public class RouteServiceImpl implements RouteService {
             }
         }
     }
-
 
     public HashMap<City, Double> getLoad(int routeId, City startLocation, City endLocation){
         boolean withinSubroute = false;
@@ -246,13 +226,31 @@ public class RouteServiceImpl implements RouteService {
         return Collections.max(getLoad(routeId, startLocation, endLocation).entrySet(), Map.Entry.comparingByValue()).getValue();
     }
 
-
-
-    @Override
-    public DeliveryRoute getRouteById(int deliveryRouteId) {
-        return routes.stream()
-                .filter(r -> r.getId() == deliveryRouteId)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_NO_ROUTE_ID, deliveryRouteId)));
+    public double getFreeCapacity(int routeId, City startLocation, City endLocation){
+        DeliveryRoute route = getRouteById(routeId);
+        double capacity = vehicleService.getVehicleById(route.getAssignedVehicleId()).getCapacity();
+        double load = getMaxLoad(routeId, startLocation, endLocation);
+        return capacity - load;
     }
+
+    private List<Integer> generateRouteLocations(LocalDateTime startTime, List<City> cities) {
+        ArrayList<Location> result = new ArrayList<>();
+        LocalDateTime arrivalTime = null;
+        LocalDateTime departureTime = startTime;
+        for (int i = 0; i < cities.size(); i++) {
+            long timeToTravel = 0;
+            if (i < cities.size() - 1) {
+                timeToTravel = CityDistance.getTravelTimeSeconds(cities.get(i),cities.get(i + 1), INT_TRUCK_SPEED);
+            }else{
+                departureTime = null;
+            }
+            result.add(locationService.createLocation(cities.get(i), arrivalTime, departureTime));
+            if (departureTime != null) {
+                arrivalTime = departureTime.plusSeconds(timeToTravel);
+                departureTime = arrivalTime.plusMinutes(RESTING_MINUTES);
+            }
+        }
+        return result.stream().map(Location::getId).toList();
+    }
+
 }
