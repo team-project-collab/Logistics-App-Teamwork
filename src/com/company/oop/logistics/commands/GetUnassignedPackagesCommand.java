@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GetUnassignedPackagesCommand implements Command {
-    private static final int EXPECTED_NUMBER_OF_PARAMETERS = 1;
+    private static final int EXPECTED_NUMBER_OF_PARAMETERS = 0;
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
     public static final String MESSAGE_NO_PACKAGES = "There are no unassigned packages.";
@@ -28,7 +28,7 @@ public class GetUnassignedPackagesCommand implements Command {
         if (parameters.size() != EXPECTED_NUMBER_OF_PARAMETERS){
             throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
-        parseParameters(parameters);
+        time = LocalDateTime.now();
         StringBuilder result = new StringBuilder();
         List<DeliveryPackage> unassignedPackages = deliveryPackageService.getUnassignedPackages(time);
         if (unassignedPackages.isEmpty()){
@@ -42,7 +42,5 @@ public class GetUnassignedPackagesCommand implements Command {
         );
         return result.toString();
     }
-    private void parseParameters(List<String> parameters){
-        time = ParsingHelpers.tryParseLocalDateTime(parameters.get(0), "date time");
-    }
+
 }
