@@ -1,0 +1,70 @@
+package com.company.oop.logistics.utils.validation;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ValidationHelpers {
+
+    private static final String INVALID_NUMBER_OF_ARGUMENTS = "Invalid number of arguments. Expected: %d; received: %d.";
+    private static final String TIME_IN_THE_PAST_ERR = "Time for %s cannot be in the past.";
+    private static final int MINUTES_TOLERANCE = 1;
+
+    public static void validateIntRange(int value, int min, int max, String message) {
+        if (value < min || value > max) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void validateDecimalRange(double value, double min, double max, String message) {
+        if (value < min || value > max) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void validateArgumentsCount(List<String> list, int expectedNumberOfParameters) {
+        if (list.size() < expectedNumberOfParameters) {
+            throw new IllegalArgumentException(
+                    String.format(INVALID_NUMBER_OF_ARGUMENTS, expectedNumberOfParameters, list.size())
+            );
+        }
+    }
+
+    public static void validatePattern(String value, String pattern, String message) {
+        Pattern patternToMatch = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = patternToMatch.matcher(value);
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void validateStringLength(String value, int min, int max, String message) {
+        if (value.length() < min || value.length() > max) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void validateTimeAgainstPresent(LocalDateTime time, String field) {
+        if (time.isBefore(LocalDateTime.now().minusMinutes(MINUTES_TOLERANCE))) {
+            throw new IllegalArgumentException(String.format(TIME_IN_THE_PAST_ERR, field));
+        }
+    }
+
+    public static void validateTimeAgainstTime(LocalDateTime timeBefore, LocalDateTime timeAfter, String fieldBefore, String fieldAfter) {
+        if (!timeAfter.isAfter(timeBefore)) {
+            throw new IllegalArgumentException(String.format("Time for %s cannot be after time for %s.", fieldBefore, fieldAfter));
+        }
+    }
+
+    public static <T> void validateUniqueList(List<T> list, String message) {
+        Set<T> uniqueSet = new HashSet<>();
+        for (T item : list) {
+            if (!uniqueSet.add(item)) {
+                throw new IllegalArgumentException(message);
+            }
+        }
+    }
+}

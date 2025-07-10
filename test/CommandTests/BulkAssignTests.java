@@ -37,7 +37,7 @@ public class BulkAssignTests {
         }
         PersistenceManager persistenceManager = new PersistenceManager();
         customerService = new CustomerServiceImpl(persistenceManager);
-        vehicleService = new VehicleServiceImpl(persistenceManager);
+        vehicleService = new VehicleServiceImpl(persistenceManager, locationService);
         locationService = new LocationServiceImpl(persistenceManager);
         deliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager, locationService);
         routeService = new RouteServiceImpl(persistenceManager, vehicleService, locationService, deliveryPackageService);
@@ -46,7 +46,7 @@ public class BulkAssignTests {
                 "Etienne", "+359 8888 8888", "etko8@gmail.com", City.MEL
         );
 
-        vehicleService.createVehicle("scania");
+        vehicleService.createVehicle("scania", City.SYD);
 
         routeService.createDeliveryRoute(
                 LocalDateTime.of(2025, 10, 10, 20, 10),
