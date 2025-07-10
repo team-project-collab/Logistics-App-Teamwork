@@ -49,10 +49,12 @@ public class ListRoutesCommand implements Command {
                           - Assigned truck id: %s
                           - Current load: %s
                           - Free capacity: %s
+                          - Total distance: %d
                           """,
                         route.getAssignedVehicleId(),
                         routeService.getMaxLoad(route.getId(), originName, destinationName),
-                        routeService.getFreeCapacity(route.getId(), originName, destinationName)));
+                        routeService.getFreeCapacity(route.getId(), originName, destinationName),
+                        route.getDistance()));
             }catch (RuntimeException e){
                 output.append(" - No assigned truck yet\n");
             }

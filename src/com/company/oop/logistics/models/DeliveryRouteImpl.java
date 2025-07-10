@@ -14,12 +14,18 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     private List<Integer> locationIds = new ArrayList<>();
     private final List<Integer> assignedPackageIds = new ArrayList<>();
     private int assignedVehicleId;
+    private final int distance;
 
 
-    public DeliveryRouteImpl(int id, LocalDateTime startTime, List<Integer> locationIds){
+    public DeliveryRouteImpl(int id, LocalDateTime startTime, List<Integer> locationIds, int distance){
+        this.distance = distance;
         setLocations(locationIds);
         setStartTime(startTime);
         setId(id);
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
     public LocalDateTime getStartTime() {

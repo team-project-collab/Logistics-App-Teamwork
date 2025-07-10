@@ -3,6 +3,7 @@ package com.company.oop.logistics.utils.constants;
 import com.company.oop.logistics.models.enums.City;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class CityDistance {
@@ -84,6 +85,14 @@ public abstract class CityDistance {
 
     public static int getDistance(City city1, City city2){
         return distances.get(city1).get(city2);
+    }
+
+    public static int getDistance(List<City> cities){
+        int total = 0;
+        for (int i = 0; i < cities.size() - 1; i++) {
+            total += getDistance(cities.get(i), cities.get(i + 1));
+        }
+        return total;
     }
 
     public static long getTravelTimeSeconds(City city1, City city2, int vehicleSpeed){

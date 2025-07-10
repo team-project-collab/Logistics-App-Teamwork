@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 
 public class RouteServiceImpl implements RouteService {
+    public static final String ERROR_LOW_RANGE = "The truck (id %d) does not have sufficient range to cover this route. Required %d, truck has only %d.";
     private final String storagePath = "data/routes.xml";
     private final PersistenceManager persistenceManager;
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route at this time";
@@ -53,7 +54,8 @@ public class RouteServiceImpl implements RouteService {
     public DeliveryRoute createDeliveryRoute(LocalDateTime startTime, List<City> cities) {
         ValidationHelpers.validateUniqueList(cities, ERROR_CITIES_NOT_UNIQUE);
         List<Integer> locations = generateRouteLocations(startTime, cities);
-        DeliveryRoute route = new DeliveryRouteImpl(nextId, startTime, locations);
+        int distance = CityDistance.getDistance(cities);
+        DeliveryRoute route = new DeliveryRouteImpl(nextId, startTime, locations, distance);
         nextId++;
         this.routes.add(route);
         save();
@@ -88,9 +90,6 @@ public class RouteServiceImpl implements RouteService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_NO_ROUTE_ID, deliveryRouteId)));
     }
 
-
-
-
     @Override
     public boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime) {
         boolean result = false;
@@ -114,6 +113,10 @@ public class RouteServiceImpl implements RouteService {
         DeliveryRoute route = getRouteById(deliveryRouteId);
         Location origin = locationService.getLocationById(route.getOrigin());
 
+        if (vehicle.getMaxRange() < route.getDistance()){
+            throw new IllegalArgumentException(String.format(ERROR_LOW_RANGE,
+                    vehicleId, route.getDistance(), vehicle.getMaxRange()));
+        }
         if (isVehicleAssigned(vehicle,origin.getDepartureTime())) {
             throw new IllegalArgumentException(String.format(ERROR_VEHICLE_ALREADY_ASSIGNED, vehicle.getId()));
         }
@@ -252,5 +255,4 @@ public class RouteServiceImpl implements RouteService {
         }
         return result.stream().map(Location::getId).toList();
     }
-
 }
