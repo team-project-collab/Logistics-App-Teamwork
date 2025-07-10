@@ -14,7 +14,7 @@ public class CustomerContactInfo implements Identifiable {
     private City address;
 
     public CustomerContactInfo(int id, String fullName, String phoneNumber, String email, City address) {
-        this.id = id;
+        setId(id);
         setFullName(fullName);
         setPhoneNumber(phoneNumber);
         setEmail(email);
@@ -23,6 +23,10 @@ public class CustomerContactInfo implements Identifiable {
 
     public String getEmail() {
         return email;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     private void setEmail(String email) {
