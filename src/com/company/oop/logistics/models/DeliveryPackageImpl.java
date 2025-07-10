@@ -8,6 +8,7 @@ import java.util.List;
 
 public class DeliveryPackageImpl implements DeliveryPackage {
     public static final String PACKAGE_TO_STRING = "Package id: %d; Origin: %s; Destination: %s; Weight: %.1f kg";
+
     private int id;
     private City startLocation;
     private City endLocation;

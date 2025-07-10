@@ -2,9 +2,11 @@ package com.company.oop.logistics.models;
 
 import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.utils.validation.ValidationHelpers;
 
 
 public class CustomerContactInfo implements Identifiable {
+    public static final String ERROR_CITY_IS_NULL = "Address (City) cannot be null.";
     private int id;
     private String fullName;
     private String phoneNumber;
@@ -24,10 +26,7 @@ public class CustomerContactInfo implements Identifiable {
     }
 
     private void setEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
-        if (email == null || !email.matches(emailRegex)) {
-            throw new IllegalArgumentException("Invalid email address provided: " + email);
-        }
+        ValidationHelpers.validateEmail(email);
         this.email = email.trim();
     }
 
@@ -36,17 +35,7 @@ public class CustomerContactInfo implements Identifiable {
     }
 
     private void setFullName(String fullName) {
-
-        String nameRegex = "^[A-Za-z][A-Za-z\\s'-]*$";
-
-        if (fullName == null || fullName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Full name cannot be null or empty.");
-        }
-
-        if (!fullName.matches(nameRegex)) {
-            throw new IllegalArgumentException("Invalid full name format.");
-        }
-
+        ValidationHelpers.validateName(fullName);
         this.fullName = fullName.trim();
     }
 
@@ -57,15 +46,7 @@ public class CustomerContactInfo implements Identifiable {
 
 
     private void setPhoneNumber(String phoneNumber) {
-        if (phoneNumber == null || phoneNumber.trim().isEmpty()) {
-            throw new IllegalArgumentException("Phone number cannot be null or empty.");
-        }
-
-        String phoneRegex = "^[+]?[(]?[0-9]{1,4}[)]?[-\\s./0-9]{6,}$";
-        if (!phoneNumber.matches(phoneRegex)) {
-            throw new IllegalArgumentException("Invalid phone number format.");
-        }
-
+        ValidationHelpers.validatePhoneNumber(phoneNumber);
         this.phoneNumber = phoneNumber.trim();
     }
 
@@ -77,7 +58,7 @@ public class CustomerContactInfo implements Identifiable {
 
     private void setAddress(City address) {
         if (address == null) {
-            throw new IllegalArgumentException("Address (City) cannot be null.");
+            throw new IllegalArgumentException(ERROR_CITY_IS_NULL);
         }
         this.address = address;
     }
