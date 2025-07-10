@@ -4,7 +4,6 @@ import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.modelservices.contracts.DeliveryPackageService;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,6 @@ public class GetUnassignedPackagesCommand implements Command {
     public static final String MESSAGE_LIST_PACKAGES = "Here is the list of unassigned packages:";
 
     private final DeliveryPackageService deliveryPackageService;
-    private LocalDateTime time;
 
     public GetUnassignedPackagesCommand(DeliveryPackageService deliveryPackageService) {
         this.deliveryPackageService = deliveryPackageService;

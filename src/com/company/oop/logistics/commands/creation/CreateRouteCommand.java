@@ -3,7 +3,6 @@ package com.company.oop.logistics.commands.creation;
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.modelservices.contracts.RouteService;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
-import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 

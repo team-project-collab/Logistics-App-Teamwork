@@ -9,9 +9,7 @@ import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FindRoutesServicingStartAndEndCommand implements Command {
@@ -22,8 +20,13 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
     private static final String INVALID_CITY = "City %s not supported.";
-    public static final String ROUTE_LIST_STRING = "\n===\nRoute id: %d;\n Origin: %s;\n Destination: %s;\n " +
-            "Departing %s at %s;\n Reaching destination %s at %s";
+    public static final String ROUTE_LIST_STRING = """
+            ===
+            Route id: %d;
+             Origin: %s;
+             Destination: %s;
+             Departing %s at %s;
+             Reaching destination %s at %s""";
 
     private final RouteService routeService;
     private final LocationService locationService;

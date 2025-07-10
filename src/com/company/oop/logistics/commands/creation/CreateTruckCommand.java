@@ -12,7 +12,7 @@ public class CreateTruckCommand implements Command {
     public static final int EXPECTED_NUMBER_OF_PARAMETERS = 2;
     public static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters.",
             EXPECTED_NUMBER_OF_PARAMETERS);
-    private static final String INVALID_TRUCK = "Truck %s not supported.";
+    private static final String INVALID_CITY = "City %s not supported.";
 
     private final VehicleService vehicleService;
     private String truckName;
@@ -34,6 +34,6 @@ public class CreateTruckCommand implements Command {
 
     private void parseParameters(List<String> parameters){
         truckName = parameters.get(0);
-        cityName = ParsingHelpers.tryParseEnum(parameters.get(1), City.class, "city name");
+        cityName = ParsingHelpers.tryParseEnum(parameters.get(1), City.class, String.format(INVALID_CITY, parameters.get(1)));
     }
 }

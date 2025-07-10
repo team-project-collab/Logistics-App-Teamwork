@@ -8,7 +8,6 @@ import com.company.oop.logistics.commands.listing.*;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.services.AssignmentService;
-import com.company.oop.logistics.services.AssignmentServiceImpl;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 public class CommandFactoryImpl implements CommandFactory {
