@@ -26,7 +26,7 @@
 ## 🧾 Command Reference
 
 - Accepted timestamp format for the commands: `YYYY-MM-DD-HH:MM`.
-- The keyword `"now"` can be used to insert the current timestamp automatically.
+- The keyword `"now"` can be used to insert the current timestamp automatically. The keyword can also be used to add minutes or hours to the current time. Example: "now+5m", "now+3h".
 
 ### 📍 1. Route Setup
 
