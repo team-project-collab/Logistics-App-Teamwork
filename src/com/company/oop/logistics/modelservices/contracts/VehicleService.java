@@ -12,7 +12,7 @@ public interface VehicleService {
 
     Truck getVehicleById(int vehicleId);
 
-    List<Truck> getVehicles();
+    List<Truck> getAllVehicles();
 
     void assignVehicle(int vehicleId, List<Integer> locationIds);
 

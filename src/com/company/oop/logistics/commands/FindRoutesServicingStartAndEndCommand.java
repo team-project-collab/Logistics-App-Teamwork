@@ -43,7 +43,7 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
             throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
         parseParameters(parameters);
-        ArrayList<DeliveryRoute> result = routeService.findRoutesServicingStartAndEnd(origin, destination);
+        List<DeliveryRoute> result = routeService.findRoutesServicingStartAndEnd(origin, destination);
         if (result.isEmpty()){
             return String.format(MESSAGE_NO_ROUTES, origin, destination);
         }

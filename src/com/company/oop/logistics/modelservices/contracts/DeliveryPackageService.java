@@ -10,12 +10,13 @@ import java.util.List;
 public interface DeliveryPackageService {
     DeliveryPackage createDeliveryPackage(City startLocation, City endLocation, double weightKg, CustomerContactInfo customerContactInfo);
 
-    void assignPackage(int deliveryRouteId, int packageId, List<Integer> locationIds);
-
-    String getPackageState(int packageId, LocalDateTime time);
-
     DeliveryPackage getDeliveryPackageById(int packageId);
+
+    List<DeliveryPackage> getAllDeliveryPackages();
 
     List<DeliveryPackage> getUnassignedPackages();
 
+    String getPackageState(int packageId, LocalDateTime time);
+
+    void assignPackage(int deliveryRouteId, int packageId, List<Integer> locationIds);
 }

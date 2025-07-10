@@ -91,4 +91,8 @@ public class DeliveryPackageImpl implements DeliveryPackage {
         isAssigned = true;
         assignedRoute = routeId;
     }
+
+    public void setAssigned(boolean assigned) {
+        isAssigned = assigned;
+    }
 }

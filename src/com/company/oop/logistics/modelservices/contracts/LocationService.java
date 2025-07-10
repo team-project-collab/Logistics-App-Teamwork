@@ -9,9 +9,9 @@ import java.util.List;
 public interface LocationService {
     Location createLocation(City name, LocalDateTime arrivalTime, LocalDateTime departureTime);
 
-    List<Location> getLocations();
-
     Location getLocationById(int startLocationId);
+
+    List<Location> getAllLocation();
 
     List<Location> trimLocations(List<Location> entryList);
 }

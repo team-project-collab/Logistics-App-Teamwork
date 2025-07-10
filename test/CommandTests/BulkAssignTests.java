@@ -55,7 +55,7 @@ public class BulkAssignTests {
                 LocalDateTime.of(2025, 10, 10, 20, 10),
                 new ArrayList<>(List.of(City.SYD, City.MEL, City.ADL))
         );
-        assignmentService.assignVehicleToRoute(vehicleService.getVehicles().get(0).getId(), 1);
+        assignmentService.assignVehicleToRoute(vehicleService.getAllVehicles().get(0).getId(), 1);
 
 
 

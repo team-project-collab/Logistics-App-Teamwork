@@ -37,7 +37,7 @@ public class ListRoutesCommand implements Command {
         if (onlyActive){
             routesToItterate = routeService.getRoutesInProgress();
         }else{
-            routesToItterate = routeService.getRoutes();
+            routesToItterate = routeService.getAllRoutes();
         }
         if (routesToItterate.isEmpty()){
             output.append(MESSAGE_NO_ROUTES);

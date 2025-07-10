@@ -12,7 +12,7 @@ import java.util.Random;
 
 public abstract class InitializeTrucks {
     public static void execute(VehicleService vehicleService){
-        setIds(vehicleService.getVehicles());
+        setIds(vehicleService.getAllVehicles());
         createTrucks(vehicleService);
     }
 

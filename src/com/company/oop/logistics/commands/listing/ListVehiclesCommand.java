@@ -31,7 +31,7 @@ public class ListVehiclesCommand implements Command {
         LocalDateTime now = LocalDateTime.now();
         StringBuilder output = new StringBuilder();
         parseParameters(parameters);
-        List<Truck> filteredVehicles = vehicleService.getVehicles().stream()
+        List<Truck> filteredVehicles = vehicleService.getAllVehicles().stream()
                 .filter(v -> (cityName == null) ||
                                     vehicleService.getCurrentLocation(v.getId(), now).getName().equals(cityName))
                 .filter(v -> (!onlyFree || vehicleService.isVehicleFree(v.getId(), now)))

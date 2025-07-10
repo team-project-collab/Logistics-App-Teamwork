@@ -15,10 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VehicleServiceImpl implements VehicleService {
-    private final String storagePath = "data/vehicles.xml";
+    private static final String storagePath = "data/vehicles.xml";
+    private static final String ERROR_NO_VEHICLE_ID = "There is no vehicle with id %s.";
+
     private final PersistenceManager persistenceManager;
     private final LocationService locationService;
-    public static final String ERROR_NO_VEHICLE_ID = "There is no vehicle with id %s.";
     private final List<Truck> vehicles;
 
     public VehicleServiceImpl(PersistenceManager persistenceManager, LocationService locationService){
@@ -26,6 +27,10 @@ public class VehicleServiceImpl implements VehicleService {
         this.locationService = locationService;
         vehicles = persistenceManager.loadData(storagePath);
         InitializeTrucks.execute(this);
+    }
+
+    private void save() {
+        persistenceManager.saveData(vehicles, storagePath);
     }
 
     @Override
@@ -38,10 +43,6 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicle;
     }
 
-    public void save() {
-        persistenceManager.saveData(vehicles, storagePath);
-    }
-
     public Truck getVehicleById(int vehicleId) {
         return vehicles.stream()
                 .filter(t -> t.getId() == vehicleId)
@@ -49,7 +50,7 @@ public class VehicleServiceImpl implements VehicleService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_NO_VEHICLE_ID, vehicleId)));
     }
 
-    public List<Truck> getVehicles() {
+    public List<Truck> getAllVehicles() {
         return new ArrayList<>(vehicles);
     }
 
@@ -62,7 +63,7 @@ public class VehicleServiceImpl implements VehicleService {
     public boolean isVehicleFree(int vehicleId, LocalDateTime time){
         List<Integer> vehicleLocationIds = getVehicleById(vehicleId).getLocationIds();
         Location lastLocation = locationService.getLocationById(vehicleLocationIds.get(vehicleLocationIds.size() - 1));
-        return LocalDateTime.now().isAfter(lastLocation.getArrivalTime());
+        return time.isAfter(lastLocation.getArrivalTime());
     }
 
     public Location getCurrentLocation(int vehicleId, LocalDateTime time){
