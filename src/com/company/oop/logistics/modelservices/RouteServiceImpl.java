@@ -19,6 +19,8 @@ public class RouteServiceImpl implements RouteService {
     private static final String ERROR_NO_ROUTE_ID = "There is no delivery route with id %s.";
     private static final String ERROR_CITIES_NOT_UNIQUE = "One route can visit the same city only once.";
     private static final String ERROR_ORIGIN_EQUALS_DESTINATION = "Origin and destination must be different.";
+    private static final String ERROR_ROUTE_LOCATIONS = "Route does not service this package";
+
 
     private static final int INT_TRUCK_SPEED = 87;
     private static final int RESTING_MINUTES = 60;
@@ -136,5 +138,24 @@ public class RouteServiceImpl implements RouteService {
             }
         }
         return result.stream().map(Location::getId).toList();
+    }
+
+    public List<Location> getMatchingLocations(int routeId, City startLocation, City endLocation){
+        boolean withinStartEnd = false;
+        List<Location> packageLocations = new ArrayList<>();
+        List<Location> locations = getRouteById(routeId).getLocations().stream()
+                .map(locationService::getLocationById).toList();
+        for (Location location : locations) {
+            if (location.getName().equals(startLocation)) {
+                withinStartEnd = true;
+            }
+            if (withinStartEnd) {
+                packageLocations.add(location);
+            }
+            if (withinStartEnd && location.getName().equals(endLocation)) {
+                return packageLocations;
+            }
+        }
+        throw new IllegalArgumentException(ERROR_ROUTE_LOCATIONS);
     }
 }

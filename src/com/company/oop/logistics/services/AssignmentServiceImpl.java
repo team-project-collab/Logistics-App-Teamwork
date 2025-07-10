@@ -15,14 +15,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AssignmentServiceImpl implements AssignmentService{
-    public static final String ERROR_LOW_RANGE = "The truck (id %d) does not have sufficient range to cover this route. Required %d, truck has only %d.";
-    public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route at this time";
-    public static final String ERROR_NO_VEHICLE = "Route %d has no vehicle yet.";
-    public static final String ERROR_ROUTE_STARTED_BEFORE_PACKAGE_ASSIGN = "Cannot assign the package, as the route already left the starting location";
-    public static final String ERROR_VEHICLE_LOCATION = "Vehicle is not stationed in the correct city.";
-    public static final String ERROR_PACKAGE_ALREADY_ASSIGNED = "Package is already assigned.";
-    public static final String ERROR_TRUCK_CAPACITY = "Exceeds capacity of truck";
-    public static final String ERROR_ROUTE_LOCATIONS = "Route does not service this package";
+    private static final String ERROR_LOW_RANGE = "The truck (id %d) does not have sufficient range to cover this route. Required %d, truck has only %d.";
+    private static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "Vehicle %d is already assigned to another route at this time";
+    private static final String ERROR_NO_VEHICLE = "Route %d has no vehicle yet.";
+    private static final String ERROR_ROUTE_STARTED_BEFORE_PACKAGE_ASSIGN = "Cannot assign the package, as the route already left the starting location";
+    private static final String ERROR_VEHICLE_LOCATION = "Vehicle is not stationed in the correct city.";
+    private static final String ERROR_PACKAGE_ALREADY_ASSIGNED = "Package is already assigned.";
+    private static final String ERROR_TRUCK_CAPACITY = "Exceeds capacity of truck";
 
     private final RouteService deliveryRouteService;
     private final LocationService locationService;
@@ -61,8 +60,10 @@ public class AssignmentServiceImpl implements AssignmentService{
     public void assignPackage(int deliveryRouteId, int deliveryPackageId) {
         DeliveryRoute deliveryRoute = deliveryRouteService.getRouteById(deliveryRouteId);
         DeliveryPackage deliveryPackage = deliveryPackageService.getDeliveryPackageById(deliveryPackageId);
-        List<Location> locationsToAdd =
-                getLocations(deliveryRouteId, deliveryPackage.getStartLocation(), deliveryPackage.getEndLocation());
+        List<Location> locationsToAdd = deliveryRouteService.getMatchingLocations(
+                deliveryRouteId,
+                deliveryPackage.getStartLocation(),
+                deliveryPackage.getEndLocation());
 
         validateVehicleIsAssigned(deliveryRoute);
         validateRouteCapacity(deliveryPackage, deliveryRoute);
@@ -138,25 +139,6 @@ public class AssignmentServiceImpl implements AssignmentService{
         double capacity = vehicleService.getVehicleById(route.getAssignedVehicleId()).getCapacity();
         double load = getMaxLoad(routeId, startLocation, endLocation);
         return capacity - load;
-    }
-
-    private ArrayList<Location> getLocations(int routeId, City startLocation, City endLocation){
-        boolean withinStartEnd = false;
-        ArrayList<Location> packageLocations = new ArrayList<>();
-        List<Location> locations = deliveryRouteService.getRouteById(routeId).getLocations().stream()
-                .map(locationService::getLocationById).toList();
-        for (Location location : locations) {
-            if (location.getName().equals(startLocation)) {
-                withinStartEnd = true;
-            }
-            if (withinStartEnd) {
-                packageLocations.add(location);
-            }
-            if (withinStartEnd && location.getName().equals(endLocation)) {
-                return packageLocations;
-            }
-        }
-        throw new IllegalArgumentException(ERROR_ROUTE_LOCATIONS);
     }
 
     private void validateVehicleRange(Truck vehicle, DeliveryRoute route){
