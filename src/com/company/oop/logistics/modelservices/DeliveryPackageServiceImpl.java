@@ -1,7 +1,7 @@
-package com.company.oop.logistics.core;
+package com.company.oop.logistics.modelservices;
 
-import com.company.oop.logistics.core.contracts.DeliveryPackageService;
-import com.company.oop.logistics.core.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.DeliveryPackageService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
 import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.DeliveryPackageImpl;
@@ -18,7 +18,6 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
     private final String storagePath = "data/deliveryPackages.xml";
     private final PersistenceManager persistenceManager;
     public static final String ERROR_NO_PACKAGE_ID = "No package with this id.";
-    public static final String ERROR_PACKAGE_ALREADY_ASSIGNED = "Package is already assigned.";
 
     private final LocationService locationService;
     private int nextId;
@@ -36,7 +35,6 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
     public void save() {
         persistenceManager.saveData(packages, storagePath);
     }
-
 
 
     @Override
@@ -61,11 +59,10 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
     }
 
     @Override
-    public void assignPackage(int deliveryRouteId, int packageId) {
+    public void assignPackage(int deliveryRouteId, int packageId, List<Integer> locationIds) {
         DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
-        if (deliveryPackage.isAssigned()) {
-            throw new IllegalStateException(ERROR_PACKAGE_ALREADY_ASSIGNED);
-        }
+        deliveryPackage.setLocations(locationIds);
+
         deliveryPackage.assign(deliveryRouteId);
         save();
     }
@@ -77,7 +74,7 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
         return locationInfo.getPackageStatus();
     }
 
-    public List<DeliveryPackage> getUnassignedPackages(LocalDateTime time){
+    public List<DeliveryPackage> getUnassignedPackages(){
         return packages.stream()
                 .filter(p -> p.getLocations().size() == 1)
                 .toList();

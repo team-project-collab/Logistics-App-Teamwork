@@ -1,6 +1,6 @@
 package com.company.oop.logistics.utils.misc;
 
-import com.company.oop.logistics.core.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.LocationType;
 

@@ -1,4 +1,4 @@
-package com.company.oop.logistics.core.contracts;
+package com.company.oop.logistics.modelservices.contracts;
 
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;

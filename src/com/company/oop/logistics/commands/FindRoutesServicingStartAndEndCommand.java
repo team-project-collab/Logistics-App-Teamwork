@@ -1,11 +1,12 @@
 package com.company.oop.logistics.commands;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.LocationService;
-import com.company.oop.logistics.core.contracts.RouteService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.RouteService;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.time.LocalDateTime;
@@ -17,22 +18,23 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
     private static final int EXPECTED_NUMBER_OF_PARAMETERS = 2;
     private static final String MESSAGE_LIST_ROUTES = "Routes servicing route %s to %s: %s";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    public static final String ERROR_ORIGIN_EQUALS_DESTINATION = "Origin and destination must be different.";
     private static final String MESSAGE_NO_ROUTES = "There are no routes servicing %s to %s";
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
     private static final String INVALID_CITY = "City %s not supported.";
     public static final String ROUTE_LIST_STRING = "\n===\nRoute id: %d;\n Origin: %s;\n Destination: %s;\n " +
-            "Departing %s at %s;\n Reaching destination %s at %s\n Free capacity: %.1f";
+            "Departing %s at %s;\n Reaching destination %s at %s";
 
     private final RouteService routeService;
     private final LocationService locationService;
+    private final AssignmentService assignmentService;
     private City origin;
     private City destination;
 
-    public FindRoutesServicingStartAndEndCommand(RouteService routeService, LocationService locationService) {
+    public FindRoutesServicingStartAndEndCommand(RouteService routeService, LocationService locationService, AssignmentService assignmentService) {
         this.routeService = routeService;
         this.locationService = locationService;
+        this.assignmentService = assignmentService;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
             throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
         parseParameters(parameters);
-        ArrayList<DeliveryRoute> result = findRoutesServicingStartAndEnd();
+        ArrayList<DeliveryRoute> result = routeService.findRoutesServicingStartAndEnd(origin, destination);
         if (result.isEmpty()){
             return String.format(MESSAGE_NO_ROUTES, origin, destination);
         }
@@ -54,9 +56,14 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
                     origin,
                     getLocationFromCity(origin, route).getDepartureTime().format(formatter),
                     destination,
-                    getLocationFromCity(destination, route).getArrivalTime().format(formatter),
-                    routeService.getFreeCapacity(route.getId(), origin, destination)
-            ));
+                    getLocationFromCity(destination, route).getArrivalTime().format(formatter)));
+
+            if (route.getAssignedVehicleId() != 0){
+                double freeCapacity = assignmentService.getFreeCapacity(route.getId(), origin, destination);
+                resultString.append(String.format("\n Free capacity: %.1f", freeCapacity));
+            }else{
+                resultString.append("\nNo assigned vehicle");
+            }
         }
 
 
@@ -73,31 +80,4 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
                 .filter(l -> l.getName().equals(cityName))
                 .findFirst().orElseThrow(IllegalArgumentException::new);
     }
-
-    private ArrayList<DeliveryRoute> findRoutesServicingStartAndEnd() {
-        LocalDateTime now = LocalDateTime.now();
-        if (origin.equals(destination)) {
-            throw new IllegalArgumentException(ERROR_ORIGIN_EQUALS_DESTINATION);
-        }
-        ArrayList<DeliveryRoute> result = new ArrayList<>();
-        List<DeliveryRoute> routes = routeService.getRoutes()
-                .stream().filter(r -> r.getAssignedVehicleId() != 0).toList();
-
-        for (DeliveryRoute route : routes) {
-            List<Location> routeLocations = route.getLocations().stream()
-                    .map(locationService::getLocationById).toList();
-            for (int i = 0; i < routeLocations.size() - 1; i++) {
-                if (routeLocations.get(i).getName().equals(origin) &&
-                        routeLocations.get(i).getDepartureTime().isAfter(now)) {
-                    for (int j = i; j < routeLocations.size(); j++) {
-                        if (routeLocations.get(j).getName().equals(destination)) {
-                            result.add(route);
-                        }
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
 }

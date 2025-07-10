@@ -1,12 +1,11 @@
-package com.company.oop.logistics.core;
+package com.company.oop.logistics.modelservices;
 
-import com.company.oop.logistics.core.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
 import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.LocationImpl;
 import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
-import com.company.oop.logistics.utils.misc.LocationInfo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,11 +52,11 @@ public class LocationServiceImpl implements LocationService {
 
     public List<Location> trimLocations(List<Location> entryList){
         List<Location> result = new ArrayList<>(entryList);
-        if (entryList.size() > 1){
-            Location start = entryList.get(0);
-            Location end = entryList.get(entryList.size() - 1);
-            entryList.set(0, createLocation(start.getName(), null, start.getDepartureTime()));
-            entryList.set(entryList.size() - 1, createLocation(end.getName(), end.getArrivalTime(), null));
+        if (result.size() > 1){
+            Location start = result.get(0);
+            Location end = result.get(result.size() - 1);
+            result.set(0, createLocation(start.getName(), null, start.getDepartureTime()));
+            result.set(result.size() - 1, createLocation(end.getName(), end.getArrivalTime(), null));
         }
         return result;
     }

@@ -1,10 +1,11 @@
-package com.company.oop.logistics.core.contracts;
+package com.company.oop.logistics.modelservices.contracts;
 
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface RouteService {
@@ -14,19 +15,13 @@ public interface RouteService {
 
     DeliveryRoute createDeliveryRoute(LocalDateTime startTime, List<City> cities);
 
-    void assignVehicleToRoute(int vehicleId, int deliveryRouteId);
-
-    boolean isVehicleAssigned(Truck vehicle, LocalDateTime startTime);
-
     DeliveryRoute getRouteById(int routeId);
 
     void save();
 
-    void assignPackage(int deliveryRouteId, int packageId);
+    void assignVehicle(int vehicleId, int routeId);
 
-    double getMaxLoad(int routeId, City startLocation, City endLocation);
+    void assignPackage(int deliveryRouteId, int deliveryPackageId);
 
-    void bulkAssignPackages(int deliveryRouteId, LocalDateTime time);
-
-    double getFreeCapacity(int routeId, City startLocation, City endLocation);
+    ArrayList<DeliveryRoute> findRoutesServicingStartAndEnd(City origin, City destination);
 }

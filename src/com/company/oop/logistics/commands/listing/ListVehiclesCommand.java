@@ -1,8 +1,8 @@
 package com.company.oop.logistics.commands.listing;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.LocationService;
-import com.company.oop.logistics.core.contracts.VehicleService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.VehicleService;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.misc.LocationInfo;
@@ -70,6 +70,9 @@ public class ListVehiclesCommand implements Command {
                     throw new IllegalArgumentException(ERROR_INVALID_MODIFIER);
                 }
             }
+        }
+        else{
+            throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
     }
 }

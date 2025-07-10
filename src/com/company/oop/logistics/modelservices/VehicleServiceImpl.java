@@ -1,7 +1,7 @@
-package com.company.oop.logistics.core;
+package com.company.oop.logistics.modelservices;
 
-import com.company.oop.logistics.core.contracts.LocationService;
-import com.company.oop.logistics.core.contracts.VehicleService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.VehicleService;
 import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.contracts.Location;

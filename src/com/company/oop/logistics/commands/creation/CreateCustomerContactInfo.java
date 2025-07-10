@@ -1,7 +1,7 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.CustomerService;
+import com.company.oop.logistics.modelservices.contracts.CustomerService;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
@@ -39,7 +39,6 @@ public class CreateCustomerContactInfo implements Command {
     }
 
     private void parseParameters(List<String> parameters){
-        //TODO: validate number, email
         fullName = parameters.get(0);
         phoneNumber = parameters.get(1);
         email = parameters.get(2);

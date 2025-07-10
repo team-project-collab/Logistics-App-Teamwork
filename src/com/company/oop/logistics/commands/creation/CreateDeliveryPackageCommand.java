@@ -1,8 +1,8 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.CustomerService;
-import com.company.oop.logistics.core.contracts.DeliveryPackageService;
+import com.company.oop.logistics.modelservices.contracts.CustomerService;
+import com.company.oop.logistics.modelservices.contracts.DeliveryPackageService;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.enums.City;
@@ -36,7 +36,7 @@ public class CreateDeliveryPackageCommand implements Command {
         parseParameters(parameters);
 
         CustomerContactInfo customerContactInfo = customerService.getCustomerContactById(customerContactInfoId);
-        DeliveryPackage createdPackage=deliveryPackageService.createDeliveryPackage(startLocation, endLocation, weightKg, customerContactInfo);
+        DeliveryPackage createdPackage = deliveryPackageService.createDeliveryPackage(startLocation, endLocation, weightKg, customerContactInfo);
         return String.format("Created new delivery package with id: %d",createdPackage.getId());
     }
 

@@ -1,12 +1,11 @@
-package com.company.oop.logistics.core;
+package com.company.oop.logistics.modelservices;
 
-import com.company.oop.logistics.core.contracts.CustomerService;
+import com.company.oop.logistics.modelservices.contracts.CustomerService;
 import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.enums.City;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerServiceImpl implements CustomerService {

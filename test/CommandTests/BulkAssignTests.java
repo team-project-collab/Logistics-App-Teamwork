@@ -1,13 +1,13 @@
 package CommandTests;
 
 import com.company.oop.logistics.commands.assign.BulkAssignPackagesCommand;
-import com.company.oop.logistics.core.*;
-import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.db.PersistenceManager;
-import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.modelservices.*;
+import com.company.oop.logistics.modelservices.contracts.*;
+import com.company.oop.logistics.services.AssignmentService;
+import com.company.oop.logistics.services.AssignmentServiceImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +23,7 @@ public class BulkAssignTests {
     private VehicleService vehicleService;
     private LocationService locationService;
     private CustomerService customerService;
+    private AssignmentService assignmentService;
     private static final String DATA_DIR = "data";
     @BeforeEach
     public void setUp() {
@@ -40,7 +41,9 @@ public class BulkAssignTests {
         vehicleService = new VehicleServiceImpl(persistenceManager, locationService);
         locationService = new LocationServiceImpl(persistenceManager);
         deliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager, locationService);
-        routeService = new RouteServiceImpl(persistenceManager, vehicleService, locationService, deliveryPackageService);
+        routeService = new RouteServiceImpl(persistenceManager, locationService);
+        assignmentService = new AssignmentServiceImpl(routeService, locationService, vehicleService, deliveryPackageService);
+
 
         customerService.createCustomerContactInfo(
                 "Etienne", "+359 8888 8888", "etko8@gmail.com", City.MEL
@@ -52,7 +55,7 @@ public class BulkAssignTests {
                 LocalDateTime.of(2025, 10, 10, 20, 10),
                 new ArrayList<>(List.of(City.SYD, City.MEL, City.ADL))
         );
-        routeService.assignVehicleToRoute(vehicleService.getVehicles().get(0).getId(), 1);
+        assignmentService.assignVehicleToRoute(vehicleService.getVehicles().get(0).getId(), 1);
 
 
 
@@ -65,7 +68,7 @@ public class BulkAssignTests {
         deliveryPackageService.createDeliveryPackage(
                 City.MEL, City.ADL, 200, customerService.getCustomerContactById(1));
 
-        command = new BulkAssignPackagesCommand(deliveryPackageService, routeService);
+        command = new BulkAssignPackagesCommand(assignmentService);
     }
     @Test
     public void execute_Should_ThrowError_When_InvalidNumberOfParams(){

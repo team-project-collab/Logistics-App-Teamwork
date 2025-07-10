@@ -1,7 +1,7 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.VehicleService;
+import com.company.oop.logistics.modelservices.contracts.VehicleService;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
@@ -33,7 +33,6 @@ public class CreateTruckCommand implements Command {
     }
 
     private void parseParameters(List<String> parameters){
-
         truckName = parameters.get(0);
         cityName = ParsingHelpers.tryParseEnum(parameters.get(1), City.class, "city name");
     }

@@ -1,6 +1,6 @@
 package com.company.oop.logistics.utils.misc;
 
-import com.company.oop.logistics.core.contracts.VehicleService;
+import com.company.oop.logistics.modelservices.contracts.VehicleService;
 import com.company.oop.logistics.exceptions.custom.LimitBreak;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.contracts.Truck;

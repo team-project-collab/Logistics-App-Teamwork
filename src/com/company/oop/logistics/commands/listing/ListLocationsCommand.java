@@ -1,8 +1,7 @@
 package com.company.oop.logistics.commands.listing;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.LocationService;
-import com.company.oop.logistics.models.contracts.Location;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,11 +15,8 @@ public class ListLocationsCommand implements Command {
 
     @Override
     public String execute(List<String> parameters) {
-        StringBuilder output = new StringBuilder();
-        output.append(locationService.getLocations().stream()
+        return locationService.getLocations().stream()
                 .map(Object::toString)
-                .collect(Collectors.joining(""))
-        );
-        return output.toString();
+                .collect(Collectors.joining(""));
     }
 }
