@@ -79,5 +79,14 @@ public class BulkAssignTests {
         command.execute(List.of("1"));
         Assertions.assertEquals(4,routeService.getRouteById(1).getAssignedPackages().size());
     }
+    @Test
+    public void execute_Should_ReturnNoPackagesToAssignString_When_NoPackages(){
+        command.execute(List.of("1"));
+//        routeService.createDeliveryRoute(
+//                LocalDateTime.of(2025, 10, 10, 20, 10),
+//                new ArrayList<>(List.of(City.SYD, City.MEL, City.ADL))
+//        );
+        Assertions.assertEquals("No unassigned packages to assign to route 1",command.execute(List.of("1")));
+    }
 
 }

@@ -22,13 +22,13 @@ public class DeliveryPackageImplTest {
 
     @BeforeEach
     public void setUp() {
-        CustomerContactInfo contact = new CustomerContactInfo(1,
+        contact = new CustomerContactInfo(1,
                 "Ivan Ivanov",
                 "+1234567890",
                 "ivan@example.com",
                 City.MEL);
 
-        DeliveryPackageImpl deliveryPackage = new DeliveryPackageImpl(1,
+        deliveryPackage = new DeliveryPackageImpl(1,
                 City.MEL,
                 City.ADL,
                 40.5,
