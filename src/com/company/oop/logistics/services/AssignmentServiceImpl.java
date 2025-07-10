@@ -3,7 +3,6 @@ package com.company.oop.logistics.services;
 import com.company.oop.logistics.exceptions.custom.LimitBreak;
 import com.company.oop.logistics.models.contracts.*;
 import com.company.oop.logistics.models.enums.City;
-import com.company.oop.logistics.modelservices.DeliveryPackageServiceImpl;
 import com.company.oop.logistics.modelservices.contracts.DeliveryPackageService;
 import com.company.oop.logistics.modelservices.contracts.LocationService;
 import com.company.oop.logistics.modelservices.contracts.RouteService;
@@ -11,8 +10,6 @@ import com.company.oop.logistics.modelservices.contracts.VehicleService;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AssignmentServiceImpl implements AssignmentService{
     private static final String ERROR_LOW_RANGE = "The truck (id %d) does not have sufficient range to cover this route. Required %d, truck has only %d.";
@@ -84,19 +81,16 @@ public class AssignmentServiceImpl implements AssignmentService{
     public int bulkAssignPackages(int deliveryRouteId) {
         List<DeliveryPackage> unassignedPackages = deliveryPackageService.getUnassignedPackages();
         int assignedPackages = 0;
-        Logger log = Logger.getLogger(DeliveryPackageServiceImpl.class.getName());
         for (DeliveryPackage deliveryPackage : unassignedPackages) {
             try {
                 assignPackage(deliveryRouteId, deliveryPackage.getId());
                 assignedPackages++;
-            } catch (RuntimeException e) {
-                log.log(Level.WARNING, "Failed to assign package with ID: " + deliveryPackage.getId(), e);
-            }
+            } catch (RuntimeException ignored){}
         }
         return assignedPackages;
     }
 
-    public HashMap<City, Double> getLoad(int routeId, City startLocation, City endLocation){
+    public double getMaxLoad(int routeId, City startLocation, City endLocation){
         boolean withinSubroute = false;
         HashMap <City, Double> result = new HashMap<>();
         DeliveryRoute route = deliveryRouteService.getRouteById(routeId);
@@ -127,11 +121,7 @@ public class AssignmentServiceImpl implements AssignmentService{
                 result.put(location.getName(), weightSum);
             }
         }
-        return result;
-    }
-
-    public double getMaxLoad(int routeId, City startLocation, City endLocation){
-        return Collections.max(getLoad(routeId, startLocation, endLocation).entrySet(), Map.Entry.comparingByValue()).getValue();
+        return Collections.max(result.entrySet(), Map.Entry.comparingByValue()).getValue();
     }
 
     public double getFreeCapacity(int routeId, City startLocation, City endLocation){
