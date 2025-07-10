@@ -15,7 +15,7 @@ public class ListLocationsCommand implements Command {
 
     @Override
     public String execute(List<String> parameters) {
-        return locationService.getAllLocation().stream()
+        return locationService.getAllLocations().stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(""));
     }

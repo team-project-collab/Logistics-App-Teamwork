@@ -11,7 +11,7 @@ public interface LocationService {
 
     Location getLocationById(int startLocationId);
 
-    List<Location> getAllLocation();
+    List<Location> getAllLocations();
 
     List<Location> trimLocations(List<Location> entryList);
 }

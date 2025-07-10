@@ -47,8 +47,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Location> getAllLocation() {
-        return locations;
+    public List<Location> getAllLocations() {
+        return new ArrayList<>(locations);
     }
 
     //Trim locations to remove arrivalTime from the start and departureTime from the end
