@@ -6,7 +6,9 @@ import com.company.oop.logistics.modelservices.contracts.RouteService;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.services.AssignmentService;
+import com.company.oop.logistics.utils.misc.LocationInfo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,20 +36,19 @@ public class ListRoutesCommand implements Command {
         parseParameters(parameters);
         StringBuilder output = new StringBuilder();
         List<DeliveryRoute> routesToItterate;
+        LocalDateTime now = LocalDateTime.now();
         if (onlyActive){
             routesToItterate = routeService.getRoutesInProgress();
         }else{
             routesToItterate = routeService.getAllRoutes();
         }
-        if (routesToItterate.isEmpty()){
-            output.append(MESSAGE_NO_ROUTES);
-        }
         for (DeliveryRoute route: routesToItterate){
             output.append(SEPARATOR).append(System.lineSeparator());
             City originName = locationService.getLocationById(route.getOrigin()).getName();
             City destinationName = locationService.getLocationById(route.getDestination()).getName();
-            output.append(String.format("Route id: %d - from %s to %s\n", route.getId(), originName,
-                    destinationName));
+            LocationInfo info = new LocationInfo(locationService, route.getLocations(), now);
+            output.append(String.format("Route id: %d - from %s to %s\n- Current status: %s\n", route.getId(), originName,
+                    destinationName, info.getRouteStatus()));
             try{
                 output.append(String.format("""
                           - Assigned truck id: %s
