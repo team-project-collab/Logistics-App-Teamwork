@@ -6,6 +6,8 @@ import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.commands.creation.*;
 import com.company.oop.logistics.commands.listing.*;
 import com.company.oop.logistics.core.contracts.*;
+import com.company.oop.logistics.modelservices.contracts.*;
+import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 public class CommandFactoryImpl implements CommandFactory {
@@ -16,13 +18,20 @@ public class CommandFactoryImpl implements CommandFactory {
     private final VehicleService vehicleService;
     private final DeliveryPackageService deliveryPackageService;
     private final CustomerService customerService;
+    private final AssignmentService assignmentService;
 
-    public CommandFactoryImpl(LocationService locationService, RouteService routeService, VehicleService vehicleService, DeliveryPackageService deliveryPackageService, CustomerService customerService) {
+    public CommandFactoryImpl(LocationService locationService,
+                              RouteService routeService,
+                              VehicleService vehicleService,
+                              DeliveryPackageService deliveryPackageService,
+                              CustomerService customerService,
+                              AssignmentService assignmentService) {
         this.locationService = locationService;
         this.routeService = routeService;
         this.vehicleService = vehicleService;
         this.deliveryPackageService = deliveryPackageService;
         this.customerService = customerService;
+        this.assignmentService = assignmentService;
     }
 
     @Override
@@ -37,17 +46,17 @@ public class CommandFactoryImpl implements CommandFactory {
             case CREATEROUTE:
                 return new CreateRouteCommand(routeService);
             case LISTROUTES:
-                return new ListRoutesCommand(routeService, locationService);
+                return new ListRoutesCommand(routeService, locationService, assignmentService);
             case ASSIGNVEHICLETOROUTE:
-                return new AssignVehicleToRouteCommand(routeService);
+                return new AssignVehicleToRouteCommand(assignmentService);
             case CREATETRUCK:
                 return new CreateTruckCommand(vehicleService);
             case CREATEDELIVERYPACKAGE:
                 return new CreateDeliveryPackageCommand(deliveryPackageService,customerService);
             case FINDROUTESSERVICINGSTARTANDEND:
-                return new FindRoutesServicingStartAndEndCommand(routeService, locationService);
+                return new FindRoutesServicingStartAndEndCommand(routeService, locationService, assignmentService);
             case ASSIGNPACKAGE:
-                return new AssignPackageCommand(deliveryPackageService, routeService);
+                return new AssignPackageCommand(assignmentService);
             case CREATECUSTOMERCONTACTINFO:
                 return new CreateCustomerContactInfo(customerService);
             case GETPACKAGESTATE:
@@ -55,7 +64,7 @@ public class CommandFactoryImpl implements CommandFactory {
             case GETUNASSIGNEDPACKAGES:
                 return new GetUnassignedPackagesCommand(deliveryPackageService);
             case BULKASSIGNPACKAGES:
-                return new BulkAssignPackagesCommand(deliveryPackageService, routeService);
+                return new BulkAssignPackagesCommand(assignmentService);
             case LISTVEHICLES:
                 return new ListVehiclesCommand(vehicleService, locationService);
         }

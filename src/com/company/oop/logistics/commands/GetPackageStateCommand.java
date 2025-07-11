@@ -1,7 +1,7 @@
 package com.company.oop.logistics.commands;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.DeliveryPackageService;
+import com.company.oop.logistics.modelservices.contracts.DeliveryPackageService;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.time.LocalDateTime;
@@ -11,7 +11,6 @@ public class GetPackageStateCommand implements Command {
     private static final int EXPECTED_NUMBER_OF_PARAMETERS = 2;
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
-    private static final String INVALID_CITY = "City %s not supported.";
 
     private final DeliveryPackageService deliveryPackageService;
     private int packageId;

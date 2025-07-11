@@ -1,43 +1,38 @@
-package com.company.oop.logistics.core;
+package com.company.oop.logistics.modelservices;
 
-import com.company.oop.logistics.core.contracts.DeliveryPackageService;
-import com.company.oop.logistics.core.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.DeliveryPackageService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
 import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.DeliveryPackageImpl;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
-import com.company.oop.logistics.models.contracts.Identifiable;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.utils.misc.IdUtils;
 import com.company.oop.logistics.utils.misc.LocationInfo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryPackageServiceImpl implements DeliveryPackageService {
+    private static final String storagePath = "data/deliveryPackages.xml";
+    private static final String ERROR_NO_PACKAGE_ID = "No package with this id.";
 
-    private final String storagePath = "data/deliveryPackages.xml";
     private final PersistenceManager persistenceManager;
-    public static final String ERROR_NO_PACKAGE_ID = "No package with this id.";
-    public static final String ERROR_PACKAGE_ALREADY_ASSIGNED = "Package is already assigned.";
-
     private final LocationService locationService;
-    private int nextId;
     private final List<DeliveryPackage> packages;
-
-
+    private int nextId;
 
     public DeliveryPackageServiceImpl(PersistenceManager persistenceManager, LocationService locationService) {
         this.persistenceManager = persistenceManager;
         this.locationService = locationService;
         packages = persistenceManager.loadData(storagePath);
-        nextId = packages.stream().mapToInt(Identifiable::getId).max().orElse(0) + 1;
+        nextId = IdUtils.getNextId(packages);
     }
 
-    public void save() {
+    private void save() {
         persistenceManager.saveData(packages, storagePath);
     }
-
-
 
     @Override
     public DeliveryPackage createDeliveryPackage(City startLocation, City endLocation,
@@ -50,24 +45,25 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
         save();
         return p;
     }
+
+    @Override
     public DeliveryPackage getDeliveryPackageById(int packageId) {
-        for (DeliveryPackage p :
-                this.packages) {
-            if (p.getId() == packageId) {
-                return p;
-            }
-        }
-        throw new IllegalArgumentException(ERROR_NO_PACKAGE_ID);
+        return packages.stream()
+                .filter(p -> p.getId() == packageId)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_NO_PACKAGE_ID));
     }
 
     @Override
-    public void assignPackage(int deliveryRouteId, int packageId) {
-        DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
-        if (deliveryPackage.isAssigned()) {
-            throw new IllegalStateException(ERROR_PACKAGE_ALREADY_ASSIGNED);
-        }
-        deliveryPackage.assign(deliveryRouteId);
-        save();
+    public List<DeliveryPackage> getAllDeliveryPackages(){
+        return new ArrayList<>(packages);
+    }
+
+    @Override
+    public List<DeliveryPackage> getUnassignedPackages(){
+        return packages.stream()
+                .filter(p -> !p.isAssigned())
+                .toList();
     }
 
     @Override
@@ -77,10 +73,13 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
         return locationInfo.getPackageStatus();
     }
 
-    public List<DeliveryPackage> getUnassignedPackages(LocalDateTime time){
-        return packages.stream()
-                .filter(p -> p.getLocations().size() == 1)
-                .toList();
+    @Override
+    public void assignPackage(int deliveryRouteId, int packageId, List<Integer> locationIds) {
+        DeliveryPackage deliveryPackage = getDeliveryPackageById(packageId);
+        deliveryPackage.setLocations(locationIds);
+
+        deliveryPackage.assign(deliveryRouteId);
+        save();
     }
 }
 

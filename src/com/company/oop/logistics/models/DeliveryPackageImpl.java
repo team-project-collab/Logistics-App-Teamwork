@@ -8,6 +8,7 @@ import java.util.List;
 
 public class DeliveryPackageImpl implements DeliveryPackage {
     public static final String PACKAGE_TO_STRING = "Package id: %d; Origin: %s; Destination: %s; Weight: %.1f kg";
+
     private int id;
     private City startLocation;
     private City endLocation;
@@ -90,5 +91,9 @@ public class DeliveryPackageImpl implements DeliveryPackage {
     public void assign(int routeId){
         isAssigned = true;
         assignedRoute = routeId;
+    }
+
+    public void setAssigned(boolean assigned) {
+        isAssigned = assigned;
     }
 }

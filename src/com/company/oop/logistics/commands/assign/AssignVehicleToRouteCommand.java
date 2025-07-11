@@ -1,7 +1,7 @@
 package com.company.oop.logistics.commands.assign;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.RouteService;
+import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
 import java.util.List;
@@ -12,12 +12,12 @@ public class AssignVehicleToRouteCommand implements Command {
     private static final String MESSAGE_VEHICLE_ADDED_TO_ROUTE = "Vehicle %d added to route %d";
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
-    private final RouteService routeService;
+    private final AssignmentService assignmentService;
     private int vehicleId;
     private int deliveryRouteId;
 
-    public AssignVehicleToRouteCommand( RouteService routeService){
-        this.routeService = routeService;
+    public AssignVehicleToRouteCommand(AssignmentService assignmentService){
+        this.assignmentService = assignmentService;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class AssignVehicleToRouteCommand implements Command {
             throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
         parseParameters(parameters);
-        routeService.assignVehicleToRoute(vehicleId, deliveryRouteId);
+        assignmentService.assignVehicleToRoute(vehicleId, deliveryRouteId);
         return String.format(MESSAGE_VEHICLE_ADDED_TO_ROUTE, vehicleId, deliveryRouteId);
     }
 

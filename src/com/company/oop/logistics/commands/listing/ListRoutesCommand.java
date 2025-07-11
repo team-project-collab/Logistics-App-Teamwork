@@ -1,11 +1,14 @@
 package com.company.oop.logistics.commands.listing;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.LocationService;
-import com.company.oop.logistics.core.contracts.RouteService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.RouteService;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.services.AssignmentService;
+import com.company.oop.logistics.utils.misc.LocationInfo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,15 +17,18 @@ public class ListRoutesCommand implements Command {
     public static final String ACTIVE_MODIFIER = "active";
     public static final String ERROR_INVALID_MODIFIER = "This parameter can only be a modifier: active";
     public static final String MESSAGE_NO_ROUTES = "There are no routes matching the criteria";
+    public static final String SEPARATOR = "===";
 
     private final RouteService routeService;
     private final LocationService locationService;
+    private final AssignmentService assignmentService;
 
     private boolean onlyActive = false;
 
-    public ListRoutesCommand(RouteService routeService, LocationService locationService) {
+    public ListRoutesCommand(RouteService routeService, LocationService locationService, AssignmentService assignmentService) {
         this.routeService = routeService;
         this.locationService = locationService;
+        this.assignmentService = assignmentService;
     }
 
     @Override
@@ -30,29 +36,30 @@ public class ListRoutesCommand implements Command {
         parseParameters(parameters);
         StringBuilder output = new StringBuilder();
         List<DeliveryRoute> routesToItterate;
+        LocalDateTime now = LocalDateTime.now();
         if (onlyActive){
             routesToItterate = routeService.getRoutesInProgress();
         }else{
-            routesToItterate = routeService.getRoutes();
-        }
-        if (routesToItterate.isEmpty()){
-            output.append(MESSAGE_NO_ROUTES);
+            routesToItterate = routeService.getAllRoutes();
         }
         for (DeliveryRoute route: routesToItterate){
-            output.append("===\n");
+            output.append(SEPARATOR).append(System.lineSeparator());
             City originName = locationService.getLocationById(route.getOrigin()).getName();
             City destinationName = locationService.getLocationById(route.getDestination()).getName();
-            output.append(String.format("Route id: %d - from %s to %s\n", route.getId(), originName,
-                    destinationName));
+            LocationInfo info = new LocationInfo(locationService, route.getLocations(), now);
+            output.append(String.format("Route id: %d - from %s to %s\n- Current status: %s\n", route.getId(), originName,
+                    destinationName, info.getRouteStatus()));
             try{
                 output.append(String.format("""
                           - Assigned truck id: %s
                           - Current load: %s
                           - Free capacity: %s
+                          - Total distance: %d
                           """,
                         route.getAssignedVehicleId(),
-                        routeService.getMaxLoad(route.getId(), originName, destinationName),
-                        routeService.getFreeCapacity(route.getId(), originName, destinationName)));
+                        assignmentService.getMaxLoad(route.getId(), originName, destinationName),
+                        assignmentService.getFreeCapacity(route.getId(), originName, destinationName),
+                        route.getDistance()));
             }catch (RuntimeException e){
                 output.append(" - No assigned truck yet\n");
             }
@@ -65,7 +72,7 @@ public class ListRoutesCommand implements Command {
         if (routesToItterate.isEmpty()){
             output.append(MESSAGE_NO_ROUTES);
         }else{
-            output.append("===");
+            output.append(SEPARATOR);
         }
         return output.toString();
     }
