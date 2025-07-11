@@ -4,7 +4,6 @@ import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.DeliveryPackageImpl;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
-import com.company.oop.logistics.models.enums.PackageStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,9 +47,10 @@ public class DeliveryPackageImplTest {
     }
 
     @Test
-    public void setAssigned_Should_ShowIfThePackageIsAssignedSuccessfuly() {
-        deliveryPackage.setAssigned(true);
+    public void assign_Should_SetAssignedSuccessfully() {
+        deliveryPackage.assign(5);
         Assertions.assertTrue(deliveryPackage.isAssigned());
+        Assertions.assertEquals(5, deliveryPackage.getAssignedRoute());
     }
 
     @Test
