@@ -21,4 +21,6 @@ public interface DeliveryPackage extends Identifiable{
     int getAssignedRoute();
 
     void assign(int routeId);
+
+    void setAssigned(boolean assigned);
 }
