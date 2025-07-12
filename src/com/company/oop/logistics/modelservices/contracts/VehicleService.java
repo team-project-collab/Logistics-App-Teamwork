@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface VehicleService {
+    void initializeTrucks();
+
     Truck createVehicle(String truckName, City initLocation);
 
     Truck getVehicleById(int vehicleId);

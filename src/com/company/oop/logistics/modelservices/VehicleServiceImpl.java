@@ -26,6 +26,9 @@ public class VehicleServiceImpl implements VehicleService {
         this.persistenceManager = persistenceManager;
         this.locationService = locationService;
         vehicles = persistenceManager.loadData(storagePath);
+    }
+
+    public void initializeTrucks(){
         InitializeTrucks.execute(this);
     }
 
