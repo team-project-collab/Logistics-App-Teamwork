@@ -1,9 +1,8 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.RouteService;
+import com.company.oop.logistics.modelservices.contracts.RouteService;
 import com.company.oop.logistics.models.contracts.DeliveryRoute;
-import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
@@ -17,9 +16,7 @@ public class CreateRouteCommand implements Command {
             EXPECTED_NUMBER_OF_PARAMETERS);
     private static final String INVALID_CITY = "City %s not supported.";
     private LocalDateTime startTime;
-    private LocalDateTime currentTime;
     private ArrayList<City> cities;
-    private ArrayList<Location> locations = new ArrayList<>();
     private final RouteService routeService;
 
     public CreateRouteCommand(RouteService routeService) {

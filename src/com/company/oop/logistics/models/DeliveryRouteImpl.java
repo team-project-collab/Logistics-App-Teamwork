@@ -9,13 +9,13 @@ public class DeliveryRouteImpl implements DeliveryRoute{
     public static final String ERROR_VEHICLE_ALREADY_ASSIGNED = "A vehicle is already assigned to route %d.";
     public static final String ERROR_START_TIME_NULL = "Start time cannot be null";
     public static final String ERROR_START_TIME_IN_THE_PAST = "Start time cannot be in the past.";
+
     private int id;
     private LocalDateTime startTime;
     private List<Integer> locationIds = new ArrayList<>();
     private final List<Integer> assignedPackageIds = new ArrayList<>();
     private int assignedVehicleId;
     private final int distance;
-
 
     public DeliveryRouteImpl(int id, LocalDateTime startTime, List<Integer> locationIds, int distance){
         this.distance = distance;

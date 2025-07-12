@@ -9,9 +9,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class LocationImpl implements Location {
-    public static final String ATTRIBUTE_NAME_ARRIVAL_TIME = "arrival time";
-    public static final String ATTRIBUTE_NAME_DEPARTURE_TIME = "departure time";
+    private static final String ATTRIBUTE_NAME_ARRIVAL_TIME = "arrival time";
+    private static final String ATTRIBUTE_NAME_DEPARTURE_TIME = "departure time";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private static final String LOCATION_TO_STRING_BASE = """
+             * City: %s
+            """;
+    private static final String LOCATION_TO_STRING_ARRIVING = """
+              - Arriving at: %s
+            """;
+    private static final String LOCATION_TO_STRING_DEPARTING = """
+              - Departing at: %s
+            """;
 
     private int id;
     private City name;
@@ -91,22 +100,14 @@ public class LocationImpl implements Location {
     @Override
     public String toString() {
         return switch(getType()){
-            case START -> String.format("""
-                     * City: %s
-                      - Leaving at: %s
-                    """, getName(), getDepartureTime().format(formatter));
-            case INTERMEDIATE -> String.format("""
-                     * City: %s
-                      - Arriving at: %s
-                      - Leaving at: %s
-                    """,
+            case START -> String.format(LOCATION_TO_STRING_BASE + LOCATION_TO_STRING_DEPARTING,
+                    getName(), getDepartureTime().format(formatter));
+            case INTERMEDIATE -> String.format(LOCATION_TO_STRING_BASE + LOCATION_TO_STRING_ARRIVING
+                            + LOCATION_TO_STRING_DEPARTING,
                     getName(),
                     getArrivalTime().format(formatter),
                     getDepartureTime().format(formatter));
-            case END -> String.format("""
-                     * City: %s
-                      - Arriving at: %s
-                    """, getName(), getArrivalTime().format(formatter));
+            case END -> String.format(LOCATION_TO_STRING_BASE + LOCATION_TO_STRING_ARRIVING, getName(), getArrivalTime().format(formatter));
         };
     }
 }

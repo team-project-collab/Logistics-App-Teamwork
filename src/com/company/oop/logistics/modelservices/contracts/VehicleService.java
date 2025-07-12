@@ -1,4 +1,4 @@
-package com.company.oop.logistics.core.contracts;
+package com.company.oop.logistics.modelservices.contracts;
 
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
@@ -12,7 +12,7 @@ public interface VehicleService {
 
     Truck getVehicleById(int vehicleId);
 
-    List<Truck> getVehicles();
+    List<Truck> getAllVehicles();
 
     void assignVehicle(int vehicleId, List<Integer> locationIds);
 

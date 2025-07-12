@@ -1,8 +1,8 @@
 package com.company.oop.logistics.commands.listing;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.LocationService;
-import com.company.oop.logistics.core.contracts.VehicleService;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
+import com.company.oop.logistics.modelservices.contracts.VehicleService;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.misc.LocationInfo;
@@ -31,7 +31,7 @@ public class ListVehiclesCommand implements Command {
         LocalDateTime now = LocalDateTime.now();
         StringBuilder output = new StringBuilder();
         parseParameters(parameters);
-        List<Truck> filteredVehicles = vehicleService.getVehicles().stream()
+        List<Truck> filteredVehicles = vehicleService.getAllVehicles().stream()
                 .filter(v -> (cityName == null) ||
                                     vehicleService.getCurrentLocation(v.getId(), now).getName().equals(cityName))
                 .filter(v -> (!onlyFree || vehicleService.isVehicleFree(v.getId(), now)))
@@ -70,6 +70,9 @@ public class ListVehiclesCommand implements Command {
                     throw new IllegalArgumentException(ERROR_INVALID_MODIFIER);
                 }
             }
+        }
+        else{
+            throw new IllegalArgumentException(ERROR_PARAMETERS_AMOUNT);
         }
     }
 }

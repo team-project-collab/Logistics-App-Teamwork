@@ -1,6 +1,6 @@
 package com.company.oop.logistics.utils.misc;
 
-import com.company.oop.logistics.core.contracts.VehicleService;
+import com.company.oop.logistics.modelservices.contracts.VehicleService;
 import com.company.oop.logistics.exceptions.custom.LimitBreak;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.contracts.Truck;
@@ -12,7 +12,7 @@ import java.util.Random;
 
 public abstract class InitializeTrucks {
     public static void execute(VehicleService vehicleService){
-        setIds(vehicleService.getVehicles());
+        setIds(vehicleService.getAllVehicles());
         createTrucks(vehicleService);
     }
 

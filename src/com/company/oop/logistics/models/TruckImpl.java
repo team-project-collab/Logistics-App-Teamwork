@@ -9,20 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TruckImpl extends Vehicle implements Truck {
+    private static final String TRUCK_TO_STRING_FORMAT = """
+            id: %d
+            Brand: %s
+            Capacity: %d
+            Max range: %d""";
+    private static final String ERROR_TRUCK_NAME = "Truck name not supported %s.";
+    private static final String ERROR_VEHICLE_COUNT_OVERFLOW = "Company cannot provide additional %s trucks";
+
+    private static int idScania;
+    private static int idMan;
+    private static int idActros;
     private int capacity;
     private int maxRange;
     private int id;
     private TruckName truckName;
     private final List<Integer> locationIds = new ArrayList<>();
 
-    private static int idScania;
-    private static int idMan;
-    private static int idActros;
-
-
     public TruckImpl(String name) throws LimitBreak {
         super();
-        setTruckName(ParsingHelpers.tryParseEnum(name, TruckName.class, String.format("Wrong truck type %s", name)));
+        setTruckName(ParsingHelpers.tryParseEnum(name, TruckName.class, String.format(ERROR_TRUCK_NAME, name)));
         setUpTruck();
     }
 
@@ -40,7 +46,7 @@ public class TruckImpl extends Vehicle implements Truck {
                 setId(idScania);
                 idScania++;
             }else{
-                throw new LimitBreak(String.format("Company cannot provide additional %s trucks",getTruckName()));
+                throw new LimitBreak(String.format(ERROR_VEHICLE_COUNT_OVERFLOW,getTruckName()));
             }
         }
         if(getTruckName() == TruckName.MAN){
@@ -50,7 +56,7 @@ public class TruckImpl extends Vehicle implements Truck {
                 setId(idMan);
                 idMan++;
             }else{
-                throw new LimitBreak(String.format("Company cannot provide additional %s trucks",getTruckName()));
+                throw new LimitBreak(String.format(ERROR_VEHICLE_COUNT_OVERFLOW,getTruckName()));
             }
         }
         if(getTruckName() == TruckName.ACTROS){
@@ -60,7 +66,7 @@ public class TruckImpl extends Vehicle implements Truck {
                 setId(idActros);
                 idActros++;
             }else{
-                throw new LimitBreak(String.format("Company cannot provide additional %s trucks",getTruckName()));
+                throw new LimitBreak(String.format(ERROR_VEHICLE_COUNT_OVERFLOW,getTruckName()));
             }
         }
     }
@@ -110,10 +116,6 @@ public class TruckImpl extends Vehicle implements Truck {
 
     @Override
     public String toString() {
-        return String.format("""
-                id: %d
-                Brand: %d
-                Capacity: %d
-                Max range: %d""");
+        return String.format(TRUCK_TO_STRING_FORMAT, getId(), getTruckName(), getCapacity(), getMaxRange());
     }
 }

@@ -3,6 +3,10 @@ package com.company.oop.logistics.core;
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.db.PersistenceManager;
+import com.company.oop.logistics.modelservices.*;
+import com.company.oop.logistics.modelservices.contracts.*;
+import com.company.oop.logistics.services.AssignmentService;
+import com.company.oop.logistics.services.AssignmentServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +26,17 @@ public class EngineImpl implements Engine {
         VehicleService vehicleService = new VehicleServiceImpl(persistenceManager, locationService);
         DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager,
                 locationService);
-        RouteService routeService = new RouteServiceImpl(persistenceManager,
-                vehicleService,locationService, deliveryPackageService);
+        RouteService routeService = new RouteServiceImpl(persistenceManager, locationService);
         CustomerService customerService = new CustomerServiceImpl(persistenceManager);
-        this.commandFactory = new CommandFactoryImpl(locationService,routeService,vehicleService,deliveryPackageService,customerService);
+        AssignmentService assignmentService =
+                new AssignmentServiceImpl(routeService, locationService, vehicleService, deliveryPackageService);
+        this.commandFactory = new CommandFactoryImpl(
+                locationService,
+                routeService,
+                vehicleService,
+                deliveryPackageService,
+                customerService,
+                assignmentService);
 
     }
 

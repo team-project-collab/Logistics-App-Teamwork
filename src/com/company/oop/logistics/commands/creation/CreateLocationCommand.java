@@ -1,8 +1,7 @@
 package com.company.oop.logistics.commands.creation;
 
 import com.company.oop.logistics.commands.contracts.Command;
-import com.company.oop.logistics.core.contracts.LocationService;
-import com.company.oop.logistics.models.contracts.Location;
+import com.company.oop.logistics.modelservices.contracts.LocationService;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
@@ -32,7 +31,7 @@ public class CreateLocationCommand implements Command {
 
         parseParameters(parameters);
 
-        Location createdLocation = locationService.createLocation(location, arrivalTime, departureTime);
+        locationService.createLocation(location, arrivalTime, departureTime);
         return String.format("Created new location at %s from %s to %s", location, arrivalTime, departureTime);
     }
 

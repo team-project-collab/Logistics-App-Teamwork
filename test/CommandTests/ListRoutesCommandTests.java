@@ -4,6 +4,7 @@ import com.company.oop.logistics.commands.listing.ListRoutesCommand;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.tests.utils.TestEnvironmentHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
