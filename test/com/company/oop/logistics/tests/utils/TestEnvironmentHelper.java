@@ -1,12 +1,8 @@
 package com.company.oop.logistics.tests.utils;
 
-import com.company.oop.logistics.core.*;
-import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.db.PersistenceManagerImpl;
-import com.company.oop.logistics.models.Vehicle;
 import com.company.oop.logistics.models.contracts.Location;
-import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.modelservices.*;
 import com.company.oop.logistics.modelservices.contracts.*;
