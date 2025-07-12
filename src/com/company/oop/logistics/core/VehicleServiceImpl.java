@@ -21,6 +21,7 @@ public class VehicleServiceImpl implements VehicleService {
     public static final String ERROR_NO_VEHICLE_ID = "There is no vehicle with id %s.";
     private final List<Truck> vehicles;
 
+
     public VehicleServiceImpl(PersistenceManager persistenceManager, LocationService locationService){
         this.persistenceManager = persistenceManager;
         this.locationService = locationService;

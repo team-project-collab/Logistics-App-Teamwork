@@ -58,4 +58,64 @@ public class BulkAssignTests {
         Assertions.assertEquals("No unassigned packages to assign to route 1",command.execute(List.of("1")));
     }
 
+    
+    @Test
+    public void execute_Should_ThrowError_When_NonNumericRouteId(){
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> command.execute(List.of("abc")));
+    }
+    
+    @Test
+    public void execute_Should_HandlePartialAssignment_When_SomePackagesExceedCapacity(){
+        deliveryPackageService.createDeliveryPackage(
+            City.MEL, City.ADL, 100000, customerService.getCustomerContactById(1)
+        );
+
+        String result = command.execute(List.of("1"));
+
+        Assertions.assertEquals(4, routeService.getRouteById(1).getAssignedPackages().size());
+        Assertions.assertTrue(result.contains("4 packages added to route 1"));
+    }
+    
+    @Test
+    public void execute_Should_HandleEmptyParameters(){
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> command.execute(List.of()));
+    }
+    
+    @Test
+    public void execute_Should_HandleRouteWithoutVehicle(){
+        routeService.createDeliveryRoute(
+            LocalDateTime.of(2025, 10, 10, 21, 10),
+            List.of(City.SYD, City.MEL)
+        );
+
+        String result = command.execute(List.of("2"));
+        Assertions.assertTrue(result.contains("No unassigned packages to assign to route 2") || 
+                            result.contains("0 packages added to route 2"));
+    }
+    
+    @Test
+    public void execute_Should_HandleRouteThatDoesNotServicePackageLocations(){
+        deliveryPackageService.createDeliveryPackage(
+            City.PER, City.BRI, 10, customerService.getCustomerContactById(1)
+        );
+
+        String result = command.execute(List.of("1"));
+        Assertions.assertEquals(4, routeService.getRouteById(1).getAssignedPackages().size());
+    }
+    
+    @Test
+    public void execute_Should_ReturnCorrectMessage_When_AllPackagesAssigned(){
+        String result = command.execute(List.of("1"));
+        Assertions.assertTrue(result.contains("4 packages added to route 1"));
+    }
+    
+    @Test
+    public void execute_Should_HandleMultipleExecutions_WithoutDuplicateAssignments(){
+        command.execute(List.of("1"));
+        String result = command.execute(List.of("1"));
+        Assertions.assertEquals("No unassigned packages to assign to route 1", result);
+    }
+
 }

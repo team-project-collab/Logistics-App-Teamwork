@@ -3,7 +3,9 @@ package com.company.oop.logistics.tests.utils;
 import com.company.oop.logistics.core.*;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.db.PersistenceManager;
+import com.company.oop.logistics.models.Vehicle;
 import com.company.oop.logistics.models.contracts.Location;
+import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
 
 import java.io.File;
@@ -37,6 +39,10 @@ public class TestEnvironmentHelper {
         customerService.createCustomerContactInfo("Etienne", "+359 8888 8888", "etko8@gmail.com", City.MEL);
 
         int vehicleId = vehicleService.getVehicles().get(0).getId();
+//        for (Truck v:
+//             vehicleService.getVehicles()) {
+//            System.out.println(v.getLocationIds().stream().toList());
+//        }
         LocationServiceImpl locServiceImpl = (LocationServiceImpl) locationService;
         Location sydLocation = locationService.createLocation(City.SYD, LocalDateTime.of(2025, 10, 10, 19, 10), null);
         vehicleService.assignVehicle(vehicleId, List.of(sydLocation.getId()));
