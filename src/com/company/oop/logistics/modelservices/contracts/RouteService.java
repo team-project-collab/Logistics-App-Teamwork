@@ -23,4 +23,5 @@ public interface RouteService {
     void assignPackage(int deliveryRouteId, int deliveryPackageId);
 
     List<Location> getMatchingLocations(int routeId, City startLocation, City endLocation);
+
 }

@@ -70,6 +70,9 @@ public class TruckImpl extends Vehicle implements Truck {
             }
         }
     }
+    public static void resetTruckLimit(){
+        setIds(0,0,0);
+    }
 
     public int getCapacity() {
         return capacity;
