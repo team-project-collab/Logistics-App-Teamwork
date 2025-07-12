@@ -7,6 +7,8 @@ import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.contracts.DeliveryPackage;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.modelservices.contracts.*;
+import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.tests.utils.TestEnvironmentHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,6 +27,7 @@ public class BulkAssignTests {
     private VehicleService vehicleService;
     private LocationService locationService;
     private CustomerService customerService;
+    private AssignmentService assignmentService;
     private static final String DATA_DIR = "data";
     @BeforeEach
     public void setUp() {
@@ -37,7 +40,8 @@ public class BulkAssignTests {
         vehicleService = deps.vehicleService;
         locationService = deps.locationService;
         customerService = deps.customerService;
-        command = new BulkAssignPackagesCommand(deliveryPackageService, routeService);
+        assignmentService = deps.assignmentService;
+        command = new BulkAssignPackagesCommand(assignmentService);
     }
     @Test
     public void execute_Should_ThrowError_When_InvalidNumberOfParams(){

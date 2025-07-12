@@ -4,7 +4,12 @@ import com.company.oop.logistics.commands.listing.ListRoutesCommand;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.modelservices.DeliveryPackageServiceImpl;
+import com.company.oop.logistics.modelservices.LocationServiceImpl;
+import com.company.oop.logistics.modelservices.RouteServiceImpl;
+import com.company.oop.logistics.modelservices.VehicleServiceImpl;
 import com.company.oop.logistics.modelservices.contracts.*;
+import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.tests.utils.TestEnvironmentHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +25,7 @@ public class ListRoutesCommandTests {
     private VehicleService vehicleService;
     private LocationService locationService;
     private CustomerService customerService;
+    private AssignmentService assignmentService;
 
     @BeforeEach
     public void setUp() {
@@ -32,7 +38,8 @@ public class ListRoutesCommandTests {
         vehicleService = deps.vehicleService;
         locationService = deps.locationService;
         customerService = deps.customerService;
-        command = new ListRoutesCommand(routeService, locationService);
+        assignmentService = deps.assignmentService;
+        command = new ListRoutesCommand(routeService,locationService,assignmentService);
     }
 
     @Test
@@ -97,12 +104,12 @@ public class ListRoutesCommandTests {
         TestEnvironmentHelper.cleanDataDirectory("data");
         
         com.company.oop.logistics.db.PersistenceManager persistenceManager = new com.company.oop.logistics.db.PersistenceManager();
-        LocationService emptyLocationService = new com.company.oop.logistics.core.LocationServiceImpl(persistenceManager);
-        VehicleService emptyVehicleService = new com.company.oop.logistics.core.VehicleServiceImpl(persistenceManager, emptyLocationService);
-        DeliveryPackageService emptyDeliveryPackageService = new com.company.oop.logistics.core.DeliveryPackageServiceImpl(persistenceManager, emptyLocationService);
-        RouteService emptyRouteService = new com.company.oop.logistics.core.RouteServiceImpl(persistenceManager, emptyVehicleService, emptyLocationService, emptyDeliveryPackageService);
+        LocationService emptyLocationService = new LocationServiceImpl(persistenceManager);
+        VehicleService emptyVehicleService = new VehicleServiceImpl(persistenceManager, emptyLocationService);
+        DeliveryPackageService emptyDeliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager, emptyLocationService);
+        RouteService emptyRouteService = new RouteServiceImpl(persistenceManager,locationService);
         
-        ListRoutesCommand emptyCommand = new ListRoutesCommand(emptyRouteService, emptyLocationService);
+        ListRoutesCommand emptyCommand = new ListRoutesCommand(routeService,locationService,assignmentService);
         String result = emptyCommand.execute(List.of());
         
         Assertions.assertTrue(result.contains("There are no routes matching the criteria"));

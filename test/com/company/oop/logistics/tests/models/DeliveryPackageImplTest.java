@@ -1,12 +1,12 @@
 package com.company.oop.logistics.tests.models;
 
-import com.company.oop.logistics.core.RouteServiceImpl;
-import com.company.oop.logistics.core.contracts.RouteService;
+
 import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.DeliveryPackageImpl;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
 
+import com.company.oop.logistics.modelservices.contracts.RouteService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

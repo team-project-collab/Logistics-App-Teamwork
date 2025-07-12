@@ -4,6 +4,7 @@ import com.company.oop.logistics.commands.listing.ListLocationsCommand;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.modelservices.LocationServiceImpl;
 import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.tests.utils.TestEnvironmentHelper;
 import org.junit.jupiter.api.Assertions;
@@ -77,7 +78,7 @@ public class ListLocationsCommandTests {
         
         // Create services without initializing test data
         com.company.oop.logistics.db.PersistenceManager persistenceManager = new com.company.oop.logistics.db.PersistenceManager();
-        LocationService emptyLocationService = new com.company.oop.logistics.core.LocationServiceImpl(persistenceManager);
+        LocationService emptyLocationService = new LocationServiceImpl(persistenceManager);
         
         ListLocationsCommand emptyCommand = new ListLocationsCommand(emptyLocationService);
         String result = emptyCommand.execute(List.of());

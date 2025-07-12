@@ -4,6 +4,8 @@ import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.modelservices.contracts.*;
+import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.tests.utils.TestEnvironmentHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +21,7 @@ public class AssignVehicleToRouteTests {
     private VehicleService vehicleService;
     private LocationService locationService;
     private CustomerService customerService;
+    private AssignmentService assignmentService;
 
     @BeforeEach
     public void setUp() {
@@ -31,7 +34,9 @@ public class AssignVehicleToRouteTests {
         vehicleService = deps.vehicleService;
         locationService = deps.locationService;
         customerService = deps.customerService;
-        command = new AssignVehicleToRouteCommand(routeService);
+        assignmentService = deps.assignmentService;
+
+        command = new AssignVehicleToRouteCommand(assignmentService);
     }
 
     @Test

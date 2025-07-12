@@ -6,6 +6,8 @@ import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.exceptions.custom.LimitBreak;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.modelservices.contracts.*;
+import com.company.oop.logistics.services.AssignmentService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,7 @@ public class AssignPackageTests {
     private VehicleService vehicleService;
     private LocationService locationService;
     private CustomerService customerService;
+    private AssignmentService assignmentService;
     private static final String DATA_DIR = "data";
     @BeforeEach
     public void setUp() {
@@ -32,7 +35,8 @@ public class AssignPackageTests {
         vehicleService = deps.vehicleService;
         locationService = deps.locationService;
         customerService = deps.customerService;
-        command = new AssignPackageCommand(deliveryPackageService,routeService);
+        assignmentService = deps.assignmentService;
+        command = new AssignPackageCommand(assignmentService,routeService);
     }
     @Test
     public void execute_Should_ThrowError_When_InvalidNumberOfParams(){
@@ -61,7 +65,7 @@ public class AssignPackageTests {
             List.of(City.SYD, City.MEL)
         ).getId();
         Assertions.assertThrows(IllegalArgumentException.class,
-            () -> routeService.assignVehicleToRoute(vehicleService.getVehicles().get(0).getId(), routeId));
+            () -> routeService.assignVehicle(vehicleService.getAllVehicles().get(0).getId(), routeId));
     }
 
     @Test

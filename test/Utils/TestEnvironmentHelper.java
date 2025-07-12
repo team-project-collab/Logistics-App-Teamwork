@@ -7,6 +7,10 @@ import com.company.oop.logistics.models.Vehicle;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
+import com.company.oop.logistics.modelservices.*;
+import com.company.oop.logistics.modelservices.contracts.*;
+import com.company.oop.logistics.services.AssignmentService;
+import com.company.oop.logistics.services.AssignmentServiceImpl;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -34,15 +38,13 @@ public class TestEnvironmentHelper {
         CustomerService customerService = new CustomerServiceImpl(persistenceManager);
         VehicleService vehicleService = new VehicleServiceImpl(persistenceManager, locationService);
         DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager, locationService);
-        RouteService routeService = new RouteServiceImpl(persistenceManager, vehicleService, locationService, deliveryPackageService);
+        RouteService routeService = new RouteServiceImpl(persistenceManager,locationService);
+        AssignmentService assignmentService = new AssignmentServiceImpl(routeService,locationService,vehicleService,deliveryPackageService);
 
         customerService.createCustomerContactInfo("Etienne", "+359 8888 8888", "etko8@gmail.com", City.MEL);
 
-        int vehicleId = vehicleService.getVehicles().get(0).getId();
-//        for (Truck v:
-//             vehicleService.getVehicles()) {
-//            System.out.println(v.getLocationIds().stream().toList());
-//        }
+        int vehicleId = vehicleService.getAllVehicles().get(0).getId();
+
         LocationServiceImpl locServiceImpl = (LocationServiceImpl) locationService;
         Location sydLocation = locationService.createLocation(City.SYD, LocalDateTime.of(2025, 10, 10, 19, 10), null);
         vehicleService.assignVehicle(vehicleId, List.of(sydLocation.getId()));
@@ -51,14 +53,14 @@ public class TestEnvironmentHelper {
                 LocalDateTime.of(2025, 10, 10, 20, 10),
                 new ArrayList<>(List.of(City.SYD, City.MEL, City.ADL))
         );
-        routeService.assignVehicleToRoute(vehicleService.getVehicles().get(0).getId(), 1);
+        routeService.assignVehicle(vehicleService.getAllVehicles().get(0).getId(), 1);
 
         deliveryPackageService.createDeliveryPackage(City.MEL, City.ADL, 40, customerService.getCustomerContactById(1));
         deliveryPackageService.createDeliveryPackage(City.MEL, City.ADL, 20, customerService.getCustomerContactById(1));
         deliveryPackageService.createDeliveryPackage(City.MEL, City.ADL, 500, customerService.getCustomerContactById(1));
         deliveryPackageService.createDeliveryPackage(City.MEL, City.ADL, 200, customerService.getCustomerContactById(1));
 
-        return new TestDependencies(deliveryPackageService, routeService, vehicleService, locationService, customerService);
+        return new TestDependencies(deliveryPackageService, routeService, vehicleService, locationService, customerService, assignmentService);
     }
 
     public static class TestDependencies {
@@ -67,14 +69,17 @@ public class TestEnvironmentHelper {
         public final VehicleService vehicleService;
         public final LocationService locationService;
         public final CustomerService customerService;
+        public final AssignmentService assignmentService;
 
         public TestDependencies(DeliveryPackageService deliveryPackageService, RouteService routeService,
-                                VehicleService vehicleService, LocationService locationService, CustomerService customerService) {
+                                VehicleService vehicleService, LocationService locationService, CustomerService customerService,
+                                AssignmentService assignmentService) {
             this.deliveryPackageService = deliveryPackageService;
             this.routeService = routeService;
             this.vehicleService = vehicleService;
             this.locationService = locationService;
             this.customerService = customerService;
+            this.assignmentService = assignmentService;
         }
     }
 }
