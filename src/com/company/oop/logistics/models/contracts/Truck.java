@@ -14,4 +14,5 @@ public interface Truck extends Identifiable{
     void addLocationIds(List<Integer> locationIds);
 
     int getMaxRange();
+
 }

@@ -1,6 +1,7 @@
 package com.company.oop.logistics.commands.assign;
 
 import com.company.oop.logistics.commands.contracts.Command;
+import com.company.oop.logistics.modelservices.contracts.RouteService;
 import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.utils.parsing.ParsingHelpers;
 
@@ -12,9 +13,14 @@ public class AssignPackageCommand implements Command {
     private static final String ERROR_PARAMETERS_AMOUNT = String.format("This command requires exactly %d parameters",
             EXPECTED_NUMBER_OF_PARAMETERS);
     private final AssignmentService assignmentService;
+    private RouteService routeService;
     private int packageId;
     private int deliveryRouteId;
 
+    public AssignPackageCommand(AssignmentService assignmentService,RouteService routeService) {
+        this.assignmentService = assignmentService;
+        this.routeService = routeService;
+    }
     public AssignPackageCommand(AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
     }
