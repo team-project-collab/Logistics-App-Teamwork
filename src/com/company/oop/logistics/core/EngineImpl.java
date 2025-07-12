@@ -3,6 +3,7 @@ package com.company.oop.logistics.core;
 import com.company.oop.logistics.commands.contracts.Command;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.db.PersistenceManager;
+import com.company.oop.logistics.db.PersistenceManagerImpl;
 import com.company.oop.logistics.modelservices.*;
 import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.services.AssignmentService;
@@ -21,7 +22,7 @@ public class EngineImpl implements Engine {
 
 
     public EngineImpl() {
-        PersistenceManager persistenceManager = new PersistenceManager();
+        PersistenceManager persistenceManager = new PersistenceManagerImpl();
         LocationService locationService = new LocationServiceImpl(persistenceManager);
         VehicleService vehicleService = new VehicleServiceImpl(persistenceManager, locationService);
         DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager,

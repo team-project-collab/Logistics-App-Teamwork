@@ -10,6 +10,7 @@ import com.company.oop.logistics.services.AssignmentServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import testingUtils.MockPersistenceManagerImpl;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -36,7 +37,7 @@ public class BulkAssignTests {
                 }
             }
         }
-        PersistenceManager persistenceManager = new PersistenceManager();
+        PersistenceManager persistenceManager = new MockPersistenceManagerImpl();
         customerService = new CustomerServiceImpl(persistenceManager);
         vehicleService = new VehicleServiceImpl(persistenceManager, locationService);
         locationService = new LocationServiceImpl(persistenceManager);
