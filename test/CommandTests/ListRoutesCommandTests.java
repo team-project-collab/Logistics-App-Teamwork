@@ -102,8 +102,8 @@ public class ListRoutesCommandTests {
     public void execute_Should_ReturnNoRoutesMessage_When_NoRoutesExist() {
         // Clean up and create fresh environment without routes
         TestEnvironmentHelper.cleanDataDirectory("data");
-        
-        com.company.oop.logistics.db.PersistenceManager persistenceManager = new com.company.oop.logistics.db.PersistenceManager();
+
+        com.company.oop.logistics.db.PersistenceManager persistenceManager = new com.company.oop.logistics.db.PersistenceManagerImpl();
         LocationService emptyLocationService = new LocationServiceImpl(persistenceManager);
         VehicleService emptyVehicleService = new VehicleServiceImpl(persistenceManager, emptyLocationService);
         DeliveryPackageService emptyDeliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager, emptyLocationService);
