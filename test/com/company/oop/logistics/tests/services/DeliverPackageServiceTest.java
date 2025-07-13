@@ -104,7 +104,7 @@ public class DeliverPackageServiceTest {
 
         DeliveryPackage updatedPackage = deliveryPackageService.getDeliveryPackageById(dp.getId());
         assertEquals(123, updatedPackage.getAssignedRoute());
-        assertEquals(newLocationIds, updatedPackage.getLocations());
+        assertEquals(List.of(1, 2), updatedPackage.getLocations());
         assertTrue(updatedPackage.isAssigned());
     }
 

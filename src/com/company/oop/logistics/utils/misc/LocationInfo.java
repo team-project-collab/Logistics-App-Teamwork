@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public final class LocationInfo {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     public static final String MESSAGE_VEHICLE_AWAITING_DEPARTURE = "Assigned at %s and ready to depart to %s at %s";
     public static final String MESSAGE_VEHICLE_FREE = "Free, stationed at %s";
     public static final String MESSAGE_VEHICLE_ONROUTE_TRAVELING = "On route, traveling from %s to %s. Expected arrival time: %s";
@@ -41,8 +41,24 @@ public final class LocationInfo {
         generateLocations();
     }
 
+    public Location getPreviousLocation() {
+        return previousLocation;
+    }
+
     public Location getCurrentLocation(){
         return currentLocation;
+    }
+
+    public Location getNextLocation() {
+        return nextLocation;
+    }
+
+    public Location getLocationAfterNext() {
+        return locationAfterNext;
+    }
+
+    public Location getLastLocation() {
+        return lastLocation;
     }
 
     public String getTruckStatus(){
@@ -116,22 +132,20 @@ public final class LocationInfo {
     public String getPackageStatus() {
         String result = "";
         if (locationIds.size() == 1){
-            result = String.format(MESSAGE_PACKAGE_NOT_ASSIGNED, currentLocation.getName());
-            return result;
+            return String.format(MESSAGE_PACKAGE_NOT_ASSIGNED, currentLocation.getName());
+        }
+        if (nextLocation == null){
+            return String.format(MESSAGE_PACKAGE_DELIVERED, currentLocation.getName());
         }
         if (currentLocation.getType().equals(LocationType.END)) {
-            if (nextLocation != null) {
-                result = String.format(MESSAGE_PACKAGE_NOT_STARTED,
-                        currentLocation.getName(),
-                        nextLocation.getDepartureTime().format(formatter),
-                        lastLocation.getName(),
-                        lastLocation.getArrivalTime().format(formatter));
-            }else{
-                result = String.format(MESSAGE_PACKAGE_DELIVERED, currentLocation.getName());
-            }
+            return String.format(MESSAGE_PACKAGE_NOT_STARTED,
+                    currentLocation.getName(),
+                    nextLocation.getDepartureTime().format(formatter),
+                    lastLocation.getName(),
+                    lastLocation.getArrivalTime().format(formatter));
         }
         if (currentLocation.getType().equals(LocationType.INTERMEDIATE)) {
-            if (currentLocation.getArrivalTime().isBefore(time)) {
+            if (currentLocation.getDepartureTime().isBefore(time)) {
                 result = String.format(MESSAGE_PACKAGE_TRAVELING,
                         lastLocation.getName(),
                         lastLocation.getArrivalTime().format(formatter));
@@ -144,9 +158,7 @@ public final class LocationInfo {
             }
         }
         if (currentLocation.getType().equals(LocationType.START)) {
-            result = String.format(MESSAGE_PACKAGE_NOT_STARTED,
-                    currentLocation.getName(),
-                    currentLocation.getDepartureTime().format(formatter),
+            result = String.format(MESSAGE_PACKAGE_TRAVELING,
                     lastLocation.getName(),
                     lastLocation.getArrivalTime().format(formatter));
         }
@@ -175,9 +187,9 @@ public final class LocationInfo {
         }
         if (currentLocation == null){
             currentLocation = locations.get(0);
-            if (locations.size() > 1 && nextLocation == null) {
+            if (locations.size() > 1) {
                 nextLocation = locations.get(1);
-                if (locations.size() > 2 && locationAfterNext == null){
+                if (locations.size() > 2){
                     locationAfterNext = locations.get(2);
                 }
             }
@@ -188,8 +200,7 @@ public final class LocationInfo {
         return switch (location.getType()) {
             case END -> location.getArrivalTime().isBefore(time);
             case START -> location.getDepartureTime().isBefore(time);
-            case INTERMEDIATE ->
-                    location.getDepartureTime().isBefore(time) || location.getArrivalTime().isBefore(time);
+            case INTERMEDIATE -> location.getDepartureTime().isBefore(time) || location.getArrivalTime().isBefore(time);
         };
     }
 }

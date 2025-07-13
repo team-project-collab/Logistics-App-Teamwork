@@ -27,7 +27,6 @@ public class AssignVehicleToRouteTests {
 
     @BeforeEach
     public void setUp() {
-        TestEnvironmentHelper.cleanDataDirectory("data");
         TruckImpl.resetTruckLimit();
         
         TestEnvironmentHelper.TestDependencies deps = TestEnvironmentHelper.initializeServices("data");

@@ -27,6 +27,8 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
              Destination: %s;
              Departing %s at %s;
              Reaching destination %s at %s""";
+    public static final String MESSAGE_FREE_CAPACITY = "\n Free capacity: %.1f\n";
+    public static final String MESSAGE_NO_VEHICLE = "\nNo assigned vehicle\n";
 
     private final RouteService routeService;
     private final LocationService locationService;
@@ -63,9 +65,9 @@ public class FindRoutesServicingStartAndEndCommand implements Command {
 
             if (route.getAssignedVehicleId() != 0){
                 double freeCapacity = assignmentService.getFreeCapacity(route.getId(), origin, destination);
-                resultString.append(String.format("\n Free capacity: %.1f", freeCapacity));
+                resultString.append(String.format(MESSAGE_FREE_CAPACITY, freeCapacity));
             }else{
-                resultString.append("\nNo assigned vehicle");
+                resultString.append(MESSAGE_NO_VEHICLE);
             }
         }
 

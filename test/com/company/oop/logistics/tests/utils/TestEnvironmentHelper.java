@@ -33,7 +33,7 @@ public class TestEnvironmentHelper {
     }
 
     public static TestDependencies initializeServices(String dataDirPath) {
-        cleanDataDirectory(dataDirPath);
+        //cleanDataDirectory(dataDirPath);
 
         PersistenceManager persistenceManager = new MockPersistenceManagerImpl();
         LocationService locationService = new LocationServiceImpl(persistenceManager);

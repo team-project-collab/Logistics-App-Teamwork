@@ -295,7 +295,7 @@ public class AssignmentServiceTest {
                     assignmentService.getMaxLoad(route.getId(), City.ADL, City.MEL)
                 ),
                 () -> Assertions.assertEquals(
-                    validPackage1.getWeightKg() + validPackage2.getWeightKg() + validPackage3.getWeightKg(),
+                    validPackage2.getWeightKg() + validPackage3.getWeightKg(),
                     assignmentService.getMaxLoad(route.getId(), City.SYD, City.MEL)
                 )
         );

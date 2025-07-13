@@ -27,7 +27,6 @@ public class AssignPackageTests {
     private static final String DATA_DIR = "data";
     @BeforeEach
     public void setUp() {
-        com.company.oop.logistics.tests.utils.TestEnvironmentHelper.cleanDataDirectory("data");
 
         TruckImpl.resetTruckLimit();
         TestEnvironmentHelper.TestDependencies deps = TestEnvironmentHelper.initializeServices("data");
@@ -37,7 +36,7 @@ public class AssignPackageTests {
         locationService = deps.locationService;
         customerService = deps.customerService;
         assignmentService = deps.assignmentService;
-        command = new AssignPackageCommand(assignmentService,routeService);
+        command = new AssignPackageCommand(assignmentService);
     }
     @Test
     public void execute_Should_ThrowError_When_InvalidNumberOfParams(){
