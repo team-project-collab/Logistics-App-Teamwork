@@ -14,7 +14,6 @@ import com.company.oop.logistics.modelservices.*;
 import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.services.AssignmentServiceImpl;
-import net.sf.cglib.core.Local;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
