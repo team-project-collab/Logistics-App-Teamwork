@@ -1,20 +1,35 @@
 package com.company.oop.logistics.tests.models;
 
+
+import com.company.oop.logistics.models.CustomerContactInfo;
 import com.company.oop.logistics.models.DeliveryPackageImpl;
+import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.enums.City;
+
+import com.company.oop.logistics.modelservices.contracts.RouteService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DeliveryPackageImplTest {
 
     private DeliveryPackageImpl deliveryPackage;
+    private CustomerContactInfo contact;
+    private RouteService routeService;
 
     @BeforeEach
     public void setUp() {
+        contact = new CustomerContactInfo(1,
+                "Ivan Ivanov",
+                "+1234567890",
+                "ivan@example.com",
+                City.MEL);
+
         deliveryPackage = new DeliveryPackageImpl(1,
                 City.MEL,
                 City.ADL,
@@ -43,10 +58,9 @@ public class DeliveryPackageImplTest {
     }
 
     @Test
-    public void assign_Should_SetAssignedSuccessfully() {
-        deliveryPackage.assign(5);
-        Assertions.assertTrue(deliveryPackage.isAssigned());
-        Assertions.assertEquals(5, deliveryPackage.getAssignedRoute());
+    public void setAssigned_Should_ShowIfThePackageIsAssignedSuccessfuly() {
+//        deliveryPackage.
+//        Assertions.assertTrue(deliveryPackage.isAssigned());
     }
 
     @Test

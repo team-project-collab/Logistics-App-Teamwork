@@ -22,10 +22,14 @@ public class VehicleServiceImpl implements VehicleService {
     private final LocationService locationService;
     private final List<Truck> vehicles;
 
+
     public VehicleServiceImpl(PersistenceManager persistenceManager, LocationService locationService){
         this.persistenceManager = persistenceManager;
         this.locationService = locationService;
         vehicles = persistenceManager.loadData(storagePath);
+    }
+
+    public void initializeTrucks(){
         InitializeTrucks.execute(this);
     }
 

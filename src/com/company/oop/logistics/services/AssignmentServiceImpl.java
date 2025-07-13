@@ -69,8 +69,6 @@ public class AssignmentServiceImpl implements AssignmentService{
 
         List<Location> locationsToAddTrimmed = locationService.trimLocations(locationsToAdd);
 
-        deliveryRoute.addPackage(deliveryPackage.getId());
-
         List<Integer> locationIds = locationsToAddTrimmed.stream().map(Identifiable::getId).toList();
 
         deliveryPackageService.assignPackage(deliveryRouteId, deliveryPackageId, locationIds);
@@ -113,8 +111,9 @@ public class AssignmentServiceImpl implements AssignmentService{
                     }
                     List<Location> packageLocations = assignedPackage.getLocations()
                             .stream().map(locationService::getLocationById).toList();
-                    packageLocations = new ArrayList<>(packageLocations.subList(0, packageLocations.size() - 1));
-                    if (packageLocations.contains(location)) {
+                    packageLocations = new ArrayList<>(packageLocations.subList(1, packageLocations.size() - 1));
+                    List<City> cities = packageLocations.stream().map(Location::getName).toList();
+                    if (cities.contains(location.getName())) {
                         weightSum += assignedPackage.getWeightKg();
                     }
                 }
