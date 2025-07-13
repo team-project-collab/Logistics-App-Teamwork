@@ -296,7 +296,7 @@ public class AssignmentServiceTest {
                     assignmentService.getMaxLoad(route.getId(), City.ADL, City.MEL)
                 ),
                 () -> Assertions.assertEquals(
-                    validPackage1.getWeightKg() + validPackage2.getWeightKg() + validPackage3.getWeightKg(),
+                    validPackage2.getWeightKg() + validPackage3.getWeightKg(),
                     assignmentService.getMaxLoad(route.getId(), City.SYD, City.MEL)
                 )
         );
@@ -304,11 +304,38 @@ public class AssignmentServiceTest {
 
     @Test
     public void getMaxLoad_Should_ReturnZero_When_NoPackagesAssignedToSubroute() {
+        DeliveryRoute route = routeService.createDeliveryRoute(now.plusHours(1), validCities);
+        Truck truck = vehicleService.createVehicle(validTruck, City.SYD);
+        assignmentService.assignVehicleToRoute(truck.getId(), route.getId());
+        DeliveryPackage validPackage1 = deliveryPackageService.createDeliveryPackage(
+                City.SYD,
+                City.ADL,
+                20,
+                customerContactInfo);
+        assignmentService.assignPackage(route.getId(), validPackage1.getId());
+
+        Assertions.assertEquals(
+                0,
+                assignmentService.getMaxLoad(route.getId(),City.ADL, City.MEL)
+        );
     }
 
     // getFreeCapacity tests
     @Test
     public void getFreeCapacity_Should_ReturnCorrectFreeCapacity_When_ValidRouteAndSubrouteProvided() {
+        DeliveryRoute route = routeService.createDeliveryRoute(now.plusHours(1), validCities);
+        Truck truck = vehicleService.createVehicle(validTruck, City.SYD);
+        assignmentService.assignVehicleToRoute(truck.getId(), route.getId());
+        DeliveryPackage validPackage1 = deliveryPackageService.createDeliveryPackage(
+                City.SYD,
+                City.ADL,
+                20,
+                customerContactInfo);
+        assignmentService.assignPackage(route.getId(), validPackage1.getId());
+        Assertions.assertEquals(
+                truck.getCapacity() - 20,
+                assignmentService.getFreeCapacity(1, City.SYD, City.MEL)
+        );
     }
 
 }
