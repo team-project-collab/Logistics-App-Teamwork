@@ -16,20 +16,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LocationServiceImplTest {
-
     private PersistenceManager persistenceManager;
     private LocationServiceImpl locationService;
 
-
     @BeforeEach
     public void setUp() {
-
-       PersistenceManager persistenceManager = Mockito.mock(PersistenceManager.class);
+        persistenceManager = Mockito.mock(PersistenceManager.class);
         Mockito.when(persistenceManager.loadData(Mockito.anyString())).thenReturn(new ArrayList<>());
-
         locationService = new LocationServiceImpl(persistenceManager);
     }
-
 
     @Test
     public void createLocation_Should_CreateAndSaveLocation() {
@@ -43,6 +38,7 @@ public class LocationServiceImplTest {
         Assertions.assertEquals(arrivalTime, location.getArrivalTime());
         Assertions.assertEquals(departureTime, location.getDepartureTime());
 
+        Mockito.verify(persistenceManager, Mockito.times(1)).saveData(Mockito.anyList(), Mockito.anyString());
     }
 
     @Test
@@ -52,7 +48,7 @@ public class LocationServiceImplTest {
 
         locationService.createLocation(City.MEL, arrivalTime, departureTime);
 
-        List<Location> locations = locationService.getLocations();
+        List<Location> locations = locationService.getAllLocations();
 
         Assertions.assertEquals(1, locations.size());
         Assertions.assertEquals(City.MEL, locations.get(0).getName());
@@ -106,5 +102,6 @@ public class LocationServiceImplTest {
         Assertions.assertEquals(1, result.size());
         Assertions.assertEquals(loc1, result.get(0));
     }
+
 
 }
