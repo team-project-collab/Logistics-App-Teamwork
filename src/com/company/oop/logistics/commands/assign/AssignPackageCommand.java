@@ -17,10 +17,6 @@ public class AssignPackageCommand implements Command {
     private int packageId;
     private int deliveryRouteId;
 
-    public AssignPackageCommand(AssignmentService assignmentService,RouteService routeService) {
-        this.assignmentService = assignmentService;
-        this.routeService = routeService;
-    }
     public AssignPackageCommand(AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
     }
