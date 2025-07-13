@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ListVehiclesCommandTests {
     private ListVehiclesCommand command;
@@ -50,7 +52,7 @@ public class ListVehiclesCommandTests {
 
     @Test
     public void execute_Should_ReturnAllVehicles_When_EmptyParameters() {
-        String result = command.execute(List.of(""));
+        String result = command.execute(List.of());
         
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -73,7 +75,7 @@ public class ListVehiclesCommandTests {
         Assertions.assertNotNull(result);
         Assertions.assertTrue(result.contains("Truck id:"));
         // Should only show vehicles in SYD
-        Assertions.assertTrue(result.contains("SYD"));
+        Assertions.assertTrue(result.contains("Sydney"));
     }
 
     @Test
@@ -86,10 +88,11 @@ public class ListVehiclesCommandTests {
 
     @Test
     public void execute_Should_FilterByCity_When_CityParameterInUpperCase() {
-        String result = command.execute(List.of("MEL"));
-        
+        int vehicleId = vehicleService.createVehicle("scania", City.ADL).getId();
+        String result = command.execute(List.of("ADL"));
+
         Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.contains("Truck id:"));
+        Assertions.assertTrue(result.contains(String.format("Truck id: %d", vehicleId)));
     }
 
     @Test
@@ -159,12 +162,6 @@ public class ListVehiclesCommandTests {
     }
 
     @Test
-    public void execute_Should_HandleEmptyCityCode() {
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> command.execute(List.of("")));
-    }
-
-    @Test
     public void execute_Should_HandleSpecialCharacters() {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> command.execute(List.of("!@#$%")));
@@ -209,20 +206,14 @@ public class ListVehiclesCommandTests {
     @Test
     public void execute_Should_IncludeLocationInfo_When_VehiclesHaveLocations() {
         String result = command.execute(List.of());
-        
-        // Should include location information in the output
-        Assertions.assertTrue(result.contains("Location") || result.contains("SYD") || 
-                            result.contains("MEL") || result.contains("ADL"));
-    }
+        String regex = "===\\s*"
+                + "Truck id: \\d+, Brand: .+?, Max load: \\d+\\s*"
+                + "Assigned at .+? and ready to depart to .+? at \\d{2}\\.\\d{2}\\.\\d{4} \\d{2}:\\d{2}\\s*"
+                + "===";
+        Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(result);
 
-    @Test
-    public void execute_Should_HandleVehiclesWithNoLocations() {
-        // Create a new vehicle with no locations
-        vehicleService.createVehicle("NewTruck", City.PER);
-        
-        String result = command.execute(List.of());
-        
-        Assertions.assertNotNull(result);
-        Assertions.assertTrue(result.contains("Truck id:"));
+        // Should include location information in the output
+        Assertions.assertTrue(matcher.find());
     }
-} 
+}

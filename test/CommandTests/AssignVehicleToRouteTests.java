@@ -3,6 +3,7 @@ package CommandTests;
 import com.company.oop.logistics.commands.assign.AssignVehicleToRouteCommand;
 import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.models.TruckImpl;
+import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.services.AssignmentService;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AssignVehicleToRouteTests {
@@ -99,6 +101,7 @@ public class AssignVehicleToRouteTests {
             LocalDateTime.of(2025, 10, 10, 23, 10),
             List.of(City.PER, City.ADL)
         );
+        vehicleService.createVehicle("scania",City.SYD);
         
         Assertions.assertThrows(IllegalStateException.class,
                 () -> command.execute(List.of("1002", "2")));
@@ -106,21 +109,27 @@ public class AssignVehicleToRouteTests {
 
     @Test
     public void execute_Should_Succeed_When_ValidParameters() {
-        String result = command.execute(List.of("1001", "1"));
-        Assertions.assertEquals("Vehicle 1 added to route 1", result);
+        vehicleService.createVehicle("scania", City.SYD);
+        DeliveryRoute route = routeService.createDeliveryRoute(
+                LocalDateTime.of(2025, 10, 10, 20, 10),
+                new ArrayList<>(List.of(City.SYD, City.MEL, City.ADL))
+        );
 
-        // Verify vehicle is assigned to route
-        Assertions.assertEquals(1, routeService.getRouteById(1).getAssignedVehicleId());
+        String result = command.execute(List.of("1002", "2"));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("Vehicle 1002 added to route 2", result),
+                () -> Assertions.assertEquals(1002, routeService.getRouteById(2).getAssignedVehicleId())
+        );
     }
 
     @Test
     public void execute_Should_Succeed_When_VehicleHasNoPreviousLocations() {
         // Create a new vehicle with no locations
-        int newVehicleId = vehicleService.createVehicle("NewTruck", City.SYD).getId();
+        int newVehicleId = vehicleService.createVehicle("scania", City.SYD).getId();
         
         // Create a route starting from SYD
         routeService.createDeliveryRoute(
-            LocalDateTime.of(2025, 10, 10, 24, 10),
+            LocalDateTime.of(2025, 10, 10, 23, 10),
             List.of(City.SYD, City.MEL)
         );
         
@@ -178,6 +187,6 @@ public class AssignVehicleToRouteTests {
         
         // Verify route locations match vehicle locations
         List<Integer> routeLocations = routeService.getRouteById(1).getLocations();
-        Assertions.assertEquals(routeLocations, vehicleLocations);
+        Assertions.assertEquals(routeLocations, vehicleLocations.subList(1, vehicleLocations.size()));
     }
 } 

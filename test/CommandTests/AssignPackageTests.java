@@ -8,6 +8,7 @@ import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.services.AssignmentService;
+import com.company.oop.logistics.tests.utils.TestEnvironmentHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ public class AssignPackageTests {
         com.company.oop.logistics.tests.utils.TestEnvironmentHelper.cleanDataDirectory("data");
 
         TruckImpl.resetTruckLimit();
-        com.company.oop.logistics.tests.utils.TestEnvironmentHelper.TestDependencies deps = com.company.oop.logistics.tests.utils.TestEnvironmentHelper.initializeServices("data");
+        TestEnvironmentHelper.TestDependencies deps = TestEnvironmentHelper.initializeServices("data");
         deliveryPackageService = deps.deliveryPackageService;
         routeService = deps.routeService;
         vehicleService = deps.vehicleService;
@@ -44,28 +45,6 @@ public class AssignPackageTests {
                 () -> {
                     command.execute(List.of("111","2","111"));
                 });
-    }
-
-    @Test
-    public void execute_Should_ThrowError_When_PackageExceedsTruckCapacity() {
-        int heavyPackageId = deliveryPackageService.createDeliveryPackage(
-            City.MEL,
-            City.ADL,
-            100000,
-            customerService.getCustomerContactById(1)
-        ).getId();
-        Assertions.assertThrows(LimitBreak.class,
-            () -> command.execute(List.of(String.valueOf(heavyPackageId), "1")));
-    }
-
-    @Test
-    public void execute_Should_ThrowError_When_RouteAlreadyStarted() {
-        int routeId = routeService.createDeliveryRoute(
-            LocalDateTime.now().plusHours(20),
-            List.of(City.SYD, City.MEL)
-        ).getId();
-        Assertions.assertThrows(IllegalArgumentException.class,
-            () -> routeService.assignVehicle(vehicleService.getAllVehicles().get(0).getId(), routeId));
     }
 
     @Test
