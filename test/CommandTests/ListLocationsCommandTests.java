@@ -77,7 +77,7 @@ public class ListLocationsCommandTests {
         TestEnvironmentHelper.cleanDataDirectory("data");
         
         // Create services without initializing test data
-        com.company.oop.logistics.db.PersistenceManager persistenceManager = new com.company.oop.logistics.db.PersistenceManager();
+        com.company.oop.logistics.db.PersistenceManager persistenceManager = new com.company.oop.logistics.db.PersistenceManagerImpl();
         LocationService emptyLocationService = new LocationServiceImpl(persistenceManager);
         
         ListLocationsCommand emptyCommand = new ListLocationsCommand(emptyLocationService);

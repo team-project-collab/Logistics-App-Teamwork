@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import testingUtils.MockPersistenceManagerImpl;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -59,7 +60,7 @@ public class BulkAssignTests {
     @Test
     public void execute_Should_ReturnNoPackagesToAssignString_When_NoPackages(){
         command.execute(List.of("1"));
-        Assertions.assertEquals("No unassigned packages to assign to route 1",command.execute(List.of("1")));
+        Assertions.assertEquals("0 packages added to route 1",command.execute(List.of("1")));
     }
 
     
@@ -119,7 +120,7 @@ public class BulkAssignTests {
     public void execute_Should_HandleMultipleExecutions_WithoutDuplicateAssignments(){
         command.execute(List.of("1"));
         String result = command.execute(List.of("1"));
-        Assertions.assertEquals("No unassigned packages to assign to route 1", result);
+        Assertions.assertEquals("0 packages added to route 1", result);
     }
 
 }

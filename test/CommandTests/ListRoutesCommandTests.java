@@ -2,6 +2,7 @@ package CommandTests;
 
 import com.company.oop.logistics.commands.listing.ListRoutesCommand;
 import com.company.oop.logistics.core.contracts.*;
+import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.modelservices.DeliveryPackageServiceImpl;
@@ -10,10 +11,12 @@ import com.company.oop.logistics.modelservices.RouteServiceImpl;
 import com.company.oop.logistics.modelservices.VehicleServiceImpl;
 import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.services.AssignmentService;
+import com.company.oop.logistics.services.AssignmentServiceImpl;
 import com.company.oop.logistics.tests.utils.TestEnvironmentHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import testingUtils.MockPersistenceManagerImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,7 +57,7 @@ public class ListRoutesCommandTests {
 
     @Test
     public void execute_Should_ReturnAllRoutes_When_EmptyParameters() {
-        String result = command.execute(List.of(""));
+        String result = command.execute(List.of());
         
         Assertions.assertNotNull(result);
         Assertions.assertFalse(result.isEmpty());
@@ -101,18 +104,28 @@ public class ListRoutesCommandTests {
     @Test
     public void execute_Should_ReturnNoRoutesMessage_When_NoRoutesExist() {
         // Clean up and create fresh environment without routes
-        TestEnvironmentHelper.cleanDataDirectory("data");
-        
-        com.company.oop.logistics.db.PersistenceManager persistenceManager = new com.company.oop.logistics.db.PersistenceManager();
+
+        PersistenceManager persistenceManager = new MockPersistenceManagerImpl();
         LocationService emptyLocationService = new LocationServiceImpl(persistenceManager);
         VehicleService emptyVehicleService = new VehicleServiceImpl(persistenceManager, emptyLocationService);
-        DeliveryPackageService emptyDeliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager, emptyLocationService);
+        DeliveryPackageService emptyDeliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager,
+                emptyLocationService);
         RouteService emptyRouteService = new RouteServiceImpl(persistenceManager,locationService);
+        AssignmentService emptyAssignmentService = new AssignmentServiceImpl(
+                emptyRouteService,
+                emptyLocationService,
+                emptyVehicleService,
+                emptyDeliveryPackageService
+        );
         
-        ListRoutesCommand emptyCommand = new ListRoutesCommand(routeService,locationService,assignmentService);
+        ListRoutesCommand emptyCommand = new ListRoutesCommand(
+                emptyRouteService,
+                emptyLocationService,
+                emptyAssignmentService
+        );
         String result = emptyCommand.execute(List.of());
         
-        Assertions.assertTrue(result.contains("There are no routes matching the criteria"));
+        Assertions.assertEquals("There are no routes matching the criteria", result);
     }
 
     @Test

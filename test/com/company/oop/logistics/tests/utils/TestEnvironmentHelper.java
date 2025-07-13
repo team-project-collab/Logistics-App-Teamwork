@@ -1,9 +1,9 @@
 package com.company.oop.logistics.tests.utils;
 
-import com.company.oop.logistics.core.*;
-import com.company.oop.logistics.core.contracts.*;
 import com.company.oop.logistics.db.PersistenceManager;
-import com.company.oop.logistics.models.Vehicle;
+import com.company.oop.logistics.db.PersistenceManagerImpl;
+import com.company.oop.logistics.models.TruckImpl;
+import com.company.oop.logistics.models.contracts.DeliveryRoute;
 import com.company.oop.logistics.models.contracts.Location;
 import com.company.oop.logistics.models.contracts.Truck;
 import com.company.oop.logistics.models.enums.City;
@@ -11,6 +11,8 @@ import com.company.oop.logistics.modelservices.*;
 import com.company.oop.logistics.modelservices.contracts.*;
 import com.company.oop.logistics.services.AssignmentService;
 import com.company.oop.logistics.services.AssignmentServiceImpl;
+import com.company.oop.logistics.utils.misc.InitializeTrucks;
+import testingUtils.MockPersistenceManagerImpl;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -33,27 +35,31 @@ public class TestEnvironmentHelper {
     public static TestDependencies initializeServices(String dataDirPath) {
         cleanDataDirectory(dataDirPath);
 
-        PersistenceManager persistenceManager = new PersistenceManager();
+        PersistenceManager persistenceManager = new MockPersistenceManagerImpl();
         LocationService locationService = new LocationServiceImpl(persistenceManager);
         CustomerService customerService = new CustomerServiceImpl(persistenceManager);
         VehicleService vehicleService = new VehicleServiceImpl(persistenceManager, locationService);
         DeliveryPackageService deliveryPackageService = new DeliveryPackageServiceImpl(persistenceManager, locationService);
         RouteService routeService = new RouteServiceImpl(persistenceManager,locationService);
         AssignmentService assignmentService = new AssignmentServiceImpl(routeService,locationService,vehicleService,deliveryPackageService);
+        //InitializeTrucks.execute(vehicleService);
+        TruckImpl.setIds(1001, 1011, 1026);
 
         customerService.createCustomerContactInfo("Etienne", "+359 8888 8888", "etko8@gmail.com", City.MEL);
 
-        int vehicleId = vehicleService.getAllVehicles().get(0).getId();
+        Truck vehicle = vehicleService.createVehicle("Scania", City.SYD);
 
-        LocationServiceImpl locServiceImpl = (LocationServiceImpl) locationService;
-        Location sydLocation = locationService.createLocation(City.SYD, LocalDateTime.of(2025, 10, 10, 19, 10), null);
-        vehicleService.assignVehicle(vehicleId, List.of(sydLocation.getId()));
 
-        routeService.createDeliveryRoute(
+//        LocationServiceImpl locServiceImpl = (LocationServiceImpl) locationService;
+//        Location sydLocation = locationService.createLocation(City.SYD, LocalDateTime.of(2025, 10, 10, 19, 10), null);
+//        vehicleService.assignVehicle(vehicleId, List.of(sydLocation.getId()));
+
+        DeliveryRoute route = routeService.createDeliveryRoute(
                 LocalDateTime.of(2025, 10, 10, 20, 10),
                 new ArrayList<>(List.of(City.SYD, City.MEL, City.ADL))
         );
-        routeService.assignVehicle(vehicleService.getAllVehicles().get(0).getId(), 1);
+        assignmentService.assignVehicleToRoute(vehicle.getId(), route.getId());
+
 
         deliveryPackageService.createDeliveryPackage(City.MEL, City.ADL, 40, customerService.getCustomerContactById(1));
         deliveryPackageService.createDeliveryPackage(City.MEL, City.ADL, 20, customerService.getCustomerContactById(1));
