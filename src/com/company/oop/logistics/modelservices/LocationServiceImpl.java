@@ -51,7 +51,7 @@ public class LocationServiceImpl implements LocationService {
         return new ArrayList<>(locations);
     }
 
-    //Trim locations to remove arrivalTime from the start and departureTime from the end
+
     @Override
     public List<Location> trimLocations(List<Location> entryList){
         List<Location> result = new ArrayList<>(entryList);
