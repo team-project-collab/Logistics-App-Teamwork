@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MockLocationServiceImpl implements LocationService {
-    private static final String storagePath = "data/locations.xml";
+    private static final String storagePath = "test-data/locations.xml";
     private static final String ERROR_NO_LOCATION_ID = "No location with this id.";
 
     private final PersistenceManager persistenceManager;
