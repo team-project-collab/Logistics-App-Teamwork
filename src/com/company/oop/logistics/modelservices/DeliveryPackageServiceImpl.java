@@ -55,12 +55,12 @@ public class DeliveryPackageServiceImpl implements DeliveryPackageService {
     }
 
     @Override
-    public List<DeliveryPackage> getAllDeliveryPackages(){
+    public List<DeliveryPackage> getAllDeliveryPackages() {
         return new ArrayList<>(packages);
     }
 
     @Override
-    public List<DeliveryPackage> getUnassignedPackages(){
+    public List<DeliveryPackage> getUnassignedPackages() {
         return packages.stream()
                 .filter(p -> !p.isAssigned())
                 .toList();
