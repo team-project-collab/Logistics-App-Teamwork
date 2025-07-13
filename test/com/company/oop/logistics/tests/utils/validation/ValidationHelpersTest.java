@@ -31,7 +31,7 @@ public class ValidationHelpersTest {
         ValidationHelpers.validateIntRange(7, 5, 10, VALID_STRING);
     }
     @Test
-    void validateIntRange_Should_ThrowException_When_OutsideRange() {
+    void validateIntRange_Should_Throw_When_OutsideRange() {
         Assertions.assertAll(
                 () -> Assertions.assertThrows(IllegalArgumentException.class, () ->
                         ValidationHelpers.validateIntRange(4, 5, 10, VALID_STRING)),
@@ -47,7 +47,7 @@ public class ValidationHelpersTest {
     }
 
     @Test
-    void validateDecimalRange_Should_ThrowException_When_OutsideRange() {
+    void validateDecimalRange_Should_Throw_When_OutsideRange() {
         Assertions.assertAll(
                 () -> Assertions.assertThrows(
                         IllegalArgumentException.class,
@@ -67,30 +67,30 @@ public class ValidationHelpersTest {
     }
 
     @Test
-    void validateArgumentsCount_Should_ThrowException_When_InsufficientArguments() {
+    void validateArgumentsCount_Should_Throw_When_InsufficientArguments() {
         List<String> args = List.of(VALID_STRING, INVALID_NAME);
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validateArgumentsCount(args, 3));
     }
 
     @Test
-    void validatePattern_Should_NotThrowException_When_Valid() {
+    void validatePattern_Should_NotThrow_When_Valid() {
         ValidationHelpers.validatePattern(VALID_NAME, REGEX_PATERN, VALID_STRING);
     }
 
     @Test
-    void validatePattern_Should_ThrowException_When_ValueDoesNotMatchPattern() {
+    void validatePattern_Should_Throw_When_ValueDoesNotMatchPattern() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validatePattern(INVALID_NAME, REGEX_PATERN, VALID_STRING));
     }
 
     @Test
-    void validateStringLength_Should_NotThrowException_When_Valid() {
+    void validateStringLength_Should_NotThrow_When_Valid() {
         ValidationHelpers.validateStringLength(VALID_NAME, 5, 10, VALID_STRING);
     }
 
     @Test
-    void validateStringLength_Should_ThrowException_When_LengthOutOfBounds() {
+    void validateStringLength_Should_Throw_When_LengthOutOfBounds() {
         Assertions.assertAll(
                 () -> Assertions.assertThrows(IllegalArgumentException.class, () ->
                         ValidationHelpers.validateStringLength(SHORT_STRING, 5, 10, VALID_STRING)),
@@ -106,7 +106,7 @@ public class ValidationHelpersTest {
     }
 
     @Test
-    void validateTimeAgainstPresent_Should_ThrowException_When_TimeIsInThePast() {
+    void validateTimeAgainstPresent_Should_Throw_When_TimeIsInThePast() {
         LocalDateTime pastTime = LocalDateTime.now().minusMinutes(2);
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validateTimeAgainstPresent(pastTime, VALID_STRING));
@@ -120,7 +120,7 @@ public class ValidationHelpersTest {
     }
 
     @Test
-    void validateTimeAgainstTime_Should_ThrowException_When_EndTimeBeforeStartTime() {
+    void validateTimeAgainstTime_Should_Throw_When_EndTimeBeforeStartTime() {
         LocalDateTime start = LocalDateTime.now().plusMinutes(10);
         LocalDateTime end = LocalDateTime.now();
         Assertions.assertThrows(IllegalArgumentException.class, () ->
@@ -134,7 +134,7 @@ public class ValidationHelpersTest {
     }
 
     @Test
-    void validateUniqueList_Should_ThrowException_When_ListContainsDuplicates() {
+    void validateUniqueList_Should_Throw_When_ListContainsDuplicates() {
         List<String> list = List.of(VALID_STRING, VALID_STRING, INVALID_NAME);
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validateUniqueList(list, VALID_STRING));
@@ -146,19 +146,19 @@ public class ValidationHelpersTest {
     }
 
     @Test
-    void validateName_Should_ThrowException_When_NameIsEmpty() {
+    void validateName_Should_Throw_When_NameIsEmpty() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validateName(EMPTY_STRING));
     }
 
     @Test
-    void validateName_Should_ThrowException_When_NameIsNull() {
+    void validateName_Should_Throw_When_NameIsNull() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validateName(null));
     }
 
     @Test
-    void validateName_Should_ThrowException_When_NameHasInvalidCharacters() {
+    void validateName_Should_Throw_When_NameHasInvalidCharacters() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validateName(INVALID_NAME));
     }
@@ -169,19 +169,19 @@ public class ValidationHelpersTest {
     }
 
     @Test
-    void validateEmail_Should_ThrowException_When_EmailIsInvalid() {
+    void validateEmail_Should_Throw_When_EmailIsInvalid() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validateEmail(INVALID_EMAIL));
     }
 
     @Test
-    void validateEmail_Should_ThrowException_When_EmailIsNull() {
+    void validateEmail_Should_Throw_When_EmailIsNull() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validateEmail(null));
     }
 
     @Test
-    void validatePhoneNumber_Should_ThrowException_When_PhoneNumberIsNullOrEmpty() {
+    void validatePhoneNumber_Should_Throw_When_PhoneNumberIsNullOrEmpty() {
         Assertions.assertAll(
                 () -> Assertions.assertThrows(IllegalArgumentException.class, () ->
                         ValidationHelpers.validatePhoneNumber(EMPTY_STRING)),
@@ -196,7 +196,7 @@ public class ValidationHelpersTest {
     }
 
     @Test
-    void validatePhoneNumber_Should_ThrowException_When_PhoneNumberIsMalformed() {
+    void validatePhoneNumber_Should_Throw_When_PhoneNumberIsMalformed() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 ValidationHelpers.validatePhoneNumber(INVALID_PHONE));
     }
