@@ -32,7 +32,6 @@ public class BulkAssignTests {
     private static final String DATA_DIR = "data";
     @BeforeEach
     public void setUp() {
-        TestEnvironmentHelper.cleanDataDirectory("data");
 
         TruckImpl.resetTruckLimit();
         TestEnvironmentHelper.TestDependencies deps = TestEnvironmentHelper.initializeServices("data");

@@ -71,7 +71,7 @@ public class TruckImpl extends Vehicle implements Truck {
         }
     }
     public static void resetTruckLimit(){
-        setIds(0,0,0);
+        setIds(1001,1011,1026);
     }
 
     public int getCapacity() {

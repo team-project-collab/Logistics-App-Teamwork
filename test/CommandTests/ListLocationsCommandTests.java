@@ -2,6 +2,7 @@ package CommandTests;
 
 import com.company.oop.logistics.commands.listing.ListLocationsCommand;
 import com.company.oop.logistics.core.contracts.*;
+import com.company.oop.logistics.db.PersistenceManager;
 import com.company.oop.logistics.models.TruckImpl;
 import com.company.oop.logistics.models.enums.City;
 import com.company.oop.logistics.modelservices.LocationServiceImpl;
@@ -10,6 +11,7 @@ import com.company.oop.logistics.tests.utils.TestEnvironmentHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import testingUtils.MockPersistenceManagerImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +26,6 @@ public class ListLocationsCommandTests {
 
     @BeforeEach
     public void setUp() {
-        TestEnvironmentHelper.cleanDataDirectory("data");
         TruckImpl.resetTruckLimit();
         
         TestEnvironmentHelper.TestDependencies deps = TestEnvironmentHelper.initializeServices("data");
@@ -73,11 +74,9 @@ public class ListLocationsCommandTests {
 
     @Test
     public void execute_Should_ReturnEmptyString_When_NoLocationsExist() {
-        // Clean up and create fresh environment without locations
-        TestEnvironmentHelper.cleanDataDirectory("data");
-        
+
         // Create services without initializing test data
-        com.company.oop.logistics.db.PersistenceManager persistenceManager = new com.company.oop.logistics.db.PersistenceManagerImpl();
+        PersistenceManager persistenceManager = new MockPersistenceManagerImpl();
         LocationService emptyLocationService = new LocationServiceImpl(persistenceManager);
         
         ListLocationsCommand emptyCommand = new ListLocationsCommand(emptyLocationService);
